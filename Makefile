@@ -1,13 +1,13 @@
 
-NAME 		= ircserver
+NAME 		= ircserv
 
 CXX		= c++
 
 CFLAGS		= -g3 -Wall -Wextra -Werror -std=c++98
 
-INCLUDES	= 
+INCLUDES	= includes.hpp Server.hpp
 
-FILES		= main
+FILES		= main Server
 
 SRCS		= $(addsuffix .cpp, $(FILES))
 
