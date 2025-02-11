@@ -11,6 +11,5 @@ int main(int __attribute__((unused))argc, char **__attribute__((unused))argv)
          std::cerr << "Too many arguments" << std::endl << "./ircserv <port> <password>" << std::endl;
 		 return 1;
 	}
-	Server	IrcServ(4);
-	IrcServ.runServer();
+	Server	IrcServ(atoi(argv[1]));
 }
