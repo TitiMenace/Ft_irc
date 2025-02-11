@@ -2,8 +2,6 @@
 
 int main(int __attribute__((unused))argc, char **__attribute__((unused))argv)
 {
-    (void)argv;
-
 	if (argc <= 2){
         std::cerr << "Not enough arguments" << std::endl << "./ircserv <port> <password>" << std::endl;
 		return 1;

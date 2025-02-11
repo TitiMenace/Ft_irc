@@ -1,11 +1,11 @@
 
 NAME 		= ircserv
 
-CXX		= c++
+CXX		= clang++
 
 CFLAGS		= -g3 -Wall -Wextra -Werror -std=c++98
 
-INCLUDES	= includes.hpp Server.hpp
+INCLUDES	= includes.hpp Server.hpp 
 
 FILES		= main Server
 
