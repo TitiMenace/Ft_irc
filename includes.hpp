@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <poll.h>
 #include <iostream>
+#include <cstring>
 #include <exception>
 #include <stdio.h> 
 #include <netdb.h> 

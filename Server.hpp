@@ -7,9 +7,11 @@
 
 class Server{
 
-	private:
+	
 				struct	sockaddr_in	servaddr;
+				int	addrlen;
 				int	sock_fd;
+				int	socket_in;
 		
 	public:
 		Server();

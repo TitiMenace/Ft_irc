@@ -12,4 +12,5 @@ int main(int __attribute__((unused))argc, char **__attribute__((unused))argv)
 		 return 1;
 	}
 	Server	IrcServ(atoi(argv[1]));
+	IrcServ.runServer();
 }
