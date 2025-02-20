@@ -53,7 +53,7 @@ Server &Server::operator=(const Server &type){
 void	Server::runServer(void){
 
 	char buffer[1024] = {0};
-	const char *response = "POGGERS\n";
+	const char *response = "\nmoist\n";
 
 	//le serv va se mettre a ecouter les connexions
 	std::cout << "Server running" << std::endl;
@@ -65,7 +65,7 @@ void	Server::runServer(void){
 	socket_in = accept(sock_fd, (SA*)&servaddr, (socklen_t *)&addrlen);
 	if (socket_in < 0){
 		perror("accept");
-		exit(EXIT_FAILURE);
+		return;
 	}
 
 	//on lit le message
@@ -74,6 +74,11 @@ void	Server::runServer(void){
 
 	send(socket_in, response, strlen(response), 0);
 	std::cout << "Reponse envoyee" <<  std::endl;
+
+}
+
+void	Server::inputLoop(void){
+
 
 }
 

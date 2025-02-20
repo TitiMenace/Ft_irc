@@ -8,11 +8,12 @@
 class Server{
 
 	
+	private:
 				struct	sockaddr_in	servaddr;
 				int	addrlen;
 				int	sock_fd;
-				int	socket_in;
-		
+				int socket_in;
+
 	public:
 		Server();
 		Server(int port);
@@ -22,6 +23,7 @@ class Server{
 		
 		void	runServer(void);
 		bool	bindingStream(void);
+		void	inputLoop(void);
 
 		class Aziz : public std::exception{
 		

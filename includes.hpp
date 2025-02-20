@@ -13,3 +13,4 @@
 #include <sys/types.h> 
 #include <unistd.h> // read(), write(), close()
 #include "Server.hpp"
+#include "Client.hpp"

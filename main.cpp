@@ -1,7 +1,10 @@
+
 #include "includes.hpp"
 
 int main(int __attribute__((unused))argc, char **__attribute__((unused))argv)
 {
+	Client	swag("pipo");
+	
 	if (argc <= 2){
         std::cerr << "Not enough arguments" << std::endl << "./ircserv <port> <password>" << std::endl;
 		return 1;

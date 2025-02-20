@@ -5,9 +5,9 @@ CXX		= clang++
 
 CFLAGS		= -g3 -Wall -Wextra -Werror -std=c++98
 
-INCLUDES	= includes.hpp Server.hpp 
+INCLUDES	= includes.hpp Server.hpp Client.hpp
 
-FILES		= main Server
+FILES		= main Server Client
 
 SRCS		= $(addsuffix .cpp, $(FILES))
 
