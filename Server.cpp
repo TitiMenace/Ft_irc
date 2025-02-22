@@ -27,7 +27,10 @@ Server::Server(int port){
 		servaddr.sin_family = AF_INET; //famille d'adresse ici IPv4
 		servaddr.sin_addr.s_addr = htonl(INADDR_ANY); //adresse IP que le socket va use
 		servaddr.sin_port = htons(port); //Le port en format reseau
-
+    		//ici on autorise le socket a reutiliser la meme adresse multiple fois
+		int opt = 1;
+    		setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+		
 		addrlen = sizeof(servaddr);
 		socket_in = -1;
 		if ((bind(sock_fd, (SA*)&servaddr, sizeof(servaddr))) != 0)
