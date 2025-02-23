@@ -52,17 +52,30 @@ Server &Server::operator=(const Server &type){
 	return *this; 
 }
 
+void debug_epoll_events(int event) {
+	if (event & EPOLLIN)
+		std::cout << "EPOLLIN ";
+	if (event & EPOLLOUT)
+		std::cout << "EPOLLOUT ";
+	if (event & EPOLLERR)
+		std::cout << "EPOLLERR ";
+	if (event & EPOLLHUP)
+		std::cout << "EPOLLHUP ";
+	if (event & EPOLLRDHUP)
+		std::cout << "EPOLLRDHUP ";
+	std::cout << std::endl;
+}
+
 void	Server::runServer(void){
 	int epoll_fd = epoll_create1(EPOLL_CLOEXEC);
 	char buffer[1024] = {0};
-	const char *response = "\nmoist\n";
 	
 	//le serv va se mettre a ecouter les connexions
 	std::cout << "Server running" << std::endl;
 
 	struct epoll_event event;
 	event.data.fd = _master_fd;
-	event.events = EPOLLIN;
+	event.events = EPOLLIN; // | EPOLLOUT | EPOLLHUP | EPOLLRDHUP;
 	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, _master_fd, &event);
 
 	listen(_master_fd, 3);
@@ -82,18 +95,32 @@ void	Server::runServer(void){
 					perror("accept");
 					return;
 				}
+				std::cout << "New connection, fd: " << client_socket << std::endl;
 
 				event.data.fd = client_socket;
-				event.events = EPOLLIN;
+				event.events = EPOLLIN; // | EPOLLOUT | EPOLLHUP | EPOLLRDHUP;
 				epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_socket, &event);
 			} else {
-				int client_socket = events[i].data.fd;
-				//on lit le message
-				read(client_socket, buffer, 1024);
-				std::cout << "Message recieved: " << buffer << std::endl;
-				
-				send(client_socket, response, strlen(response), 0);
-				std::cout << "Reponse envoyee" <<  std::endl;
+				std::cout << "[" << events[i].data.fd << "] ";
+				debug_epoll_events(events[i].events);
+				if (events[i].events & EPOLLIN) {
+					int client_socket = events[i].data.fd;
+					//on lit le message
+					int bytes_received = read(client_socket, buffer, 1024);
+					if (bytes_received <= 0) {
+						std::cout << "Client ended the connection" << std::endl;
+						close(client_socket);
+						continue;
+					}
+					std::cout << "[" << client_socket << "] Message recieved: " << std::string(buffer, bytes_received) << std::endl;
+					
+					send(client_socket, buffer, bytes_received, 0);
+					std::cout << "Response sent" <<  std::endl;
+				}
+				if (events[i].events & EPOLLERR) {
+					std::cout << "Client encountered an error" << std::endl;
+					close(events[i].data.fd);
+				}
 			}
 		}
 	}
