@@ -9,10 +9,9 @@ class Server{
 
 	
 	private:
-				struct	sockaddr_in	servaddr;
-				int	addrlen;
-				int	sock_fd;
-				int socket_in;
+				struct	sockaddr_in	_servaddr;
+				int	_addrlen;
+				int	_master_fd;
 
 	public:
 		Server();
@@ -23,7 +22,6 @@ class Server{
 		
 		void	runServer(void);
 		bool	bindingStream(void);
-		void	inputLoop(void);
 
 		class Aziz : public std::exception{
 		

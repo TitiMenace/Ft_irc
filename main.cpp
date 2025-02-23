@@ -1,10 +1,8 @@
 
 #include "includes.hpp"
 
-int main(int __attribute__((unused))argc, char **__attribute__((unused))argv)
+int main(int argc, char **argv)
 {
-	Client	swag("pipo");
-	
 	if (argc <= 2){
         std::cerr << "Not enough arguments" << std::endl << "./ircserv <port> <password>" << std::endl;
 		return 1;
@@ -14,6 +12,8 @@ int main(int __attribute__((unused))argc, char **__attribute__((unused))argv)
          std::cerr << "Too many arguments" << std::endl << "./ircserv <port> <password>" << std::endl;
 		 return 1;
 	}
+
 	Server	IrcServ(atoi(argv[1]));
+
 	IrcServ.runServer();
 }
