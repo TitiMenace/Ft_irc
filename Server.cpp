@@ -91,6 +91,8 @@ void	Server::runServer(void){
 		int events_received = epoll_wait(epoll_fd, events, EPOLL_MAX_EVENTS, -1);
 		std::cout << "Events received: " << events_received << std::endl;
 		for (int i = 0; i < events_received; i++) {
+			std::cout << "[" << events[i].data.fd << "] ";
+			debug_epoll_events(events[i].events);
 			if (events[i].data.fd == _master_fd) {
 				int client_socket = accept(_master_fd, (SA*)&_servaddr, (socklen_t *)&_addrlen);
 				if (client_socket < 0){
@@ -103,8 +105,6 @@ void	Server::runServer(void){
 				event.events = EPOLLIN; // | EPOLLOUT | EPOLLHUP | EPOLLRDHUP;
 				epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_socket, &event);
 			} else {
-				std::cout << "[" << events[i].data.fd << "] ";
-				debug_epoll_events(events[i].events);
 				if (events[i].events & EPOLLIN) {
 					int client_socket = events[i].data.fd;
 					//on lit le message
