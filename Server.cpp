@@ -87,7 +87,7 @@ void	Server::runServer(void){
 
 	while (true) {
 		int events_received = epoll_wait(epoll_fd, events, EPOLL_MAX_EVENTS, -1);
-
+		std::cout << "Events received: " << events_received << std::endl;
 		for (int i = 0; i < events_received; i++) {
 			if (events[i].data.fd == _master_fd) {
 				int client_socket = accept(_master_fd, (SA*)&_servaddr, (socklen_t *)&_addrlen);
@@ -107,13 +107,14 @@ void	Server::runServer(void){
 					int client_socket = events[i].data.fd;
 					//on lit le message
 					int bytes_received = read(client_socket, buffer, 1024);
+					std::cout << "Bytes received: " << bytes_received << std::endl;
+
 					if (bytes_received <= 0) {
 						std::cout << "Client ended the connection" << std::endl;
 						close(client_socket);
 						continue;
 					}
-					std::cout << "[" << client_socket << "] Message recieved: " << std::string(buffer, bytes_received) << std::endl;
-					
+					std::cout << "[" << client_socket << "] Message recieved: " << std::endl << std::string(buffer, bytes_received) << std::endl;					
 					send(client_socket, buffer, bytes_received, 0);
 					std::cout << "Response sent" <<  std::endl;
 				}
