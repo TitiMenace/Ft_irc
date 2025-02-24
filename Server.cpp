@@ -67,11 +67,48 @@ void debug_epoll_events(int event) {
 	std::cout << std::endl;
 }
 
+void	Server::_acceptClient(int epoll_fd) {
+	struct epoll_event event;
+
+	int client_socket = accept(_master_fd, (SA*)&_servaddr, (socklen_t *)&_addrlen);
+	if (client_socket < 0){
+		perror("accept");
+		return;
+	}
+	std::cout << "New connection, fd: " << client_socket << std::endl;
+
+	event.data.fd = client_socket;
+	event.events = EPOLLIN; // | EPOLLOUT | EPOLLHUP | EPOLLRDHUP;
+	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_socket, &event);
+}
+
+void	Server::_readMessage(struct epoll_event event) {
+	if (event.events & EPOLLIN) {
+		int client_socket = event.data.fd;
+		//on lit le message
+		char buffer[BUFFER_SIZE] = {0};
+		int bytes_received = read(client_socket, buffer, BUFFER_SIZE);
+		std::cout << "Bytes received: " << bytes_received << std::endl;
+
+		if (bytes_received <= 0) {
+			std::cout << "Client ended the connection" << std::endl;
+			close(client_socket);
+			return;
+		}
+		std::cout << "[" << client_socket << "] Message recieved: " << std::endl << std::string(buffer, bytes_received) << std::endl;					
+		send(client_socket, buffer, bytes_received, 0);
+		std::cout << "Response sent" <<  std::endl;
+	}
+	if (event.events & EPOLLERR) {
+		std::cout << "Client encountered an error" << std::endl;
+		close(event.data.fd);
+	}
+}
+
 void	Server::runServer(void){
 	std::cout << "Server password is " << _password << std::endl;
 
 	int epoll_fd = epoll_create1(EPOLL_CLOEXEC);
-	char buffer[BUFFER_SIZE] = {0};
 	
 	//le serv va se mettre a ecouter les connexions
 	std::cout << "Server running" << std::endl;
@@ -95,36 +132,9 @@ void	Server::runServer(void){
 			std::cout << "[" << events[i].data.fd << "] ";
 			debug_epoll_events(events[i].events);
 			if (events[i].data.fd == _master_fd) {
-				int client_socket = accept(_master_fd, (SA*)&_servaddr, (socklen_t *)&_addrlen);
-				if (client_socket < 0){
-					perror("accept");
-					return;
-				}
-				std::cout << "New connection, fd: " << client_socket << std::endl;
-
-				event.data.fd = client_socket;
-				event.events = EPOLLIN; // | EPOLLOUT | EPOLLHUP | EPOLLRDHUP;
-				epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_socket, &event);
+				_acceptClient(epoll_fd);
 			} else {
-				if (events[i].events & EPOLLIN) {
-					int client_socket = events[i].data.fd;
-					//on lit le message
-					int bytes_received = read(client_socket, buffer, BUFFER_SIZE);
-					std::cout << "Bytes received: " << bytes_received << std::endl;
-
-					if (bytes_received <= 0) {
-						std::cout << "Client ended the connection" << std::endl;
-						close(client_socket);
-						continue;
-					}
-					std::cout << "[" << client_socket << "] Message recieved: " << std::endl << std::string(buffer, bytes_received) << std::endl;					
-					send(client_socket, buffer, bytes_received, 0);
-					std::cout << "Response sent" <<  std::endl;
-				}
-				if (events[i].events & EPOLLERR) {
-					std::cout << "Client encountered an error" << std::endl;
-					close(events[i].data.fd);
-				}
+				_readMessage(events[i]);
 			}
 		}
 	}

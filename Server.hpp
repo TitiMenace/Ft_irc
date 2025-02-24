@@ -6,13 +6,15 @@
 #include "includes.hpp"
 
 class Server{
-
 	
 	private:
-				struct	sockaddr_in	_servaddr;
-				int	_addrlen;
-				int	_master_fd;
-				std::string	_password;
+		struct	sockaddr_in	_servaddr;
+		int	_addrlen;
+		int	_master_fd;
+		std::string	_password;
+
+		void	_acceptClient(int epoll_fd);
+		void	_readMessage(struct epoll_event event);
 
 	public:
 		Server();
@@ -31,6 +33,6 @@ class Server{
 				{
 					return ("aziz");
 				}
-	};
+		};
 };
 
