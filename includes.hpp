@@ -14,3 +14,4 @@
 #include <unistd.h> // read(), write(), close()
 #include <sys/epoll.h>
 #include "Server.hpp"
+#include "Client.hpp"
