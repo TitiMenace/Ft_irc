@@ -1,5 +1,6 @@
 #include "includes.hpp"
 #define EPOLL_MAX_EVENTS 32
+#define BUFFER_SIZE 1024
 
 Server::Server(void){}
 
@@ -70,7 +71,7 @@ void	Server::runServer(void){
 	std::cout << "Server password is " << _password << std::endl;
 
 	int epoll_fd = epoll_create1(EPOLL_CLOEXEC);
-	char buffer[1024] = {0};
+	char buffer[BUFFER_SIZE] = {0};
 	
 	//le serv va se mettre a ecouter les connexions
 	std::cout << "Server running" << std::endl;
@@ -108,7 +109,7 @@ void	Server::runServer(void){
 				if (events[i].events & EPOLLIN) {
 					int client_socket = events[i].data.fd;
 					//on lit le message
-					int bytes_received = read(client_socket, buffer, 1024);
+					int bytes_received = read(client_socket, buffer, BUFFER_SIZE);
 					std::cout << "Bytes received: " << bytes_received << std::endl;
 
 					if (bytes_received <= 0) {
