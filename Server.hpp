@@ -12,10 +12,11 @@ class Server{
 				struct	sockaddr_in	_servaddr;
 				int	_addrlen;
 				int	_master_fd;
+				std::string	_password;
 
 	public:
 		Server();
-		Server(int port);
+		Server(int port, std::string password);
 		Server(const Server& copy);
 		~Server();
 		Server& operator=(const Server& type);

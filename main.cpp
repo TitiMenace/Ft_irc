@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 		 return 1;
 	}
 
-	Server	IrcServ(atoi(argv[1]));
+	Server	IrcServ(atoi(argv[1]), (std::string)argv[2]);
 
 	IrcServ.runServer();
 }

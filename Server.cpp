@@ -9,7 +9,7 @@ Server::~Server(void){
 	close(_master_fd);
 }
 
-Server::Server(int port){
+Server::Server(int port, std::string password) : _password(password){
 	
 	try {
 		
@@ -67,6 +67,8 @@ void debug_epoll_events(int event) {
 }
 
 void	Server::runServer(void){
+	std::cout << "Server password is " << _password << std::endl;
+
 	int epoll_fd = epoll_create1(EPOLL_CLOEXEC);
 	char buffer[1024] = {0};
 	
