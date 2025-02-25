@@ -100,7 +100,29 @@ void	Server::_acceptClient(int epoll_fd) {
 	_users[client_socket] = client;
 }
 
-void	Server::_readMessage(struct epoll_event event) {
+bool	Server::_readMessage(std::string &buffer, std::size_t &buffer_pos) {
+	std::size_t pos = buffer.find("\r\n", buffer_pos);
+	if (pos == std::string::npos)
+		return false;
+	std::string message = buffer.substr(buffer_pos, pos - buffer_pos);
+	buffer_pos = pos + 2;
+
+	// this is equvalent to startswith, we check only the first index
+	// see: https://stackoverflow.com/questions/1878001/how-do-i-check-if-a-c-stdstring-starts-with-a-certain-string-and-convert-a
+	if (message.rfind("NICK ", 0) == 0) {
+		std::cout << "Command NICK received" << std::endl;
+	} else if (message.rfind("USER ", 0) == 0) {
+		std::cout << "Command USER received" << std::endl;
+	} else {
+		pos = message.find(" ");
+		if (pos != std::string::npos)
+			message = message.substr(pos);
+		std::cout << "ERROR: Unknown command: " << message << std::endl;
+	}
+	return true;
+}
+
+void	Server::_readMessages(struct epoll_event event) {
 	int client_socket = event.data.fd;
 	if (event.events & EPOLLIN) {
 		//on lit le message
@@ -116,8 +138,10 @@ void	Server::_readMessage(struct epoll_event event) {
 			return;
 		}
 		std::cout << "[" << client_socket << "] Message recieved: " << std::endl << std::string(buffer, bytes_received) << std::endl;					
-		send(client_socket, buffer, bytes_received, 0);
-		std::cout << "Response sent" <<  std::endl;
+		std::string str_buf(buffer, BUFFER_SIZE);
+		std::size_t buffer_pos = 0;
+		while (_readMessage(str_buf, buffer_pos))
+			;
 	}
 	if (event.events & EPOLLERR) {
 		std::cout << "Client encountered an error" << std::endl;
@@ -156,7 +180,7 @@ void	Server::runServer(void){
 			if (events[i].data.fd == _master_fd) {
 				_acceptClient(epoll_fd);
 			} else {
-				_readMessage(events[i]);
+				_readMessages(events[i]);
 			}
 			debug_users_map(_users); 
 		}
