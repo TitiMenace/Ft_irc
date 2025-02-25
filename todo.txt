@@ -1,0 +1,39 @@
+Current objective:
+- MINIMAL server, single channel, anonymous messages
+
+1. Parsing
+- Store a buffer per client:
+	- data.ptr -> class Client {fd, buffer, bufferpos}
+	- data.fd -> map<int, Client>
+- Recv into remaining space in buffer
+- Parse the messages found
+- memmove the rest to the front of the buffer
+
+2. Authentification
+- CAP LS: either return nothing (unsupported) or the corresponding RPL
+- JOIN: return corresponding RPL, no matter the channel
+- PASS: return corresponding RPL, no matter the password
+- NICK: return corresponding RPL, no matter the nickname
+- USER: return corresponding RPL, no matter the user data
+
+3. Messaging
+- When a message is sent, send (blocking) it to all other users
+
+Then implement:
+- NICK+USER: set a bool for each on the user, so that they can send message only once registered
+- CAP LS: grammar check (?)
+- JOIN: grammar check (valid channel names)
+- PASS: check server password
+- NICK: grammar check (valid nickname)
+- NICK: store the nickname and transmit it in messages
+- NICK: check that the nickname is unique amongst users
+
+Style:
+- Makefile: includes and sources folders
+- Server: remove _addrlen
+- Server: remove canonical form
+- events: EventPool class that wraps around epoll
+- Server: should be torn down and put in main...
+
+Errors:
+- If TCP connection failed, don't run the server
