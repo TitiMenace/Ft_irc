@@ -3,9 +3,9 @@ NAME 		= ircserv
 
 CXX		= clang++
 
-CFLAGS		= -g3 -Wall -Wextra -Werror -std=c++98
+CXXFLAGS	= -g3 -Wall -Wextra -Werror -std=c++98
 
-INCLUDES	= includes.hpp Server.hpp
+CPPFLAGS	= -MP -MMD
 
 FILES		= main Server
 
@@ -15,14 +15,18 @@ OBJS_DIRS	= .build
 
 OBJS		= 	$(patsubst %.cpp, $(OBJS_DIRS)/%.o, $(SRCS))
 
+DEPS		= 	$(OBJS:.o=.d)
+
 all:	$(NAME)
 
 $(NAME) : $(OBJS)
 		$(CXX) $(OBJS) -o $@
 
-$(OBJS_DIRS)/%.o: %.cpp $(INCLUDES)
+-include $(DEPS)
+
+$(OBJS_DIRS)/%.o: %.cpp
 		@mkdir -p $(OBJS_DIRS)
-		$(CXX) $(CFLAGS) -o $@ -c $<
+		$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 clean:
 		rm -rf $(OBJS_DIRS)
