@@ -1,21 +1,18 @@
 
 NAME 		= ircserv
 
-CXX		= clang++
-
+CXX			= clang++
 CXXFLAGS	= -g3 -Wall -Wextra -Werror -std=c++98
-
-CPPFLAGS	= -MP -MMD
+CPPFLAGS	= -Iincludes -MP -MMD
 
 FILES		= main Server
 
-SRCS		= $(addsuffix .cpp, $(FILES))
+SRCS_DIR	= sources
+SRCS		= $(addprefix $(SRCS_DIR)/, $(addsuffix .cpp, $(FILES)))
 
-OBJS_DIRS	= .build
-
-OBJS		= 	$(patsubst %.cpp, $(OBJS_DIRS)/%.o, $(SRCS))
-
-DEPS		= 	$(OBJS:.o=.d)
+OBJS_DIR	= .build
+OBJS		= $(patsubst $(SRCS_DIR)/%.cpp, $(OBJS_DIR)/%.o, $(SRCS))
+DEPS		= $(OBJS:.o=.d)
 
 all:	$(NAME)
 
@@ -24,12 +21,12 @@ $(NAME) : $(OBJS)
 
 -include $(DEPS)
 
-$(OBJS_DIRS)/%.o: %.cpp
-		@mkdir -p $(OBJS_DIRS)
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
+		@mkdir -p $(OBJS_DIR)
 		$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 clean:
-		rm -rf $(OBJS_DIRS)
+		rm -rf $(OBJS_DIR)
 
 fclean: clean
 		rm -f $(NAME)
