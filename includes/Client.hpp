@@ -4,16 +4,15 @@
 
 class Client{
 
-	
+
 	private:
 				std::string	_nickname;
 				std::string	_hostname;
 				std::string	_username;
 				int			_socket_fd;
-
 	public:
 				Client();
-				Client(std::string nickname, std::string hostname, std::string username);
+				Client(int fd);
 				Client(const Client& copy);
 				~Client();
 				Client& operator=(const Client& type);

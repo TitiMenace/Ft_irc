@@ -12,7 +12,7 @@ class Server{
 		int	_addrlen;
 		int	_master_fd;
 		std::string	_password;
-
+		std::map<int, Client> _users;
 		void	_acceptClient(int epoll_fd);
 		void	_readMessage(struct epoll_event event);
 

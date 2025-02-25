@@ -8,8 +8,7 @@ Client::~Client(void){
 	std::cout << "Client shutting down" << std::endl;
 }
 
-Client::Client(std::string nickname, std::string hostname, std::string username) : _nickname(nickname), _hostname(hostname), _username(username){
-	_socket_fd = -1;
+Client::Client(int fd) : _nickname(""), _hostname(""), _username(""), _socket_fd(fd){
 	std::cout << "Client registered" << std::endl;
 }
 
@@ -20,10 +19,10 @@ Client::Client(const Client& copy){
 
 Client &Client::operator=(const Client &type){
 
-	_nickname = type.getNickname();
-	_hostname = type.getHostname();
-	_username = type.getUsername();
-	_socket_fd = getSocketfd();
+	_nickname = type._nickname;
+	_hostname = type._hostname;
+	_username = type._username;
+	_socket_fd = type._socket_fd;
 	return *this; 
 }
 

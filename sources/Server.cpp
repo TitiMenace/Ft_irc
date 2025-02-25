@@ -67,6 +67,21 @@ void debug_epoll_events(int event) {
 	std::cout << std::endl;
 }
 
+void debug_users_map(std::map<int, Client> users) {
+    std::cout << "List of users :" << std::endl;
+    for (std::map<int, Client>::iterator it = users.begin(); it != users.end(); ++it) {
+        Client& client = it->second;  // Get reference to Client object
+        std::cout << "[" << client.getSocketfd() << "] ";
+		if (client.getNickname().empty() && client.getHostname().empty() && client.getUsername().empty())
+			std::cout << "Unregistered";
+        std::cout << client.getNickname() << " "
+                  << client.getHostname() << " "
+                  << client.getUsername() << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+
 void	Server::_acceptClient(int epoll_fd) {
 	struct epoll_event event;
 
@@ -75,23 +90,28 @@ void	Server::_acceptClient(int epoll_fd) {
 		perror("accept");
 		return;
 	}
-	std::cout << "New connection, fd: " << client_socket << std::endl;
+	std::cout << "New connection, fd: " << "[" << client_socket  << "]" << std::endl;
 
 	event.data.fd = client_socket;
 	event.events = EPOLLIN; // | EPOLLOUT | EPOLLHUP | EPOLLRDHUP;
 	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_socket, &event);
+	//Add a client to the client map users
+	Client client(client_socket);
+	_users[client_socket] = client;
 }
 
 void	Server::_readMessage(struct epoll_event event) {
+	int client_socket = event.data.fd;
 	if (event.events & EPOLLIN) {
-		int client_socket = event.data.fd;
 		//on lit le message
 		char buffer[BUFFER_SIZE] = {0};
 		int bytes_received = read(client_socket, buffer, BUFFER_SIZE);
 		std::cout << "Bytes received: " << bytes_received << std::endl;
 
 		if (bytes_received <= 0) {
+			//remove the client from the map users
 			std::cout << "Client ended the connection" << std::endl;
+			_users.erase(client_socket);
 			close(client_socket);
 			return;
 		}
@@ -101,7 +121,9 @@ void	Server::_readMessage(struct epoll_event event) {
 	}
 	if (event.events & EPOLLERR) {
 		std::cout << "Client encountered an error" << std::endl;
-		close(event.data.fd);
+		//remove client from user map if close
+		_users.erase(client_socket);
+		close(client_socket);
 	}
 }
 
@@ -136,6 +158,7 @@ void	Server::runServer(void){
 			} else {
 				_readMessage(events[i]);
 			}
+			debug_users_map(_users); 
 		}
 	}
 }
