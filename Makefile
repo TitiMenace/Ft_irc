@@ -5,7 +5,7 @@ CXX			= clang++
 CXXFLAGS	= -g3 -Wall -Wextra -Werror -std=c++98
 CPPFLAGS	= -Iincludes -MP -MMD
 
-FILES		= main Server Client
+FILES		= main Server
 
 SRCS_DIR	= sources
 SRCS		= $(addprefix $(SRCS_DIR)/, $(addsuffix .cpp, $(FILES)))

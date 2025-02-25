@@ -68,17 +68,17 @@ void debug_epoll_events(int event) {
 }
 
 void debug_users_map(std::map<int, Client> users) {
-    std::cout << "List of users :" << std::endl;
-    for (std::map<int, Client>::iterator it = users.begin(); it != users.end(); ++it) {
-        Client& client = it->second;  // Get reference to Client object
-        std::cout << "[" << client.getSocketfd() << "] ";
-		if (client.getNickname().empty() && client.getHostname().empty() && client.getUsername().empty())
+	std::cout << "List of users :" << std::endl;
+	for (std::map<int, Client>::iterator it = users.begin(); it != users.end(); ++it) {
+		Client& client = it->second;  // Get reference to Client object
+		std::cout << "[" << client.socket_fd << "] ";
+		if (client.nickname.empty() && client.hostname.empty() && client.username.empty())
 			std::cout << "Unregistered";
-        std::cout << client.getNickname() << " "
-                  << client.getHostname() << " "
-                  << client.getUsername() << std::endl;
-    }
-    std::cout << std::endl;
+		std::cout << client.nickname << " "
+					<< client.hostname << " "
+					<< client.username << std::endl;
+	}
+	std::cout << std::endl;
 }
 
 
@@ -96,7 +96,7 @@ void	Server::_acceptClient(int epoll_fd) {
 	event.events = EPOLLIN; // | EPOLLOUT | EPOLLHUP | EPOLLRDHUP;
 	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_socket, &event);
 	//Add a client to the client map users
-	Client client(client_socket);
+	Client client = {client_socket, "", "", ""};
 	_users[client_socket] = client;
 }
 
