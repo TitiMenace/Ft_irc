@@ -1,6 +1,6 @@
 #include "includes.hpp"
 #define EPOLL_MAX_EVENTS 32
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 2
 
 Server::Server(void){}
 
@@ -96,11 +96,11 @@ void	Server::_acceptClient(int epoll_fd) {
 	event.events = EPOLLIN; // | EPOLLOUT | EPOLLHUP | EPOLLRDHUP;
 	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_socket, &event);
 	//Add a client to the client map users
-	Client client = {client_socket, "", "", ""};
+	Client client = {client_socket, "", "", "", ""};
 	_users[client_socket] = client;
 }
 
-bool	Server::_readMessage(std::string &buffer, std::size_t &buffer_pos) {
+bool	Server::_runCommand(std::string &buffer, std::size_t &buffer_pos) {
 	std::size_t pos = buffer.find("\r\n", buffer_pos);
 	if (pos == std::string::npos)
 		return false;
@@ -122,6 +122,8 @@ bool	Server::_readMessage(std::string &buffer, std::size_t &buffer_pos) {
 	return true;
 }
 
+
+
 void	Server::_readMessages(struct epoll_event event) {
 	int client_socket = event.data.fd;
 	if (event.events & EPOLLIN) {
@@ -138,10 +140,15 @@ void	Server::_readMessages(struct epoll_event event) {
 			return;
 		}
 		std::cout << "[" << client_socket << "] Message recieved: " << std::endl << std::string(buffer, bytes_received) << std::endl;					
-		std::string str_buf(buffer, BUFFER_SIZE);
-		std::size_t buffer_pos = 0;
-		while (_readMessage(str_buf, buffer_pos))
+		
+		std::string &client_buffer = _users[client_socket].buffer;
+		std::size_t buffer_pos = 0;//client_buffer.length();
+		client_buffer.append(buffer, bytes_received);
+	
+		while (_runCommand(client_buffer, buffer_pos))
 			;
+		//clean buffer
+		client_buffer.substr(buffer_pos);
 	}
 	if (event.events & EPOLLERR) {
 		std::cout << "Client encountered an error" << std::endl;

@@ -14,7 +14,7 @@ class Server{
 		std::string	_password;
 		std::map<int, Client> _users;
 		void	_acceptClient(int epoll_fd);
-		bool	_readMessage(std::string &message, std::size_t &message_pos);
+		bool	_runCommand(std::string &message, std::size_t &message_pos);
 		void	_readMessages(struct epoll_event event);
 
 
