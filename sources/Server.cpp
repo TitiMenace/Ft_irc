@@ -116,7 +116,7 @@ bool	Server::_readMessage(std::string &buffer, std::size_t &buffer_pos) {
 	} else {
 		pos = message.find(" ");
 		if (pos != std::string::npos)
-			message = message.substr(pos);
+			message = message.substr(0, pos);
 		std::cout << "ERROR: Unknown command: " << message << std::endl;
 	}
 	return true;
