@@ -148,7 +148,7 @@ void	Server::_readMessages(struct epoll_event event) {
 		while (_runCommand(client_buffer, buffer_pos))
 			;
 		//clean buffer
-		client_buffer.substr(buffer_pos);
+		client_buffer = client_buffer.substr(buffer_pos);
 	}
 	if (event.events & EPOLLERR) {
 		std::cout << "Client encountered an error" << std::endl;
