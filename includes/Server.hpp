@@ -4,7 +4,11 @@
 #define	SA struct sockaddr
 
 #include "includes.hpp"
+#include <map>
 
+
+#include "Message.hpp"
+#include "Client.hpp"
 class Server{
 	
 	private:
@@ -14,7 +18,7 @@ class Server{
 		std::string	_password;
 		std::map<int, Client> _users;
 		void	_acceptClient(int epoll_fd);
-		bool	_runCommand(std::string &message, std::size_t &message_pos);
+		bool	_runCommand(Client client, std::string &buffer, std::size_t &buffer_pos);
 		void	_readMessages(struct epoll_event event);
 
 
@@ -28,6 +32,12 @@ class Server{
 		void	runServer(void);
 		bool	bindingStream(void);
 
+		void nick(Message message, Client &client);
+		// void join(Message message, Client &client);
+		// void user(Message message, Client &client);
+		// void ping(Message message, Client &client);
+		// void privmsg(Message message, Client &client);    
+	
 		class Aziz : public std::exception{
 		
 			public:

@@ -1,4 +1,4 @@
-#include "includes.hpp"
+#include "Server.hpp"
 #define EPOLL_MAX_EVENTS 32
 #define BUFFER_SIZE 1024
 
@@ -110,7 +110,7 @@ void	Server::_acceptClient(int epoll_fd) {
 	_users[client_socket] = client;
 }
 
-bool	Server::_runCommand(std::string &buffer, std::size_t &buffer_pos) {
+bool	Server::_runCommand(Client client, std::string &buffer, std::size_t &buffer_pos) {
 	std::size_t pos = buffer.find("\r\n", buffer_pos);
 	if (pos == std::string::npos)
 		return false;
@@ -124,6 +124,8 @@ bool	Server::_runCommand(std::string &buffer, std::size_t &buffer_pos) {
 	}
 	std::cout << "Command received: ";
 	debug_message(message);
+	if (message.command == "NICK")
+		nick(message, client);
 	return true;
 }
 
@@ -148,7 +150,7 @@ void	Server::_readMessages(struct epoll_event event) {
 		std::size_t buffer_pos = 0;//client_buffer.length();
 		client_buffer.append(buffer, bytes_received);
 	
-		while (_runCommand(client_buffer, buffer_pos))
+		while (_runCommand(_users[client_socket], client_buffer, buffer_pos))
 			;
 		//clean buffer
 		client_buffer = client_buffer.substr(buffer_pos);

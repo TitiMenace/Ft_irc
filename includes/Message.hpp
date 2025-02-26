@@ -1,6 +1,7 @@
 #pragma once
 
 #include "includes.hpp"
+#include <vector> 
 
 struct Message {
 	std::string command;

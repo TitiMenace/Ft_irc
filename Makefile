@@ -5,7 +5,7 @@ CXX			= clang++
 CXXFLAGS	= -g3 -Wall -Wextra -Werror -std=c++98
 CPPFLAGS	= -Iincludes -MP -MMD
 
-FILES		= main Server Message
+FILES		= main Server Message commands/NICK
 
 SRCS_DIR	= sources
 SRCS		= $(addprefix $(SRCS_DIR)/, $(addsuffix .cpp, $(FILES)))
@@ -22,7 +22,7 @@ $(NAME) : $(OBJS)
 -include $(DEPS)
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
-		@mkdir -p $(OBJS_DIR)
+		@mkdir -p $(@D)
 		$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 clean:
@@ -34,3 +34,6 @@ fclean: clean
 re : clean all
 
 .PHONY: all clean fclean re makelib
+
+echo:
+		echo $(OBJS)
