@@ -33,8 +33,8 @@ class Server{
 		bool	bindingStream(void);
 
 		void nick(Message message, Client &client);
+		void user(Message message, Client &client);
 		// void join(Message message, Client &client);
-		// void user(Message message, Client &client);
 		// void ping(Message message, Client &client);
 		// void privmsg(Message message, Client &client);    
 	

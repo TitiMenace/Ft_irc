@@ -6,7 +6,6 @@ struct Client{
 	int			socket_fd;
 	std::string	buffer;
 	std::string	nickname;
-	std::string	hostname;
 	std::string	username;
 };
 
