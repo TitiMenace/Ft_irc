@@ -1,6 +1,6 @@
 #include "includes.hpp"
 #define EPOLL_MAX_EVENTS 32
-#define BUFFER_SIZE 2
+#define BUFFER_SIZE 1024
 
 Server::Server(void){}
 
@@ -81,6 +81,16 @@ void debug_users_map(std::map<int, Client> users) {
 	std::cout << std::endl;
 }
 
+void debug_message(const Message &message) {
+	std::cout << "<" << message.command << "> [";
+	for (std::size_t i = 0; i < message.params.size(); i++) {
+		std::cout << "\"" << message.params[i] << "\"";
+		if (i < message.params.size() - 1)
+			std::cout << ", ";
+	}
+	std::cout << "]" << std::endl;
+}
+
 
 void	Server::_acceptClient(int epoll_fd) {
 	struct epoll_event event;
@@ -104,25 +114,18 @@ bool	Server::_runCommand(std::string &buffer, std::size_t &buffer_pos) {
 	std::size_t pos = buffer.find("\r\n", buffer_pos);
 	if (pos == std::string::npos)
 		return false;
-	std::string message = buffer.substr(buffer_pos, pos - buffer_pos);
+	std::string message_str = buffer.substr(buffer_pos, pos - buffer_pos);
 	buffer_pos = pos + 2;
 
-	// this is equvalent to startswith, we check only the first index
-	// see: https://stackoverflow.com/questions/1878001/how-do-i-check-if-a-c-stdstring-starts-with-a-certain-string-and-convert-a
-	if (message.rfind("NICK ", 0) == 0) {
-		std::cout << "Command NICK received" << std::endl;
-	} else if (message.rfind("USER ", 0) == 0) {
-		std::cout << "Command USER received" << std::endl;
-	} else {
-		pos = message.find(" ");
-		if (pos != std::string::npos)
-			message = message.substr(0, pos);
-		std::cout << "ERROR: Unknown command: " << message << std::endl;
+	Message message;
+	if (!parseMessage(message_str, message)) {
+		std::cerr << "Error: syntax error in message" << std::endl;
+		return false;
 	}
+	std::cout << "Command received: ";
+	debug_message(message);
 	return true;
 }
-
-
 
 void	Server::_readMessages(struct epoll_event event) {
 	int client_socket = event.data.fd;
