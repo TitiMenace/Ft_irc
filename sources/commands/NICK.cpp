@@ -3,11 +3,11 @@
 
 void Server::nick(Message message, Client &client){
     std::cout << "Command NICK starting" << std::endl;
-    int argc = message.param.length();     
+    int argc = message.params.size();     
     if (argc < 1)
-        client.nick = ""; //send ERR_NONICKNAMEGIVEN (431) 
+        client.nickname = ""; //send ERR_NONICKNAMEGIVEN (431) 
     if (argc >= 1)
-        client.nick = message.param[0]; //actually need to check the thing
+        client.nickname = message.params[0]; //actually need to check the thing
 
     return;
 }
