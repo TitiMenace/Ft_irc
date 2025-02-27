@@ -32,7 +32,7 @@ void Server::user(Message message, Client &client){
 
     if (!client.nickname.empty()){
 		client.state = REGISTERED;//send RPL_WELCOME and stuff
-	dprintf(client.socket_fd, ":%s 001 %s :Welcome to the Internet Relay Network, %s!%s@%s\n", client.servername.c_str(), client.nickname.c_str(), client.nickname.c_str(), client.username.c_str(), client.hostname.c_str());
+	dprintf(client.socket_fd, "001 %s :Welcome to the WiZ insane chat of distortion of reality between worlds, %s!%s@%s\n", client.nickname.c_str(), client.nickname.c_str(), client.username.c_str(), client.hostname.c_str());
 	}
 	return;
 }
