@@ -34,9 +34,9 @@ class Server{
 
 		void nick(Message message, Client &client);
 		void user(Message message, Client &client);
+		void pass(Message message, Client &client);
 		// void join(Message message, Client &client);
 		void ping(Message message, Client &client);
-		void pong(Message message, Client &client);
 		void privmsg(Message message, Client &client);    
 	
 		class Aziz : public std::exception{

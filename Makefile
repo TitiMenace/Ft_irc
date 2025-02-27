@@ -5,7 +5,15 @@ CXX			= clang++
 CXXFLAGS	= -g3 -Wall -Wextra -Werror -std=c++98
 CPPFLAGS	= -Iincludes -MP -MMD
 
-FILES		= main parsingUtils Server Message commands/NICK commands/USER commands/PING_PONG commands/PRIVMSG
+FILES		= main \
+			parsingUtils \
+			Server \
+			Message \
+			commands/PASS \
+			commands/NICK \
+			commands/USER \
+			commands/PING_PONG \
+			commands/PRIVMSG \
 
 SRCS_DIR	= sources
 SRCS		= $(addprefix $(SRCS_DIR)/, $(addsuffix .cpp, $(FILES)))
