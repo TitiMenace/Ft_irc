@@ -7,5 +7,7 @@ struct Client{
 	std::string	buffer;
 	std::string	nickname;
 	std::string	username;
+	std::string	realname;
+
 };
 

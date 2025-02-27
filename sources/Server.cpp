@@ -126,6 +126,8 @@ bool	Server::_runCommand(Client client, std::string &buffer, std::size_t &buffer
 	debug_message(message);
 	if (message.command == "NICK")
 		nick(message, client);
+	if (message.command == "USER")
+		user(message, client);
 	return true;
 }
 
