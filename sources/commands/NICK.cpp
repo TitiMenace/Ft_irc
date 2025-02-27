@@ -37,8 +37,10 @@ void Server::nick(Message message, Client &client){
 	std::cout << "For Client (" << client.socket_fd << ")\n\n";
 	std::cout << "Nickname : "<< client.nickname << std::endl;
     
-    if (!client.username.empty())
+    if (!client.username.empty()){
         client.state = REGISTERED;//send RPL_WELCOME and stuff
+	dprintf(client.socket_fd, ":%s 001 %s :Welcome to the Internet Relay Network, %s!%s@%s\n", client.servername.c_str(), client.nickname.c_str(), client.nickname.c_str(), client.username.c_str(), client.hostname.c_str());
+    }
     return;
 }
 
