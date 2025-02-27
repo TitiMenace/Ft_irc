@@ -127,6 +127,8 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		nick(message, client);
 	if (message.command == "USER")
 		user(message, client);
+	if (message.command == "PING")
+		ping(message, client);
 	return true;
 }
 
