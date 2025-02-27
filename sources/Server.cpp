@@ -125,10 +125,12 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 	debug_message(message);
 	if (message.command == "NICK")
 		nick(message, client);
-	if (message.command == "USER")
+	else if (message.command == "USER")
 		user(message, client);
-	if (message.command == "PING")
+	else if (message.command == "PING")
 		ping(message, client);
+	else if (message.command == "PRIVMSG")
+		privmsg(message, client);
 	return true;
 }
 
