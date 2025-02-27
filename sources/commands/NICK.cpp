@@ -25,10 +25,12 @@ void Server::nick(Message message, Client &client){
     int argc = message.params.size();
     if (argc < 1){
         dprintf(client.socket_fd, "431 ERR_NONICKNAMEGIVEN\r\n");
+        return;
     }
     if (!validateNickname(message.params[0])){
         dprintf(client.socket_fd, "432 ERR_ERRONEUSNICKNAME\r\n");  
         std::cerr << "Nickname send by client is erroneous." << std::endl;
+        return;
     }
     client.nickname = message.params[0]; //actually need to check the thing
 
