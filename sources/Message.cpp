@@ -1,20 +1,5 @@
 #include "Message.hpp"
-
-
-bool matchChar(std::string &buffer, std::size_t &buffer_pos, char c) {
-	if (buffer_pos == buffer.length() || buffer[buffer_pos] != c)
-		return false;
-	buffer_pos++;
-	return true;
-}
-
-bool parseSpaces(std::string &buffer, std::size_t &buffer_pos) {
-	if (!matchChar(buffer, buffer_pos, ' '))
-		return false;
-	while (matchChar(buffer, buffer_pos, ' '))
-		;
-	return true;
-}
+#include "parsingUtils.hpp"
 
 // message ::= <command> *( SPACE <param> ) [ SPACE : <trailing> ] <\r\n>
 bool parseMessage(std::string &buffer, Message &out_message) {
@@ -55,10 +40,6 @@ bool parseCommand(std::string &buffer, std::size_t &buffer_pos, std::string &out
 	return true;
 }
 
-
-bool charInSet(char c, std::string set) {
-	return set.find(c) != std::string::npos;
-}
 
 // param ::= [^\r\n\0: ][^\r\n\0 ]*
 bool parseParam(std::string &buffer, std::size_t &buffer_pos, std::string &out_param) {
