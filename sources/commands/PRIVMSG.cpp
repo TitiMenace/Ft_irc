@@ -16,10 +16,7 @@ void Server::privmsg(Message message, Client &client) {
 		dprintf(client.socket_fd, ":localhost 412 %s :No text to send\r\n", nickname);
 		return;
 	}
-
-	// What should we do when there are more than two params?
-	
-	if (client.nickname.empty() || client.username.empty()) {
+	if (client.state != REGISTERED) {
 		dprintf(client.socket_fd, ":localhost 451 %s :You have not registered\r\n", client.nickname.c_str());
 		return;
 	}
@@ -31,5 +28,5 @@ void Server::privmsg(Message message, Client &client) {
 			dprintf(it->first, ":localhost PRIVMSG %s %s\r\n", target.c_str(), text.c_str());
 		}
 	}
-
 }
+
