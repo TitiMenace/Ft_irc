@@ -2,23 +2,39 @@
 #include "includes.hpp"
 #include "Server.hpp"
 
+#define USRLEN 16
+
 void Server::user(Message message, Client &client){
-    std::cout << "Command USER starting" << std::endl;
-    if (Client.username != "")
-	dprintf(Client.socket_fd,"462 ERR_ALREADYREGISTERED");
-    	return;
-	if (params.size() != 4)
-	{
-		dprintf(Client.socket_fd, "461 ERR_NEEDMOREPARAMS");
+	std::cout << "Command USER starting" << std::endl;
+	if (client.username != ""){
+		dprintf(client.socket_fd,"462 ERR_ALREADYREGISTERED");
 		return;
 	}
-	if (message.param[0].size() < 1 || message.param[3].size() < 1){
+	if (message.params.size() != 4)
+	{
+		dprintf(client.socket_fd, "461 ERR_NEEDMOREPARAMS");
+		return;
+	}
+	if (message.params[0].size() < 1 || message.params[3].size() < 1){
 		dprintf(2, "Error: User command: Missing arguments");
 		return;
 	}
-	Client.username = message.param[0];
-	Client.realname = message.param[3];
+	client.username = message.params[0].substr(0, USRLEN);	
+	if (message.params[1] != "0" && message.params[1] != "*")		
+		client.hostname = message.params[1]; 
+	if (message.params[2] != "0" && message.params[2] != "*")
+		client.servername = message.params[2];
+	client.username = message.params[0].substr(0, USRLEN);
+	client.realname = message.params[3];
 
-    return;
+	std::cout << "====USER COMMAND DONE======\n\n" << std::endl;
+	std::cout << "For Client (" << client.socket_fd << ")\n\n";
+	std::cout << "username : "<< client.username << std::endl;
+	std::cout << "hostname : "<< client.hostname << std::endl;
+	std::cout << "servername: "<< client.servername << std::endl;
+	std::cout << "realname: "<< client.realname << std::endl;
+	
+
+	return;
 }
 

@@ -5,7 +5,7 @@ CXX			= clang++
 CXXFLAGS	= -g3 -Wall -Wextra -Werror -std=c++98
 CPPFLAGS	= -Iincludes -MP -MMD
 
-FILES		= main Server Message commands/NICK
+FILES		= main Server Message commands/NICK commands/USER
 
 SRCS_DIR	= sources
 SRCS		= $(addprefix $(SRCS_DIR)/, $(addsuffix .cpp, $(FILES)))
