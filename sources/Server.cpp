@@ -110,6 +110,17 @@ void	Server::_acceptClient(int epoll_fd) {
 }
 
 bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffer_pos) {
+	typedef void (Server::*CommandFunction)(Message, Client &);
+	typedef std::map<std::string, CommandFunction>::value_type Command;
+	static const Command commandsArray[] = {
+		Command("PASS", &Server::pass),
+		Command("NICK", &Server::nick),
+		Command("USER", &Server::user),
+		Command("PING", &Server::ping),
+		Command("PRIVMSG", &Server::privmsg)
+	};
+	static const std::map<std::string, CommandFunction> commands(commandsArray, commandsArray + 5);
+
 	std::size_t pos = buffer.find("\r\n", buffer_pos);
 	if (pos == std::string::npos)
 		return false;
@@ -123,14 +134,11 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 	}
 	std::cout << "Command received: ";
 	debug_message(message);
-	if (message.command == "NICK")
-		nick(message, client);
-	else if (message.command == "USER")
-		user(message, client);
-	else if (message.command == "PING")
-		ping(message, client);
-	else if (message.command == "PRIVMSG")
-		privmsg(message, client);
+
+	if (commands.count(message.command)) {
+		CommandFunction commandFunc = commands.at(message.command);
+		(this->*(commandFunc))(message, client);
+	}
 	return true;
 }
 
