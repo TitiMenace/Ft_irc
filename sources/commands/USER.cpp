@@ -7,16 +7,12 @@
 void Server::user(Message message, Client &client){
 	std::cout << "Command USER starting" << std::endl;
 	if (client.username != ""){
-		dprintf(client.socket_fd,"462 ERR_ALREADYREGISTERED");
+		dprintf(client.socket_fd,"462 ERR_ALREADYREGISTERED\r\n");
 		return;
 	}
 	if (message.params.size() != 4)
 	{
-		dprintf(client.socket_fd, "461 ERR_NEEDMOREPARAMS");
-		return;
-	}
-	if (message.params[0].size() < 1 || message.params[3].size() < 1){
-		dprintf(2, "Error: User command: Missing arguments");
+		dprintf(client.socket_fd, "461 ERR_NEEDMOREPARAMS\r\n");
 		return;
 	}
 	client.username = message.params[0].substr(0, USRLEN);	

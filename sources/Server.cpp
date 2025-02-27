@@ -109,7 +109,7 @@ void	Server::_acceptClient(int epoll_fd) {
 	_users[client_socket] = client;
 }
 
-bool	Server::_runCommand(Client client, std::string &buffer, std::size_t &buffer_pos) {
+bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffer_pos) {
 	std::size_t pos = buffer.find("\r\n", buffer_pos);
 	if (pos == std::string::npos)
 		return false;
