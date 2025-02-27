@@ -4,12 +4,6 @@
 #include "Server.hpp"
 int main(int argc, char **argv)
 {
-    char hostname[256];
-    if (gethostname(hostname, sizeof(hostname)) == 0) {
-        printf("Hostname: %s\n", hostname);
-    } else {
-        perror("gethostname");
-    }
 	if (argc <= 2){
         std::cerr << "Not enough arguments" << std::endl << "./ircserv <port> <password>" << std::endl;
 		return 1;
