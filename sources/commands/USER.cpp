@@ -29,8 +29,10 @@ void Server::user(Message message, Client &client){
 	std::cout << "hostname : "<< client.hostname << std::endl;
 	std::cout << "servername: "<< client.servername << std::endl;
 	std::cout << "realname: "<< client.realname << std::endl;
-	
 
+    if (!client.nickname.empty()){
+		client.state = REGISTERED;//send RPL_WELCOME and stuff
+	}
 	return;
 }
 

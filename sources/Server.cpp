@@ -105,7 +105,7 @@ void	Server::_acceptClient(int epoll_fd) {
 	event.events = EPOLLIN; // | EPOLLOUT | EPOLLHUP | EPOLLRDHUP;
 	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_socket, &event);
 	//Add a client to the client map users
-	Client client = {client_socket, "", "", "", "", "", ""};
+	Client client = {client_socket, ANONYMOUS, "", "", "", "", "", ""};
 	_users[client_socket] = client;
 }
 
