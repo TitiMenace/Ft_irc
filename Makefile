@@ -8,6 +8,7 @@ CPPFLAGS	= -Iincludes -MP -MMD
 FILES		= main \
 			parsingUtils \
 			Server \
+			Channel \
 			Message \
 			commands/PASS \
 			commands/NICK \
@@ -15,6 +16,7 @@ FILES		= main \
 			commands/PING_PONG \
 			commands/PRIVMSG \
 			commands/JOIN \
+			
 
 SRCS_DIR	= sources
 SRCS		= $(addprefix $(SRCS_DIR)/, $(addsuffix .cpp, $(FILES)))

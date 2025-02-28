@@ -1,6 +1,7 @@
 #pragma once
 #include "includes.hpp"
 
+#include <map>
 #include "Client.hpp"
 enum ChannelMode {
 	NO_FLAG,
@@ -26,6 +27,6 @@ struct Channel{
     std::map<int, Client> list_invite;
     ChannelMode mode;
 	
-    Channel(std::string name, std::string topic = "", std::string pass = "", int size_limit = 0);
+    Channel(std::string name = "", std::string topic = "", std::string password = "", int size_limit = 0, ChannelMode mode = NO_FLAG);
 };
 
