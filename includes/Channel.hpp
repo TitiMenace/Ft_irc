@@ -18,6 +18,7 @@ enum ChannelMode {
 struct Channel{
 	std::string           name;
     std::string           topic;
+    std::string           password;
     int                   size_limit;
     std::map<int, Client> list_user;
     std::map<int, Client> list_operator;
