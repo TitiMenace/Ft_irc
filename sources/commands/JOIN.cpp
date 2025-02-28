@@ -120,6 +120,22 @@ void    RPLNAMREPLY(Client &client, Channel &channel){
 }
 
 
+// channel    =  ( "#" / "+" / ( "!" channelid ) / "&" ) chanstring
+//                 [ ":" chanstring ]
+bool parseChannel(std::string){
+    return true;
+}
+// chanstring =  %x01-07 / %x08-09 / %x0B-0C / %x0E-1F / %x21-2B
+// chanstring =/ %x2D-39 / %x3B-FF
+//                 ; any octet except NUL, BELL, CR, LF, " ", "," and ":"
+bool parseChanString(std::string){
+    return true;
+}
+// channelid  = 5( %x41-5A / digit )   ; 5( A-Z / 0-9 )
+bool parseChannelID(std::string){
+    return true;
+}
+
 void Server::join(Message message, Client &client){
     
     if (client.state != REGISTERED){
