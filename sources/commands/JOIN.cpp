@@ -1,32 +1,67 @@
 #include "Server.hpp"
 #include "Channel.hpp"
-// channel    =  ( "#" / "+" / ( "!" channelid ) / "&" ) chanstring
-//                 [ ":" chanstring ]
-bool parseChannel(std::string){
-    // length > 2
-    // string[0] # + & 
-    //  or !, if ! , check channelid after,
-    //  chanstring
-    //     puis optionellement ":chanstring"
-    return true;
-}
-
-
 // chanstring =  %x01-07 / %x08-09 / %x0B-0C / %x0E-1F / %x21-2B
 // chanstring =/ %x2D-39 / %x3B-FF
 //                 ; any octet except NUL, BELL, CR, LF, " ", "," and ":"
-bool parseChanString(std::string){
-    // no size limit
-    // ischarinset(NUL, BELL, CR, LF, " ", "," and ":")
+bool parseChanString(std::string &buffer, std::size_t &buffer_pos) {
+    std::size_t i = buffer_pos;
+    while (i < buffer.length()) {
+        unsigned char ch = buffer[i];
+        // Invalid characters: NUL (0x00), BELL (0x07), CR (0x0D), LF (0x0A), " " (0x20), "," (0x2C), ":" (0x3A)
+        if (ch == 0x00 || ch == 0x07 || ch == 0x0A || ch == 0x0D || ch == 0x20 || ch == 0x2C || ch == 0x3A) {
+            break;
+        }
+        i++;
+    }
+    if (i == buffer_pos) {
+        return false;  // No valid characters found
+    }
+    buffer_pos = i;
     return true;
 }
 
+bool parseChannelID(std::string &buffer, std::size_t &buffer_pos) {
+    std::size_t i = buffer_pos;
 
-// channelid  = 5( %x41-5A / digit )   ; 5( A-Z / 0-9 )
-bool parseChannelID(std::string ){
-    // lenght < 0 > 5
-    //if 
-    // alpha num
+    for (int count = 0; count < 5; count++) {
+        if (i >= buffer.length() || !(std::isdigit(buffer[i]) || (buffer[i] >= 'A' && buffer[i] <= 'Z'))) {
+            return false; 
+        }
+        i++;
+    }
+    buffer_pos = i;
+    return true;
+}
+
+// channel    =  ( "#" / "+" / ( "!" channelid ) / "&" ) chanstring
+//                 [ ":" chanstring ]
+bool parseChannel(std::string &buffer) {
+    std::size_t buffer_pos = 0;
+    if (buffer.length() <= 2 || buffer_pos >= buffer.length()) {
+        return false;
+    }
+    char firstChar = buffer[buffer_pos];
+    std::cout << firstChar << std::endl;
+    if (firstChar != '#' && firstChar != '+' && firstChar != '&' && firstChar != '!') {
+        return false;
+    }
+    buffer_pos++;
+    if (firstChar == '!') {
+        if (!parseChannelID(buffer, buffer_pos)) {
+            return false;
+        }
+    }
+    if (!parseChanString(buffer, buffer_pos)) {
+        return false;
+    }
+    if (buffer_pos < buffer.length() && buffer[buffer_pos] == ':') {
+        buffer_pos++;
+        if (!parseChanString(buffer, buffer_pos)) {
+            return false;
+        }
+    }
+    if (buffer_pos != buffer.length())
+        return false;
     return true;
 }
 
@@ -83,6 +118,7 @@ void    RPLNAMREPLY(Client &client, Channel &channel){
     dprintf(client.socket_fd, "%s", output.c_str());
 	return;
 }
+
 
 void Server::join(Message message, Client &client){
     
