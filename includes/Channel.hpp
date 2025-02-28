@@ -3,6 +3,7 @@
 
 #include "Client.hpp"
 enum ChannelMode {
+	NO_FLAG,
 	INVITE_ONLY     = 1 << 0,   // 00001
 	TOPIC_ONLY_OP   = 1 << 1,   // 00010
 	KEY_PROTECTED   = 1 << 2,   // 00100
@@ -24,5 +25,7 @@ struct Channel{
     std::map<int, Client> list_operator;
     std::map<int, Client> list_invite;
     ChannelMode mode;
+	
+    Channel(std::string name, std::string topic = "", std::string pass = "", int size_limit = 0);
 };
 

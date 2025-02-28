@@ -1,5 +1,5 @@
 #include "Server.hpp"
-
+#include <Channel.hpp>
 // channel    =  ( "#" / "+" / ( "!" channelid ) / "&" ) chanstring
 //                 [ ":" chanstring ]
 bool parseChannel(std::string){
@@ -25,9 +25,22 @@ void Server::join(Message message, Client &client){
 		return;//notenoughparams to send
     if (!parseChannel(message.params[0]))
         return;
-    std::string channel_name = message.params[0] 
     
-    // if (_channel_list.find(message.params[0]) =! it.end)
+
+    std::string channel_name = message.params[0];
+    std::map<std::string, Channel>::iterator it= _channel_list.find(channel_name);
+    if (it != _channel_list.end()){
+	    it->list_user[client.socket_fd] = client;
+    }
+    else {
+    	_channel_list[channel_name] = Channel(channel_name, "topic", "password", 100);
+	    _channel_list[channel_name].list_user[client.socket_fd] = client;
+	    _channel_list[channel_name].list_operator[client.socket_fd] = client;
+    }
+
+    
+	
+	// if (_channel_list.find(message.params[0]) =! it.end)
     // Channel to_join = _channel_list[message.params[0]];
 
 
