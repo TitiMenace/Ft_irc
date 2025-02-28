@@ -1,19 +1,32 @@
 #include "Server.hpp"
 #include "Channel.hpp"
-
 // channel    =  ( "#" / "+" / ( "!" channelid ) / "&" ) chanstring
 //                 [ ":" chanstring ]
 bool parseChannel(std::string){
+    // length > 2
+    // string[0] # + & 
+    //  or !, if ! , check channelid after,
+    //  chanstring
+    //     puis optionellement ":chanstring"
     return true;
 }
+
+
 // chanstring =  %x01-07 / %x08-09 / %x0B-0C / %x0E-1F / %x21-2B
 // chanstring =/ %x2D-39 / %x3B-FF
 //                 ; any octet except NUL, BELL, CR, LF, " ", "," and ":"
 bool parseChanString(std::string){
+    // no size limit
+    // ischarinset(NUL, BELL, CR, LF, " ", "," and ":")
     return true;
 }
+
+
 // channelid  = 5( %x41-5A / digit )   ; 5( A-Z / 0-9 )
-bool parseChannelID(std::string){
+bool parseChannelID(std::string ){
+    // lenght < 0 > 5
+    if 
+    // alpha num
     return true;
 }
 
