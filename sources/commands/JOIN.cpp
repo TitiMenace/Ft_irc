@@ -1,5 +1,6 @@
 #include "Server.hpp"
-#include <Channel.hpp>
+#include "Channel.hpp"
+
 // channel    =  ( "#" / "+" / ( "!" channelid ) / "&" ) chanstring
 //                 [ ":" chanstring ]
 bool parseChannel(std::string){
@@ -18,24 +19,27 @@ bool parseChannelID(std::string){
 
 void Server::join(Message message, Client &client){
     
-    if (client.state != REGISTERED)
+    if (client.state != REGISTERED){
         return;//not registered error to send
-        std::cout << message.command <<" command recieved from " << client.nickname << std::endl;
-    if (message.params.empty())
-		return;//notenoughparams to send
-    if (!parseChannel(message.params[0]))
+    }
+    std::cout << message.command <<" command recieved from " << client.nickname << std::endl;
+    if (message.params.empty()){
+	return;//notenoughparams to send
+    }
+    if (!parseChannel(message.params[0])){
         return;
+    }
     
 
     std::string channel_name = message.params[0];
     std::map<std::string, Channel>::iterator it= _channel_list.find(channel_name);
     if (it != _channel_list.end()){
-	    it->list_user[client.socket_fd] = client;
+	    it->second.list_user[client.socket_fd] = client;
     }
     else {
     	_channel_list[channel_name] = Channel(channel_name, "topic", "password", 100);
-	    _channel_list[channel_name].list_user[client.socket_fd] = client;
-	    _channel_list[channel_name].list_operator[client.socket_fd] = client;
+	_channel_list[channel_name].list_user[client.socket_fd] = client;
+	_channel_list[channel_name].list_operator[client.socket_fd] = client;
     }
 
     
