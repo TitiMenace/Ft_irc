@@ -6,8 +6,8 @@
 #include "includes.hpp"
 #include <map>
 
-
 #include "Message.hpp"
+#include "Channel.hpp"
 #include "Client.hpp"
 class Server{
 	
@@ -17,6 +17,8 @@ class Server{
 		int	_master_fd;
 		std::string	_password;
 		std::map<int, Client> _users;
+		std::map<std::string, Channel> _channel_list;
+		
 		void	_acceptClient(int epoll_fd);
 		bool	_runCommand(Client &client, std::string &buffer, std::size_t &buffer_pos);
 		void	_readMessages(struct epoll_event event);
