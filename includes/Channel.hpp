@@ -16,8 +16,9 @@ enum ChannelMode {
 // map<client_socket, Client> list_invite
 // enum mode
 struct Channel{
-	std::string name;
-    std::string topic;
+	std::string           name;
+    std::string           topic;
+    int                   size_limit;
     std::map<int, Client> list_user;
     std::map<int, Client> list_operator;
     std::map<int, Client> list_invite;

@@ -139,6 +139,8 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		CommandFunction commandFunc = commands.at(message.command);
 		(this->*(commandFunc))(message, client);
 	}
+	else if (message.command == "JOIN")
+		join(message, client);
 	return true;
 }
 

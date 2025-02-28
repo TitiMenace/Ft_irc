@@ -14,6 +14,7 @@ FILES		= main \
 			commands/USER \
 			commands/PING_PONG \
 			commands/PRIVMSG \
+			commands/JOIN \
 
 SRCS_DIR	= sources
 SRCS		= $(addprefix $(SRCS_DIR)/, $(addsuffix .cpp, $(FILES)))
