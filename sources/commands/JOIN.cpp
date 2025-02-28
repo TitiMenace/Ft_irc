@@ -25,7 +25,7 @@ bool parseChanString(std::string){
 // channelid  = 5( %x41-5A / digit )   ; 5( A-Z / 0-9 )
 bool parseChannelID(std::string ){
     // lenght < 0 > 5
-    if 
+    //if 
     // alpha num
     return true;
 }
