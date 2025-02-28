@@ -21,7 +21,7 @@ struct Channel{
 	std::string           name;
     std::string           topic;
     std::string           password;
-    int                   size_limit;
+    size_t                   size_limit;
     std::map<int, Client> list_user;
     std::map<int, Client> list_operator;
     std::map<int, Client> list_invite;
