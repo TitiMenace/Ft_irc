@@ -1,9 +1,9 @@
 #pragma once
 #include "includes.hpp"
 enum UserState {
-	ANONYMOUS,
-	ALLOWED,
-	REGISTERED
+	ANONYMOUS	= 1 << 0,
+	ALLOWED		= 1 << 1,
+	REGISTERED	= 1 << 2
 };
 
 struct Client{

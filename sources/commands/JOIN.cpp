@@ -122,14 +122,19 @@ void    RPLNAMREPLY(Client &client, Channel &channel){
 
 void Server::join(Message message, Client &client){
     
-    if (client.state != REGISTERED){
-        return;//not registered error to send
+    if (!(client.state & ALLOWED) && !(client.state & REGISTERED)) {
+        std::cerr << "NOT ALLOWED OR NOT REGISTERED" << std::endl;
+        return;
     }
     
     if (message.params.empty()){
+        std::cout << "---empty param issue ----- \n";
+        
         return;//notenoughparams to send
+
     }
     if (!parseChannel(message.params[0])){
+        std::cout << "---parsechannel issue ----- \n";
         return;
     }
     std::cout << message.command <<" command recieved from " << client.nickname << std::endl;

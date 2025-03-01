@@ -22,6 +22,12 @@ bool validateNickname(const std::string& nickname) {
 
 void Server::nick(Message message, Client &client){
     std::cout << "Command NICK starting" << std::endl;
+   
+    if (!(client.state & ALLOWED) && !(client.state & REGISTERED)) {
+        std::cerr << "NOT ALLOWED OR NOT REGISTERED" << std::endl;
+        return;
+    }
+   
     if (message.params.size() < 1){
         dprintf(client.socket_fd, "431 ERR_NONICKNAMEGIVEN\r\n");
         return;

@@ -117,7 +117,7 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		Command("NICK", &Server::nick),
 		Command("USER", &Server::user),
 		Command("PING", &Server::ping),
-		Command("JOIN", &Server::ping),
+		Command("JOIN", &Server::join),
 		Command("PRIVMSG", &Server::privmsg)
 	};
 	static const std::map<std::string, CommandFunction> commands(commandsArray, commandsArray + 5);
