@@ -31,9 +31,16 @@ void Server::nick(Message message, Client &client){
         std::cerr << "Nickname send by client is erroneous." << std::endl;
         return;
     }
-    client.nickname = message.params[0]; //actually need to check the thing
 
-	std::cout << "====NICK COMMAND DONE======\n\n" << std::endl;
+    for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); ++it) {
+        if (it->second.nickname == message.params[0]) {
+            dprintf(client.socket_fd, "433 ERR_NICKNAMEINUSE %s :Nickname is already in use.\r\n", message.params[0].c_str());
+            std::cerr << "Nickname already in use: " << message.params[0] << std::endl;
+            return;
+        }
+    }
+    
+    std::cout << "====NICK COMMAND DONE======\n\n" << std::endl;
 	std::cout << "For Client (" << client.socket_fd << ")\n\n";
 	std::cout << "Nickname : "<< client.nickname << std::endl;
 
