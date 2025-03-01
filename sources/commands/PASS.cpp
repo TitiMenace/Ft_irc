@@ -20,6 +20,7 @@ void Server::pass(Message message, Client &client){
     return;
 }
 
+
 // ERR_NEEDMOREPARAMS (461)
 // ERR_ALREADYREGISTERED (462) 
 // ERR_PASSWDMISMATCH (464) 

@@ -10,24 +10,24 @@ Current objective:
 [x] memmove the rest to the front of the buffer
 
 2. Authentification
-- CAP LS: either return nothing (unsupported) or the corresponding RPL
-- JOIN: return corresponding RPL, no matter the channel
-- PASS: return corresponding RPL, no matter the password
-- NICK: return corresponding RPL, no matter the nickname
-- USER: return corresponding RPL, no matter the user data
+[x] CAP LS: either return nothing (unsupported) or the corresponding RPL
+[x] JOIN: return corresponding RPL, no matter the channel
+[x] PASS: return corresponding RPL, no matter the password
+[x] NICK: return corresponding RPL, no matter the nickname
+[x] USER: return corresponding RPL, no matter the user data 
 
 3. Messaging
 - When a message is sent, send (blocking) it to all other users
 
 Then implement:
-- Map<command, function> (command names to function pointers)
+[x] Map<command, function> (command names to function pointers)
 -> void (*func)(Message *message)
-- NICK+USER: set a bool for each on the user, so that they can send message only once registered
-- CAP LS: grammar check (?)
-- JOIN: grammar check (valid channel names)
+[x] NICK+USER: set a bool for each on the user, so that they can send message only once registered
+[x] CAP LS: grammar check (?)
+[x] JOIN: grammar check (valid channel names)
 - PASS: check server password
-- NICK: grammar check (valid nickname)
-- NICK: store the nickname and transmit it in messages
+[x] NICK: grammar check (valid nickname)
+[x] NICK: store the nickname and transmit it in messages
 - NICK: check that the nickname is unique amongst users
 
 Style:
