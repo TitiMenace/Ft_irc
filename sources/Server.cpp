@@ -117,6 +117,7 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		Command("NICK", &Server::nick),
 		Command("USER", &Server::user),
 		Command("PING", &Server::ping),
+		Command("JOIN", &Server::ping),
 		Command("PRIVMSG", &Server::privmsg)
 	};
 	static const std::map<std::string, CommandFunction> commands(commandsArray, commandsArray + 5);
@@ -139,8 +140,6 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		CommandFunction commandFunc = commands.at(message.command);
 		(this->*(commandFunc))(message, client);
 	}
-	else if (message.command == "JOIN")
-		join(message, client);
 	return true;
 }
 
