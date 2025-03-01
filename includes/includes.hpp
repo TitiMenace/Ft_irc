@@ -6,7 +6,7 @@
 #include <cstring> //memset
 #include <exception>
 #include <stdio.h> //perror
-
+#include <sstream>
 
 #include <netdb.h> 
 #include <netinet/in.h> 
