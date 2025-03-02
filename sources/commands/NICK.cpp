@@ -52,6 +52,7 @@ void Server::nick(Message message, Client &client){
 	std::cout << "For Client (" << client.socket_fd << ")\n\n";
 	std::cout << "Nickname : "<< client.nickname << std::endl;
 
+    client.nickname = message.params[0];
     if (!client.username.empty()){
         client.state = REGISTERED;//send RPL_WELCOME and stuff
 	//RPL 001

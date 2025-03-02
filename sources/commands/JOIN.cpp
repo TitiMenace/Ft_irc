@@ -122,6 +122,11 @@ void    RPLNAMREPLY(Client &client, Channel &channel){
 
 void Server::join(Message message, Client &client){
     
+    std::cerr << "param 1 " << message.params[0] << std::endl;
+    std::cerr << "param 2 " << message.params[1] << std::endl;
+    std::cerr << "param 3 " << message.params[2] << std::endl;
+    std::cerr << "param 4 " << message.params[3] << std::endl;
+   
     if (!(client.state & ALLOWED) && !(client.state & REGISTERED)) {
         std::cerr << "NOT ALLOWED OR NOT REGISTERED" << std::endl;
         return;
@@ -132,7 +137,7 @@ void Server::join(Message message, Client &client){
         
         return;//notenoughparams to send
 
-    }
+    }z
     if (!parseChannel(message.params[0])){
         std::cout << "---parsechannel issue ----- \n";
         return;
@@ -145,8 +150,7 @@ void Server::join(Message message, Client &client){
     
     if (it == _channel_list.end()) {
     	
-
-	_channel_list[channel_name] = Channel(channel_name, "topic", "password", 2);
+	_channel_list[channel_name] = Channel(channel_name, "topic", "password", 1);
 	_channel_list[channel_name].list_user[client.socket_fd] = client;
 	_channel_list[channel_name].list_operator[client.socket_fd] = client;
 	dprintf(2, "Channel : %s a bien ete cree et %s est bien user et %s est bien operateur\r\n", _channel_list[channel_name].name.c_str(), _channel_list[channel_name].list_user[client.socket_fd].nickname.c_str(), _channel_list[channel_name].list_operator[client.socket_fd].nickname.c_str());
@@ -157,10 +161,16 @@ void Server::join(Message message, Client &client){
     }
 
     else if (_channel_list[channel_name].list_user.size() >= _channel_list[channel_name].size_limit){
-    		dprintf(2, "User limit for channel %s has been reached\r\n", channel_name.c_str());
+
+        ERR_CHANNELISFULL(client, _channel_list[channel_name]);
+        dprintf(2, "User limit for channel %s has been reached\r\n", channel_name.c_str());
 	    return;
     }
-	
+    else if (_channel_list[channel_name].mode & INVITE_ONLY){ //&& check_invite_list(client)){
+        ERR_INVITEONLYCHAN(client, _channel_list[channel_name]);
+        std::cerr << channel_name << " is an invite only channel" << client.nickname << " can't join it" << std::endl; 
+        return; 
+    }
 	    it->second.list_user[client.socket_fd] = client;
 	    dprintf(2, "%s : est bien arrive dans le channel : %s\r\n", client.nickname.c_str(), _channel_list[channel_name].name.c_str());
         joinMessage(client, channel_name);
