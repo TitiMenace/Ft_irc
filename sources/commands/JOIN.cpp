@@ -1,5 +1,6 @@
 #include "Server.hpp"
 #include "Channel.hpp"
+#include <vector>
 // chanstring =  %x01-07 / %x08-09 / %x0B-0C / %x0E-1F / %x21-2B
 // chanstring =/ %x2D-39 / %x3B-FF
 //                 ; any octet except NUL, BELL, CR, LF, " ", "," and ":"
@@ -35,8 +36,7 @@ bool parseChannelID(std::string &buffer, std::size_t &buffer_pos) {
 
 // channel    =  ( "#" / "+" / ( "!" channelid ) / "&" ) chanstring
 //                 [ ":" chanstring ]
-bool parseChannel(std::string &buffer) {
-    std::size_t buffer_pos = 0;
+bool parseChannel(std::string &buffer, std::size_t &buffer_pos) {
     if (buffer.length() <= 2 || buffer_pos >= buffer.length()) {
         return false;
     }
@@ -60,8 +60,49 @@ bool parseChannel(std::string &buffer) {
             return false;
         }
     }
-    if (buffer_pos != buffer.length())
+    if (buffer_pos != buffer.length() && buffer[buffer_pos] != ',')
         return false;
+    return true;
+}
+
+bool parseChannelList(std::string buffer, std::vector<std::string> &out_list) {
+    std::vector<std::string> channels_list;
+    std::size_t buffer_pos = 0;
+    
+    while (buffer_pos < buffer.length()) {
+        std::size_t start_pos = buffer_pos;
+        if (!parseChannel(buffer, buffer_pos)) {
+            return false;
+        }
+        channels_list.push_back(buffer.substr(start_pos, buffer_pos - start_pos));
+        
+        if (buffer_pos < buffer.length() && !matchChar(buffer, buffer_pos, ',')) {
+            return false;
+        }
+    }
+    
+    out_list = channels_list;
+    return true;
+}
+
+
+bool parseKeyList(std::string buffer, std::vector<std::string> &out_list) {
+    std::vector<std::string> keys_list;
+    std::size_t buffer_pos = 0;
+    
+    while (buffer_pos < buffer.length()) {
+        std::size_t start_pos = buffer_pos;
+        if (!parseChanString(buffer, buffer_pos)) {
+            return false;
+        }
+        keys_list.push_back(buffer.substr(start_pos, buffer_pos - start_pos));
+        
+        if (buffer_pos < buffer.length() && !matchChar(buffer, buffer_pos, ',')) {
+            return false;
+        }
+    }
+    
+    out_list = keys_list;
     return true;
 }
 
@@ -122,15 +163,15 @@ void    RPLNAMREPLY(Client &client, Channel &channel){
 
 void Server::join(Message message, Client &client){
     
-    std::cerr << "param 1 " << message.params[0] << std::endl;
-    std::cerr << "param 2 " << message.params[1] << std::endl;
-    std::cerr << "param 3 " << message.params[2] << std::endl;
-    std::cerr << "param 4 " << message.params[3] << std::endl;
+    // std::cerr << "param 1 " << message.params[0] << std::endl;
+    // std::cerr << "param 2 " << message.params[1] << std::endl;
+    // std::cerr << "param 3 " << message.params[2] << std::endl;
+    // std::cerr << "param 4 " << message.params[3] << std::endl;
    
-    if (!(client.state & ALLOWED) && !(client.state & REGISTERED)) {
-        std::cerr << "NOT ALLOWED OR NOT REGISTERED" << std::endl;
-        return;
-    }
+    // if (!(client.state & ALLOWED) && !(client.state & REGISTERED)) {
+    //     std::cerr << "NOT ALLOWED OR NOT REGISTERED" << std::endl;
+    //     return;
+    // }
     
     if (message.params.empty()){
         std::cout << "---empty param issue ----- \n";
@@ -138,14 +179,33 @@ void Server::join(Message message, Client &client){
         return;//notenoughparams to send
 
     }
-    if (!parseChannel(message.params[0])){
+    std::vector<std::string> channels_list;
+    if (!parseChannelList(message.params[0], channels_list)){
         std::cout << "---parsechannel issue ----- \n";
         return;
     }
+    std::vector<std::string> keys_list;
+    if (message.params.size() >= 2){
+        std::cout << message.params[1];
+        //parse password listchannel
+        if (!parseKeyList(message.params[1], keys_list)){
+            std::cout << "---parsekeys issue ----- \n";
+            return;
+        }
+    }
     std::cout << message.command <<" command recieved from " << client.nickname << std::endl;
     
+    std::cout << "Parsed channels:" << std::endl;
+    for (std::vector<std::string>::iterator it = channels_list.begin(); it != channels_list.end(); ++it) {
+        std::cout << *it << std::endl;
+    }
 
-    std::string channel_name = message.params[0];
+    std::cout << "Parsed keys:" << std::endl;
+    for (std::vector<std::string>::iterator it = keys_list.begin(); it != keys_list.end(); ++it) {
+        std::cout << *it << std::endl;
+    }
+
+    std::string channel_name = channels_list[0];
     std::map<std::string, Channel>::iterator it= _channel_list.find(channel_name);
     
     if (it == _channel_list.end()) {
