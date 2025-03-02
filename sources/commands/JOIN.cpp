@@ -137,7 +137,7 @@ void Server::join(Message message, Client &client){
         
         return;//notenoughparams to send
 
-    }z
+    }
     if (!parseChannel(message.params[0])){
         std::cout << "---parsechannel issue ----- \n";
         return;

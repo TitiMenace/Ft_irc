@@ -25,7 +25,7 @@ struct Channel{
     std::map<int, Client> list_user;
     std::map<int, Client> list_operator;
     std::map<int, Client> list_invite;
-    ChannelMode mode;
+    int mode;
 	
     Channel(std::string name = "", std::string topic = "", std::string password = "", int size_limit = 0, ChannelMode mode = NO_FLAG);
 };
@@ -33,4 +33,5 @@ struct Channel{
 void    ERR_CHANNELISFULL(Client &client, Channel &channel);
 void    ERR_INVITEONLYCHAN(Client &client, Channel &channel);
 void    ERR_BADCHANNELKEY(Client &client, Channel &channel);
+void    ERR_UMODEUNKNOWNFLAG(Client &client);
 

@@ -17,6 +17,7 @@ FILES		= main \
 			commands/PRIVMSG \
 			commands/JOIN \
 			commands/MODE \
+			commands/ERR_MSG
 			
 
 SRCS_DIR	= sources

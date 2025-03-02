@@ -118,7 +118,6 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		Command("USER", &Server::user),
 		Command("PING", &Server::ping),
 		Command("JOIN", &Server::join),
-	//these down there dont work
 		Command("MODE", &Server::mode),
 		Command("PRIVMSG", &Server::privmsg)
 	};
@@ -136,11 +135,23 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		return false;
 	}
 	std::cout << "Command received: "<< commands.count(message.command) << " ";
+	
+	std::cout << "on est fou -1 " << std::endl;
+
 	debug_message(message);
+	std::cout << "on est fou 0" << std::endl;
+	
+	
+
 
 	if (commands.count(message.command)) {
+		std::cout << "on est fou 1 " << std::endl;
 		CommandFunction commandFunc = commands.at(message.command);
+		std::cout << "on est fou 2 "<< client.nickname << std::endl;
+
 		(this->*(commandFunc))(message, client);
+		std::cout << "on est fou 3 " << std::endl;
+
 	}
 	return true;
 }

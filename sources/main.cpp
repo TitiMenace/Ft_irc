@@ -2,6 +2,7 @@
 #include "includes.hpp"
 #include <stdlib.h> //fuckyou atoi
 #include "Server.hpp"
+
 int main(int argc, char **argv)
 {
 	if (argc <= 2){

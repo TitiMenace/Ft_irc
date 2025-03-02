@@ -53,3 +53,17 @@ void    ERR_BADCHANNELKEY(Client &client, Channel &channel){
     dprintf(client.socket_fd, "%s", output.c_str());
 	return;
 }
+
+void    ERR_UMODEUNKNOWNFLAG(Client &client){
+	std::stringstream	soutput;
+    std::string         output;
+
+	soutput << "501";
+	soutput << " " << client.nickname;
+	soutput << " :" << "Unknown MODE flag";
+	soutput << "\r\n";
+    output = soutput.str();
+
+    dprintf(client.socket_fd, "%s", output.c_str());
+	return;
+}
