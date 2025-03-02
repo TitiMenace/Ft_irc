@@ -66,7 +66,7 @@ bool parseChannel(std::string &buffer, std::size_t &buffer_pos) {
 }
 
 bool parseChannelList(std::string buffer, std::vector<std::string> &out_list) {
-    std::vector<std::string> channels_list;
+    std::vector<std::string> params_channels_list;
     std::size_t buffer_pos = 0;
     
     while (buffer_pos < buffer.length()) {
@@ -74,14 +74,14 @@ bool parseChannelList(std::string buffer, std::vector<std::string> &out_list) {
         if (!parseChannel(buffer, buffer_pos)) {
             return false;
         }
-        channels_list.push_back(buffer.substr(start_pos, buffer_pos - start_pos));
+        params_channels_list.push_back(buffer.substr(start_pos, buffer_pos - start_pos));
         
         if (buffer_pos < buffer.length() && !matchChar(buffer, buffer_pos, ',')) {
             return false;
         }
     }
     
-    out_list = channels_list;
+    out_list = params_channels_list;
     return true;
 }
 
@@ -175,12 +175,12 @@ void Server::join(Message message, Client &client){
     
     if (message.params.empty()){
         std::cout << "---empty param issue ----- \n";
-        
+
         return;//notenoughparams to send
 
     }
-    std::vector<std::string> channels_list;
-    if (!parseChannelList(message.params[0], channels_list)){
+    std::vector<std::string> params_channels_list;
+    if (!parseChannelList(message.params[0], params_channels_list)){
         std::cout << "---parsechannel issue ----- \n";
         return;
     }
@@ -196,7 +196,7 @@ void Server::join(Message message, Client &client){
     std::cout << message.command <<" command recieved from " << client.nickname << std::endl;
     
     std::cout << "Parsed channels:" << std::endl;
-    for (std::vector<std::string>::iterator it = channels_list.begin(); it != channels_list.end(); ++it) {
+    for (std::vector<std::string>::iterator it = params_channels_list.begin(); it != params_channels_list.end(); ++it) {
         std::cout << *it << std::endl;
     }
 
@@ -204,39 +204,42 @@ void Server::join(Message message, Client &client){
     for (std::vector<std::string>::iterator it = keys_list.begin(); it != keys_list.end(); ++it) {
         std::cout << *it << std::endl;
     }
+    //make this into a loop for each of the parsed channels
+    for(std::size_t i = 0; i < params_channels_list.size(); i++)
+    {
+        std::cout << "number of parsed channels : " << params_channels_list.size() << std::endl;
+        std::string channel_name = params_channels_list[i];
+        std::map<std::string, Channel>::iterator it= _channel_list.find(channel_name);
+        
+        if (it == _channel_list.end()) {
+            
+        _channel_list[channel_name] = Channel(channel_name, "topic", "password", 1);
+        _channel_list[channel_name].list_user[client.socket_fd] = client;
+        _channel_list[channel_name].list_operator[client.socket_fd] = client;
+        dprintf(2, "Channel : %s a bien ete cree et %s est bien user et %s est bien operateur\r\n", _channel_list[channel_name].name.c_str(), _channel_list[channel_name].list_user[client.socket_fd].nickname.c_str(), _channel_list[channel_name].list_operator[client.socket_fd].nickname.c_str());
+            joinMessage(client, channel_name);
+            RPLNAMREPLY(client, _channel_list[channel_name]);
+            RPL_ENDOFNAMES(client, _channel_list[channel_name]);
+            continue;
+        }
+        // /join #canel1,#canel2,#acan3
+        else if (_channel_list[channel_name].list_user.size() >= _channel_list[channel_name].size_limit){
 
-    std::string channel_name = channels_list[0];
-    std::map<std::string, Channel>::iterator it= _channel_list.find(channel_name);
-    
-    if (it == _channel_list.end()) {
-    	
-	_channel_list[channel_name] = Channel(channel_name, "topic", "password", 1);
-	_channel_list[channel_name].list_user[client.socket_fd] = client;
-	_channel_list[channel_name].list_operator[client.socket_fd] = client;
-	dprintf(2, "Channel : %s a bien ete cree et %s est bien user et %s est bien operateur\r\n", _channel_list[channel_name].name.c_str(), _channel_list[channel_name].list_user[client.socket_fd].nickname.c_str(), _channel_list[channel_name].list_operator[client.socket_fd].nickname.c_str());
-        joinMessage(client, channel_name);
-        RPLNAMREPLY(client, _channel_list[channel_name]);
-        RPL_ENDOFNAMES(client, _channel_list[channel_name]);
-        return;
+            ERR_CHANNELISFULL(client, _channel_list[channel_name]);
+            dprintf(2, "User limit for channel %s has been reached\r\n", channel_name.c_str());
+            continue;
+        }
+        else if (_channel_list[channel_name].mode & INVITE_ONLY){ //&& check_invite_list(client)){
+            ERR_INVITEONLYCHAN(client, _channel_list[channel_name]);
+            std::cerr << channel_name << " is an invite only channel" << client.nickname << " can't join it" << std::endl; 
+            continue;
+        }
+            it->second.list_user[client.socket_fd] = client;
+            dprintf(2, "%s : est bien arrive dans le channel : %s\r\n", client.nickname.c_str(), _channel_list[channel_name].name.c_str());
+            joinMessage(client, channel_name);
+            RPLNAMREPLY(client, _channel_list[channel_name]);
+            RPL_ENDOFNAMES(client, _channel_list[channel_name]);
     }
-
-    else if (_channel_list[channel_name].list_user.size() >= _channel_list[channel_name].size_limit){
-
-        ERR_CHANNELISFULL(client, _channel_list[channel_name]);
-        dprintf(2, "User limit for channel %s has been reached\r\n", channel_name.c_str());
-	    return;
-    }
-    else if (_channel_list[channel_name].mode & INVITE_ONLY){ //&& check_invite_list(client)){
-        ERR_INVITEONLYCHAN(client, _channel_list[channel_name]);
-        std::cerr << channel_name << " is an invite only channel" << client.nickname << " can't join it" << std::endl; 
-        return; 
-    }
-	    it->second.list_user[client.socket_fd] = client;
-	    dprintf(2, "%s : est bien arrive dans le channel : %s\r\n", client.nickname.c_str(), _channel_list[channel_name].name.c_str());
-        joinMessage(client, channel_name);
-        RPLNAMREPLY(client, _channel_list[channel_name]);
-        RPL_ENDOFNAMES(client, _channel_list[channel_name]);
-
 	// if (_channel_list.find(message.params[0]) =! it.end)
     // Channel to_join = _channel_list[message.params[0]];
 
