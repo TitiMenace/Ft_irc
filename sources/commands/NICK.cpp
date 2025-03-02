@@ -45,7 +45,9 @@ void Server::nick(Message message, Client &client){
             return;
         }
     }
-    
+
+    client.nickname = message.params[0];
+
     std::cout << "====NICK COMMAND DONE======\n\n" << std::endl;
 	std::cout << "For Client (" << client.socket_fd << ")\n\n";
 	std::cout << "Nickname : "<< client.nickname << std::endl;

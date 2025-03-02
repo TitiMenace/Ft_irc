@@ -16,6 +16,7 @@ FILES		= main \
 			commands/PING_PONG \
 			commands/PRIVMSG \
 			commands/JOIN \
+			commands/MODE \
 			
 
 SRCS_DIR	= sources

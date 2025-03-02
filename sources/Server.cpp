@@ -118,9 +118,11 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		Command("USER", &Server::user),
 		Command("PING", &Server::ping),
 		Command("JOIN", &Server::join),
+	//these down there dont work
+		Command("MODE", &Server::mode),
 		Command("PRIVMSG", &Server::privmsg)
 	};
-	static const std::map<std::string, CommandFunction> commands(commandsArray, commandsArray + 5);
+	static const std::map<std::string, CommandFunction> commands(commandsArray, commandsArray + 7);
 
 	std::size_t pos = buffer.find("\r\n", buffer_pos);
 	if (pos == std::string::npos)
@@ -133,7 +135,7 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		std::cerr << "Error: syntax error in message" << std::endl;
 		return false;
 	}
-	std::cout << "Command received: ";
+	std::cout << "Command received: "<< commands.count(message.command) << " ";
 	debug_message(message);
 
 	if (commands.count(message.command)) {
