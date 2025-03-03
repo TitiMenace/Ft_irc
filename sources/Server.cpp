@@ -119,9 +119,10 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		Command("PING", &Server::ping),
 		Command("JOIN", &Server::join),
 		Command("MODE", &Server::mode),
+		Command("INVITE", &Server::invite),
 		Command("PRIVMSG", &Server::privmsg)
 	};
-	static const std::map<std::string, CommandFunction> commands(commandsArray, commandsArray + 7);
+	static const std::map<std::string, CommandFunction> commands(commandsArray, commandsArray + 8);
 
 	std::size_t pos = buffer.find("\r\n", buffer_pos);
 	if (pos == std::string::npos)

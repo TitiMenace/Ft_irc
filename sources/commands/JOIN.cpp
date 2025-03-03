@@ -223,6 +223,13 @@ void Server::join(Message message, Client &client){
             continue;
         }
         // /join #canel1,#canel2,#acan3
+        else if (_channel_list[channel_name].mode & KEY_PROTECTED &&
+            (message.params.size() < 2 || _channel_list[channel_name].key  != keys_list[i])){
+
+            dprintf(2, "incorrect key for channel %s or no key given\r\n", channel_name.c_str());
+            //ERR_BADCHANNELKEY (475) 
+            continue;
+        }
         else if (_channel_list[channel_name].list_user.size() >= _channel_list[channel_name].size_limit){
 
             ERR_CHANNELISFULL(client, _channel_list[channel_name]);

@@ -20,14 +20,14 @@ enum ChannelMode {
 struct Channel{
 	std::string           name;
     std::string           topic;
-    std::string           password;
+    std::string           key;
     size_t                   size_limit;
     std::map<int, Client> list_user;
     std::map<int, Client> list_operator;
     std::map<int, Client> list_invite;
     int mode;
 	
-    Channel(std::string name = "", std::string topic = "", std::string password = "", int size_limit = 0, ChannelMode mode = NO_FLAG);
+    Channel(std::string name = "", std::string topic = "", std::string key = "", int size_limit = 0, ChannelMode mode = NO_FLAG);
 };
 \
 void    ERR_CHANNELISFULL(Client &client, Channel &channel);

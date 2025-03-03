@@ -17,6 +17,7 @@ FILES		= main \
 			commands/PRIVMSG \
 			commands/JOIN \
 			commands/ERR_MSG \
+			commands/INVITE \
 			commands/MODE \
 			commands/ERR_MSG
 			
