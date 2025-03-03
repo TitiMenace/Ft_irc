@@ -19,8 +19,6 @@ FILES		= main \
 			commands/ERR_MSG \
 			commands/INVITE \
 			commands/MODE \
-			commands/ERR_MSG
-			
 
 SRCS_DIR	= sources
 SRCS		= $(addprefix $(SRCS_DIR)/, $(addsuffix .cpp, $(FILES)))

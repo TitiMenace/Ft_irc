@@ -29,7 +29,7 @@ struct Channel{
 	
     Channel(std::string name = "", std::string topic = "", std::string key = "", int size_limit = 0, ChannelMode mode = NO_FLAG);
 };
-\
+
 void    ERR_CHANNELISFULL(Client &client, Channel &channel);
 void    ERR_INVITEONLYCHAN(Client &client, Channel &channel);
 void    ERR_BADCHANNELKEY(Client &client, Channel &channel);

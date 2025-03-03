@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "Channel.hpp"
 #include "includes.hpp"
 
 void    Server::flagsGestion(Message message, Client &client){
@@ -20,7 +19,7 @@ void    Server::flagsGestion(Message message, Client &client){
                 case 'k':
                         if (message.params.size() >= 3){
                            std::cout << "le mot de passe " << message.params[2] << " est bien assigne" << std::endl;
-                            _channel_list[channel].password = message.params[2];
+                            _channel_list[channel].key = message.params[2];
                         }
 
                 case 'i':

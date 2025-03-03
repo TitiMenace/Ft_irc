@@ -1,25 +1,33 @@
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "parsingUtils.hpp"
-void Server::invite(Message message, Client &client) {
 
-    if (message.params.size() < 2){
+void Server::invite(Message message, Client &client) {
+std::cout << "invite command starting"<< std::endl;
+    if (message.params.size() < 2){ 
+        std::cout << "not enough params"<< std::endl;
         return; // ERR_NEEDMOREPARAMS (461)
     }
     std::string nickname = message.params[0];
     std::string channel_name = message.params[1];
+    std::cout << "invite command with nickname " << nickname << "and channel_name" << channel_name << std::endl;
     
     if (!findInMap(_channel_list, channel_name)){
+        std::cout << "channel dont exist" << std::endl;
+
         return; // ERR_NOSUCHCHANNEL (403)
     }
 
     Channel &channel = _channel_list[channel_name];
+    std::cout << "channel "<< channel.name << "exists" << std::endl;
 
     if (!findInMap(channel.list_operator, client.socket_fd) && channel.mode & INVITE_ONLY){
+        std::cout << "Needs to be operator to invite in invite only" << std::endl;
         return; //  ERR_CHANOPRIVSNEEDED (482) 
     }
 
     if (!findInMap(channel.list_user, client.socket_fd)){
+        std::cout << "need to be in the channel to invite someone in it" << std::endl;
         return; // ERR_NOTONCHANNEL (442)
     }
 
@@ -33,19 +41,29 @@ void Server::invite(Message message, Client &client) {
     }
 
     if (invited == NULL) {
+        std::cout << "user to invite doesnt exists" << std::endl;
         return;// ERR_NOSUCHNICK (401)
     }
+
     if (findInMap(channel.list_user, invited->socket_fd)){
+        std::cout << "user to invite already in the channel" << std::endl;
+
         return; // ERR_USERONCHANNEL (443)
     }
 
-    
     // Continue with normal invite logic using 'invited'
-    
+    channel.list_invite[invited->socket_fd] = *invited;
+        
+    std::cout << "invite list:" << std::endl;
+    for (std::map<int, Client>::iterator it = channel.list_invite.begin(); it != channel.list_invite.end(); ++it) {
+        std::cout << it->second.nickname << std::endl;
+    }
+    // RPL_INVITING (341)
     return;
 }
 
 /*
+
 The INVITE command is used to invite a user to a channel. The parameter <nickname> is the nickname of the person to be invited to the target channel <channel>.
 
 The target channel SHOULD exist (at least one user is on it). Otherwise, the server SHOULD reject the command with the ERR_NOSUCHCHANNEL numeric.
@@ -58,9 +76,4 @@ If the user is already on the target channel, the server MUST reject the command
 
 When the invite is successful, the server MUST send a RPL_INVITING numeric to the command issuer, and an INVITE message, with the issuer as <source>, to the target user. Other channel members SHOULD NOT be notified.
 
-
-Numeric Replies:
 */
-// RPL_INVITING (341)
-
-// ERR_CHANOPRIVSNEEDED (482)
