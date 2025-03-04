@@ -6,16 +6,22 @@
 // - ERR_NOTEXTTOSEND (412)
 // - ERR_NOTREGISTERED (451)
 
-/*void	channelMessage(Channel channel, std::string output){
+void	channelMessage(Channel &channel, std::string output, Client &client){
 	
-	for (std::map<int, Client>::iterator it = list_user.begin(); it != list_user.end(); it++){
-		
+	std::cout << "on ecrit a tout le monde dans le channel" << std::endl;
+	for (std::map<int, Client>::iterator it = channel.list_user.begin(); it != channel.list_user.end(); it++){
+
+		if (client.socket_fd != it->first)
+			dprintf(it->first, ":%s PRIVMSG %s :%s\r\n",client.nickname.c_str(), channel.name.c_str(), output.c_str());
 	}
 	
-}*/
+}
 
 
 void Server::privmsg(Message message, Client &client) {
+	
+	std::cout << "debut de la commande privmsg" << std::endl;
+	
 	const char *nickname = client.nickname.empty() ? "*" : client.nickname.c_str();
 
 	if (message.params.size() == 0) {
@@ -31,17 +37,21 @@ void Server::privmsg(Message message, Client &client) {
 		return;
 	}
 
-	std::string &target = message.params[1];
-	std::string &text = message.params[1];
-	for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++) {
+	std::string &target =  message.params[0];
+	std::string text = message.params[1];
+	/*for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++) {
 		if (it->first != client.socket_fd) {
 			dprintf(it->first, ":localhost PRIVMSG %s %s\r\n", target.c_str(), text.c_str());
 		}
-	}
-/*	std::map<std::string, Channel>::iterator it = _channel_list(message.params[0]);
-	if (it != _channel_list.end()){
-		//channelMessage(*it, text);
 	}*/
+	
+	for (std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
+		if (it->first == target){
+			channelMessage(_channel_list[it->first], text, client);
+		}
+
+	}
+	
 
 	
 }

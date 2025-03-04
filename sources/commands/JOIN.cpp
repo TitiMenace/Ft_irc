@@ -198,7 +198,7 @@ void Server::join(Message message, Client &client){
     for (std::vector<std::string>::iterator it = params_channels_list.begin(); it != params_channels_list.end(); ++it) {
         std::cout << *it << std::endl;
     }
-
+    
     std::cout << "Parsed keys:" << std::endl;
     for (std::vector<std::string>::iterator it = keys_list.begin(); it != keys_list.end(); ++it) {
         std::cout << *it << std::endl;
