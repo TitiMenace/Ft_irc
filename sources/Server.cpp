@@ -135,23 +135,13 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 		std::cerr << "Error: syntax error in message" << std::endl;
 		return false;
 	}
+
 	std::cout << "Command received: "<< commands.count(message.command) << " ";
-	
-	std::cout << "on est fou -1 " << std::endl;
-
 	debug_message(message);
-	std::cout << "on est fou 0" << std::endl;
-	
-	
-
 
 	if (commands.count(message.command)) {
-		std::cout << "on est fou 1 " << std::endl;
 		CommandFunction commandFunc = commands.at(message.command);
-		std::cout << "on est fou 2 "<< client.nickname << std::endl;
-
 		(this->*(commandFunc))(message, client);
-		std::cout << "on est fou 3 " << std::endl;
 
 	}
 	return true;

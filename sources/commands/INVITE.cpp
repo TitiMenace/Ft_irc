@@ -2,6 +2,22 @@
 #include "Channel.hpp"
 #include "parsingUtils.hpp"
 
+
+void    ERR_NOSUCHCHANNEL(Client &client, Channel &channel){
+	std::stringstream	soutput;
+    std::string         output;
+
+	soutput << "461";
+	soutput << " " << client.nickname;
+	soutput << " " << channel.name;
+	soutput << " :" << "No such channel";
+	soutput << "\r\n";
+    output = soutput.str();
+    
+    dprintf(client.socket_fd, "%s", output.c_str());
+	return;
+}
+
 void Server::invite(Message message, Client &client) {
 std::cout << "invite command starting"<< std::endl;
     if (message.params.size() < 2){ 
@@ -62,7 +78,7 @@ std::cout << "invite command starting"<< std::endl;
     return;
 }
 
-/*
+/*irssi -c localhost -p 8080 -w popo
 
 The INVITE command is used to invite a user to a channel. The parameter <nickname> is the nickname of the person to be invited to the target channel <channel>.
 

@@ -154,7 +154,6 @@ void    RPLNAMREPLY(Client &client, Channel &channel){
     output = soutput.str();
     output.erase(output.size() - 1);
     output += "\r\n";
-    std::cout << "je suis un caca dani caca le client socket fd est" << client.socket_fd << std::endl;
     dprintf(2, "%s", output.c_str());
     dprintf(client.socket_fd, "%s", output.c_str());
 	return;
@@ -216,7 +215,7 @@ void Server::join(Message message, Client &client){
         _channel_list[channel_name] = Channel(channel_name, "topic", "password", 1);
         _channel_list[channel_name].list_user[client.socket_fd] = client;
         _channel_list[channel_name].list_operator[client.socket_fd] = client;
-        dprintf(2, "Channel : %s a bien ete cree et %s est bien user et %s est bien operateur\r\n", _channel_list[channel_name].name.c_str(), _channel_list[channel_name].list_user[client.socket_fd].nickname.c_str(), _channel_list[channel_name].list_operator[client.socket_fd].nickname.c_str());
+     dprintf(2, "Channel : %s a bien ete cree et %s est bien user et %s est bien operateur\r\n", _channel_list[channel_name].name.c_str(), _channel_list[channel_name].list_user[client.socket_fd].nickname.c_str(), _channel_list[channel_name].list_operator[client.socket_fd].nickname.c_str());
             joinMessage(client, channel_name);
             RPLNAMREPLY(client, _channel_list[channel_name]);
             RPL_ENDOFNAMES(client, _channel_list[channel_name]);
@@ -230,7 +229,7 @@ void Server::join(Message message, Client &client){
             //ERR_BADCHANNELKEY (475) 
             continue;
         }
-        else if (_channel_list[channel_name].list_user.size() >= _channel_list[channel_name].size_limit){
+        else if (_channel_list[channel_name].mode & USER_LIMIT && _channel_list[channel_name].list_user.size() >= _channel_list[channel_name].size_limit){
 
             ERR_CHANNELISFULL(client, _channel_list[channel_name]);
             dprintf(2, "User limit for channel %s has been reached\r\n", channel_name.c_str());
@@ -247,6 +246,7 @@ void Server::join(Message message, Client &client){
             RPLNAMREPLY(client, _channel_list[channel_name]);
             RPL_ENDOFNAMES(client, _channel_list[channel_name]);
     }
+    std::cerr << std::endl;
 	// if (_channel_list.find(message.params[0]) =! it.end)
     // Channel to_join = _channel_list[message.params[0]];
 
