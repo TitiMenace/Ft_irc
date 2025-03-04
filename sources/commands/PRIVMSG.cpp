@@ -39,20 +39,25 @@ void Server::privmsg(Message message, Client &client) {
 
 	std::string &target =  message.params[0];
 	std::string text = message.params[1];
-	/*for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++) {
-		if (it->first != client.socket_fd) {
-			dprintf(it->first, ":localhost PRIVMSG %s %s\r\n", target.c_str(), text.c_str());
-		}
-	}*/
-	
-	for (std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
-		if (it->first == target){
-			channelMessage(_channel_list[it->first], text, client);
-		}
 
+
+	if (target[0] == '#'){
+	
+		for (std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
+			if (it->first == target){
+				channelMessage(_channel_list[it->first], text, client);
+			}
+		}
 	}
-	
-
-	
+	else {
+		
+		for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++) {
+			if (it->second.nickname == target) {
+				std::cout << "on entre bien dans la boucle et " << client.nickname << " envoie bien un message a " << target << " : " << text << std::endl;
+				dprintf(it->first, ":%s PRIVMSG %s :%s\r\n", client.nickname.c_str(), target.c_str(), text.c_str());
+				
+			}
+	}	
+	}
 }
 
