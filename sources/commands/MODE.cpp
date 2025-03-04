@@ -10,7 +10,7 @@ void    Server::flagsGestion(Message message, Client &client){
     if(message.params[1][0] == '+'){
         flags = message.params[1].substr(1, message.params.size());
         for (size_t i = 0; i < flags.size(); i++){
-
+        
             switch (flags[i]){
 
                 case 't':
@@ -29,15 +29,15 @@ void    Server::flagsGestion(Message message, Client &client){
                         }
                 
                 case 'o':
-                            ERR_UMODEUNKNOWNFLAG(client);
-                default : 
-                            ERR_UMODEUNKNOWNFLAG(client);
+                            ERR_UMODEUNKNOWNFLAG(client, flags[i]);
+                default :
+                            ERR_UMODEUNKNOWNFLAG(client, flags[i]);
                 
             }
         }
     }
     else
-        ERR_UMODEUNKNOWNFLAG(client);
+        ERR_UMODEUNKNOWNFLAG(client, '0');
         
 
 }
@@ -54,7 +54,7 @@ void Server::mode(Message message, Client &client) {
 
     for ( std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
         if (it->second.nickname == channel){
-            ERR_UMODEUNKNOWNFLAG(client);
+            ERR_UMODEUNKNOWNFLAG(client, '0');
             return;
         }
 
@@ -64,7 +64,7 @@ void Server::mode(Message message, Client &client) {
         if (it->first == channel){
         
             if (message.params.size() <= 1){
-                ERR_UMODEUNKNOWNFLAG(client);
+                ERR_UMODEUNKNOWNFLAG(client, '0');
                 return;
             }
             else

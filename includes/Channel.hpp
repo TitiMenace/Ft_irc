@@ -33,5 +33,5 @@ struct Channel{
 void    ERR_CHANNELISFULL(Client &client, Channel &channel);
 void    ERR_INVITEONLYCHAN(Client &client, Channel &channel);
 void    ERR_BADCHANNELKEY(Client &client, Channel &channel);
-void    ERR_UMODEUNKNOWNFLAG(Client &client);
+void    ERR_UMODEUNKNOWNFLAG(Client &client, char c);
 
