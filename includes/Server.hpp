@@ -44,7 +44,9 @@ class Server{
 		void topic(Message message, Client &client);
 		void invite(Message message, Client &client);
 		void privmsg(Message message, Client &client); 
-		void flagsGestion(Message message, Client &client);
+		void channelflagsGestion(Message message, Client &client);
+		void userflagsGestion(Message message, Client client);
+
 	
 		class Aziz : public std::exception{
 		

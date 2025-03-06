@@ -151,3 +151,16 @@ void    ERR_NEEDMOREPARAMS(Client &client){
     dprintf(client.socket_fd, "%s", output.c_str());
 	return;
 }
+
+void    ERR_USERSDONTMATCH(Client &client){
+	std::stringstream	soutput;
+    std::string         output;
+
+	soutput << "502";
+	soutput << " " << client.nickname;
+	soutput << " :" << "Cant change mode for other users";
+	soutput << "\r\n";
+    output = soutput.str();
+    dprintf(client.socket_fd, "%s", output.c_str());
+	return;
+}

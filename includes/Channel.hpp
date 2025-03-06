@@ -45,3 +45,5 @@ void    ERR_NOSUCHNICK(Client &client, std::string channel);
 void    ERR_USERONCHANNEL(Client &client, std::string channel, std::string nick);
 
 void    ERR_NEEDMOREPARAMS(Client &client);
+void    ERR_USERSDONTMATCH(Client &client);
+

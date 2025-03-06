@@ -2,13 +2,18 @@
 #include "includes.hpp"
 #include "Channel.hpp"
 
-void    Server::flagsGestion(Message message, Client &client){
+void    Server::channelflagsGestion(Message message, Client &client){
 
     std::string flags;
     std::string channel = message.params[0];
     size_t      nb_arg = 0;
    \
-    std::cout << "on rentre dans la gestion des flags" << std::endl;
+   if (message.params.size() <= 1){
+        ERR_UMODEUNKNOWNFLAG(client, '0');
+        return;
+   }
+   
+   std::cout << "on rentre dans la gestion des flags" << std::endl;
     if(message.params[1][0] == '+'){
         flags = message.params[1].substr(1, message.params.size());
         for (size_t i = 0; i < flags.size(); i++){
@@ -50,13 +55,12 @@ void    Server::flagsGestion(Message message, Client &client){
                                     std::cout << "info user le fd : " << it->first << " puis le client nickname : " << it->second.nickname << std::endl;
                                     std::cout << "le nom de kaaris qui est stocke c'est : " << _channel_list[channel].list_operator[5].nickname << std::endl;
 
-                                    break;
                                 }
                             }
                         }
 
                 default : 
-                            ERR_UMODEUNKNOWNFLAG(client);
+                            ERR_UMODEUNKNOWNFLAG(client, '0');
                 
             }
         }
@@ -96,38 +100,70 @@ void    Server::flagsGestion(Message message, Client &client){
         
 
 }
+
+void    Server::userflagsGestion(Message message, Client client){
+
+    std::string user = message.params[0];
+    std::string flags;
+   // size_t  nb_args = 0;
+
+    if (message.params.size() <= 1){
+        std::cout << "missing flags" << std::endl;
+        ERR_UMODEUNKNOWNFLAG(client, '0');
+        return;
+   }
+   if(message.params[1][0] == '+'){
+        flags = message.params[1].substr(1, message.params.size());
+        for (size_t i = 0; i < flags.size(); i++){
         
+            switch (flags[i]){
 
-
+                case 't':
+                            break;
+                default:
+                            break;
+            }
+        }  
+    }
+}
+        
 void Server::mode(Message message, Client &client) {
     
     std::cout << "mode appele avec " << message.params.size() << " arguments" << std::endl;
 
-    if (message.params.empty())
+    if (message.params.empty()){
         std::cout << "pas de arguments de mod" << std::endl;
+        return;
+    }
 
-    std::string channel = message.params[0];
+    std::string target = message.params[0];
     std::string arg;
 
-    for ( std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
-        if (it->second.nickname == channel){
-            ERR_UMODEUNKNOWNFLAG(client, '0');
-            return;
+    if (target[0] != '#'){
+        for ( std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
+            
+            if (it == _users.end())
+                ERR_NOSUCHNICK(client, target);
+            else if (it->second.nickname != client.nickname)
+                ERR_USERSDONTMATCH(client);
+            else
+                userflagsGestion(message, client);
         }
-
     }
-    std::cout << "fonctione mode pour le channel activated" << std::endl;    
-    for ( std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
-        if (it->first == channel){
-        
-            if (message.params.size() <= 1){
-                ERR_UMODEUNKNOWNFLAG(client, '0');
-                return;
+    else {
+        std::cout << "fonctione mode pour le channel activated" << std::endl;    
+        for ( std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
+            if (it->first == target){
+            
+                if (_channel_list[target].list_operator.find(client.socket_fd) != _channel_list[target].list_operator.end())
+                    ERR_CHANOPRIVSNEEDED(client, target);
+                else
+                    channelflagsGestion(message, client);
             }
             else
-                flagsGestion(message, client);
+                ERR_NOSUCHCHANNEL(client, target);
         }
-    }
+    }   
     return;
 }
     //if (!message.params[2].empty())
