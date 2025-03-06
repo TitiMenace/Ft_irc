@@ -149,6 +149,26 @@ bool	Server::_runCommand(Client &client, std::string &buffer, std::size_t &buffe
 	return true;
 }
 
+void	Server::_disconnectClient(Client &client) {
+	// Erase client from the channels they're connected to
+	std::map<std::string, Channel>::iterator it;
+	
+	for (it = _channel_list.begin(); it != _channel_list.end(); ) {
+		Channel &channel = it->second;
+		channel.list_user.erase(client.socket_fd);
+		
+		// Erase the channel if there are no users
+		std::map<std::string, Channel>::iterator tmp = it;
+		it++;
+		if (channel.list_user.empty())
+			_channel_list.erase(tmp);
+	}
+
+	// Erase client from the user list
+	_users.erase(client.socket_fd);
+	close(client.socket_fd);
+}
+
 void	Server::_readMessages(struct epoll_event event) {
 	int client_socket = event.data.fd;
 	if (event.events & EPOLLIN) {
@@ -158,10 +178,8 @@ void	Server::_readMessages(struct epoll_event event) {
 		std::cout << "Bytes received: " << bytes_received << std::endl;
 
 		if (bytes_received <= 0) {
-			//remove the client from the map users
 			std::cout << "Client ended the connection" << std::endl;
-			_users.erase(client_socket);
-			close(client_socket);
+			_disconnectClient(_users[client_socket]);
 			return;
 		}
 		std::cout << "[" << client_socket << "] Message recieved: " << std::endl << std::string(buffer, bytes_received) << std::endl;					
@@ -177,9 +195,7 @@ void	Server::_readMessages(struct epoll_event event) {
 	}
 	if (event.events & EPOLLERR) {
 		std::cout << "Client encountered an error" << std::endl;
-		//remove client from user map if close
-		_users.erase(client_socket);
-		close(client_socket);
+		_disconnectClient(_users[client_socket]);
 	}
 }
 
