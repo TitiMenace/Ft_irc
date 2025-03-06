@@ -40,6 +40,7 @@ class Server{
 		void join(Message message, Client &client);
 		void ping(Message message, Client &client);
 		void mode(Message message, Client &client);
+		void topic(Message message, Client &client);
 		void invite(Message message, Client &client);
 		void privmsg(Message message, Client &client); 
 		void flagsGestion(Message message, Client &client);

@@ -3,78 +3,6 @@
 #include "parsingUtils.hpp"
 
 
-void    ERR_NOSUCHCHANNEL(Client &client, std::string channel){
-	std::stringstream	soutput;
-    std::string         output;
-
-	soutput << "461";
-	soutput << " " << client.nickname;
-	soutput << " " << channel;
-	soutput << " :" << "No such channel";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
-	return;
-}
-
-void    ERR_CHANOPRIVSNEEDED(Client &client, std::string channel){
-	std::stringstream	soutput;
-    std::string         output;
-
-	soutput << "482";
-	soutput << " " << client.nickname;
-	soutput << " " << channel;
-	soutput << " :" << "You're not channel operator";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
-	return;
-}
-
-void    ERR_NOTONCHANNEL(Client &client, std::string channel){
-	std::stringstream	soutput;
-    std::string         output;
-
-	soutput << "442";
-	soutput << " " << client.nickname;
-	soutput << " " << channel;
-	soutput << " :" << "You're not on that channel";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
-	return;
-}
-
-void    ERR_NOSUCHNICK(Client &client, std::string channel){
-	std::stringstream	soutput;
-    std::string         output;
-
-	soutput << "401";
-	soutput << " " << client.nickname;
-	soutput << " " << channel;
-	soutput << " :" << "No such nick/channel";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
-	return;
-}
-
-
-void    ERR_USERONCHANNEL(Client &client, std::string channel, std::string nick){
-	std::stringstream	soutput;
-    std::string         output;
-
-	soutput << "443";
-	soutput << " " << client.nickname;
-    soutput << " " << nick;
-	soutput << " " << channel;
-	soutput << " :" << "is already on channel";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
-	return;
-}
-
 void    RPL_INVITE(Client &client, std::string channel, std::string nick){
 	std::stringstream	soutput;
     std::string         output;
@@ -104,6 +32,7 @@ void    RPL_INVITING(Client &client, std::string channel, std::string nick){
     dprintf(client.socket_fd, "%s", output.c_str());
 	return;
 }
+
 void Server::invite(Message message, Client &client) {
 std::cout << "invite command starting"<< std::endl;
     if (message.params.size() < 2){ 
@@ -123,20 +52,21 @@ std::cout << "invite command starting"<< std::endl;
     Channel &channel = _channel_list[channel_name];
     std::cout << "channel "<< channel.name << "exists" << std::endl;
 
-    if (!findInMap(channel.list_operator, client.socket_fd) && channel.mode & INVITE_ONLY){
-        std::cout << "Needs to be operator to invite in invite only" << std::endl;
-        ERR_CHANOPRIVSNEEDED(client, channel_name);
-        return; //  ERR_CHANOPRIVSNEEDED (482) 
-    }
-
     if (!findInMap(channel.list_user, client.socket_fd)){
         std::cout << "need to be in the channel to invite someone in it" << std::endl;
         ERR_NOTONCHANNEL(client, channel_name);
         return; // ERR_NOTONCHANNEL (442)
     }
 
+    if (!findInMap(channel.list_operator, client.socket_fd) && channel.mode & INVITE_ONLY){
+        std::cout << "Needs to be operator to invite in invite only" << std::endl;
+        ERR_CHANOPRIVSNEEDED(client, channel_name);
+        return; //  ERR_CHANOPRIVSNEEDED (482) 
+    }
+
+
     Client* invited = NULL;
- 
+    
     for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); ++it) {
         if (it->second.nickname == nickname) {
             invited = &(it->second);
@@ -158,7 +88,6 @@ std::cout << "invite command starting"<< std::endl;
 
     // Continue with normal invite logic using 'invited'
     channel.list_invite[invited->socket_fd] = *invited;
-        
     std::cout << "invite list:" << std::endl;
     for (std::map<int, Client>::iterator it = channel.list_invite.begin(); it != channel.list_invite.end(); ++it) {
         std::cout << it->second.nickname << std::endl;

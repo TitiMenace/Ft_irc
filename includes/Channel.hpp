@@ -35,3 +35,9 @@ void    ERR_INVITEONLYCHAN(Client &client, Channel &channel);
 void    ERR_BADCHANNELKEY(Client &client, Channel &channel);
 void    ERR_UMODEUNKNOWNFLAG(Client &client, char c);
 
+void    ERR_NOSUCHCHANNEL(Client &client, std::string channel);
+void    ERR_CHANOPRIVSNEEDED(Client &client, std::string channel);
+    
+void    ERR_NOTONCHANNEL(Client &client, std::string channel);
+void    ERR_NOSUCHNICK(Client &client, std::string channel);
+void    ERR_USERONCHANNEL(Client &client, std::string channel, std::string nick);
