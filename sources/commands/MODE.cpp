@@ -1,10 +1,12 @@
 #include "Server.hpp"
 #include "includes.hpp"
+#include "Channel.hpp"
 
 void    Server::flagsGestion(Message message, Client &client){
 
     std::string flags;
     std::string channel = message.params[0];
+    size_t      nb_arg = 0;
    \
     std::cout << "on rentre dans la gestion des flags" << std::endl;
     if(message.params[1][0] == '+'){
@@ -17,16 +19,69 @@ void    Server::flagsGestion(Message message, Client &client){
                         if (!(_channel_list[channel].mode & TOPIC_ONLY_OP))
                             _channel_list[channel].mode += TOPIC_ONLY_OP;   
                 case 'k':
-                        if (message.params.size() >= 3){
-                           std::cout << "le mot de passe " << message.params[2] << " est bien assigne" << std::endl;
-                            _channel_list[channel].key = message.params[2];
+                        if (message.params.size() >= 3 + nb_arg){
+                           std::cout << "le mot de passe " << message.params[nb_arg + 2] << " est bien assigne" << std::endl;
+                           _channel_list[channel].key = message.params[nb_arg + 2];
+                           nb_arg++;
                         }
 
-                case 'i':
+                case 'I':
                         if (!(_channel_list[channel].mode & INVITE_ONLY)){
                             std::cout  << "channel passe bien en invite only" << std::endl;
                             _channel_list[channel].mode += INVITE_ONLY;
                         }
+                case 'l':
+                        if (message.params.size() >= 3 + nb_arg){
+                            std::cout << "la size max" << message.params[nb_arg + 2] << " est bien assigne" << std::endl;
+                            _channel_list[channel].key = message.params[nb_arg + 2];
+                            nb_arg++;
+
+                        }
+                
+                case 'o':
+                        if (message.params.size() >= 3 + nb_arg){
+                            for(std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
+                                if (it->second.nickname == message.params[nb_arg + 2]){
+                                
+                                    std::cout << "le user " << message.params[nb_arg + 2] << " est bien devenu operateur" << std::endl;
+                                    _channel_list[channel].list_operator[it->first] = it->second;
+                                    nb_arg++;
+                                    std::cout << "le channel name = " << channel << std::endl;
+                                    std::cout << "info user le fd : " << it->first << " puis le client nickname : " << it->second.nickname << std::endl;
+                                    std::cout << "le nom de kaaris qui est stocke c'est : " << _channel_list[channel].list_operator[5].nickname << std::endl;
+
+                                    break;
+                                }
+                            }
+                        }
+
+                default : 
+                            ERR_UMODEUNKNOWNFLAG(client);
+                
+            }
+        }
+    }
+    else if(message.params[1][0] == '-'){
+        flags = message.params[1].substr(1, message.params.size());
+        for (size_t i = 0; i < flags.size(); i++){
+
+            switch (flags[i]){
+
+                case 't':
+                        if (_channel_list[channel].mode & TOPIC_ONLY_OP)
+                            _channel_list[channel].mode -= TOPIC_ONLY_OP;   
+                case 'k':
+                           std::cout << "le mot de passe est bien enleve" << std::endl;
+                           _channel_list[channel].key = "";
+
+                case 'I':
+                        if (_channel_list[channel].mode & INVITE_ONLY){
+                            std::cout  << "channel n'est plus en invite only" << std::endl;
+                            _channel_list[channel].mode -= INVITE_ONLY;
+                        }
+                case 'l':
+                            std::cout << "size limit du channel est bien revenue par defaut" << std::endl;
+                            _channel_list[channel].size_limit = SIZE_LIMIT;
                 
                 case 'o':
                             ERR_UMODEUNKNOWNFLAG(client, flags[i]);
@@ -41,10 +96,12 @@ void    Server::flagsGestion(Message message, Client &client){
         
 
 }
+        
+
 
 void Server::mode(Message message, Client &client) {
     
-    std::cout << "mod appele avec " << message.params.size() << " arguments" << std::endl;
+    std::cout << "mode appele avec " << message.params.size() << " arguments" << std::endl;
 
     if (message.params.empty())
         std::cout << "pas de arguments de mod" << std::endl;

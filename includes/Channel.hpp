@@ -3,6 +3,8 @@
 
 #include <map>
 #include "Client.hpp"
+#define SIZE_LIMIT 10
+
 enum ChannelMode {
 	NO_FLAG,
 	INVITE_ONLY     = 1 << 0,   // 00001
