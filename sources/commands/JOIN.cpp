@@ -167,14 +167,14 @@ void Server::join(Message message, Client &client){
     // std::cerr << "param 3 " << message.params[2] << std::endl;
     // std::cerr << "param 4 " << message.params[3] << std::endl;
    
-    // if (!(client.state & ALLOWED) && !(client.state & REGISTERED)) {
-    //     std::cerr << "NOT ALLOWED OR NOT REGISTERED" << std::endl;
-    //     return;
-    // }
+    if (!(client.state & ALLOWED) && !(client.state & REGISTERED)) {
+        std::cerr << "NOT ALLOWED OR NOT REGISTERED" << std::endl;
+        return;
+    }
     
     if (message.params.empty()){
         std::cout << "---empty param issue ----- \n";
-
+        ERR_NEEDMOREPARAMS(client);
         return;//notenoughparams to send
 
     }

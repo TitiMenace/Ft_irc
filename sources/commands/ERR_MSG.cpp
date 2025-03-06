@@ -71,7 +71,7 @@ void    ERR_NOSUCHCHANNEL(Client &client, std::string channel){
 	std::stringstream	soutput;
     std::string         output;
 
-	soutput << "461";
+	soutput << "403";
 	soutput << " " << client.nickname;
 	soutput << " " << channel;
 	soutput << " :" << "No such channel";
@@ -133,6 +133,19 @@ void    ERR_USERONCHANNEL(Client &client, std::string channel, std::string nick)
     soutput << " " << nick;
 	soutput << " " << channel;
 	soutput << " :" << "is already on channel";
+	soutput << "\r\n";
+    output = soutput.str();
+    dprintf(client.socket_fd, "%s", output.c_str());
+	return;
+}
+
+void    ERR_NEEDMOREPARAMS(Client &client){
+	std::stringstream	soutput;
+    std::string         output;
+
+	soutput << "461";
+	soutput << " " << client.nickname;
+	soutput << " :" << "Not enough parameters";
 	soutput << "\r\n";
     output = soutput.str();
     dprintf(client.socket_fd, "%s", output.c_str());

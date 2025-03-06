@@ -5,7 +5,7 @@
 void Server::pass(Message message, Client &client){
     std::cout << "PASS command recieved" << std::endl;
     if (message.params.size() < 1){
-        dprintf(client.socket_fd, "461 ERR_NEEDMOREPARAMS\r\n");
+        ERR_NEEDMOREPARAMS(client);
         return;
     }
     if (client.state == ALLOWED || client.state == REGISTERED){
