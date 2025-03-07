@@ -112,7 +112,7 @@ void    Server::userflagsGestion(Message message, Client client){
         ERR_UMODEUNKNOWNFLAG(client, '0');
         return;
    }
-   if(message.params[1][0] == '+'){
+  /* if(message.params[1][0] == '+'){
         flags = message.params[1].substr(1, message.params.size());
         for (size_t i = 0; i < flags.size(); i++){
         
@@ -124,9 +124,19 @@ void    Server::userflagsGestion(Message message, Client client){
                             break;
             }
         }  
-    }
+    }*/
+    ERR_UMODEUNKNOWNFLAG(client, '0');
+    return;
+
 }
-        
+ 
+void	RPL_CHANNELMODEIS(Channel &channel, Client &client){
+
+    std::string modes = getchannelmodes(channel);
+    std::string modargs = getchannelmodarg(channel);
+    dprintf(client.socket_fd, "324 %s %s :%s %s...\r\n",client.nickname.c_str(), channel.name.c_str(), modes.c_str(), modargs.c_str());
+}
+
 void Server::mode(Message message, Client &client) {
     
     std::cout << "mode appele avec " << message.params.size() << " arguments" << std::endl;
@@ -143,7 +153,7 @@ void Server::mode(Message message, Client &client) {
         for ( std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
             
             if (it == _users.end())
-                ERR_NOSUCHNICK(client, target);
+                ERR_NOSUCHNICK(client, "");
             else if (it->second.nickname != client.nickname)
                 ERR_USERSDONTMATCH(client);
             else
@@ -157,11 +167,14 @@ void Server::mode(Message message, Client &client) {
             
                 if (_channel_list[target].list_operator.find(client.socket_fd) != _channel_list[target].list_operator.end())
                     ERR_CHANOPRIVSNEEDED(client, target);
+                else if (message.params[1].empty())
+                    RPL_CHANNELMODEIS(_channel_list[target], client);
                 else
                     channelflagsGestion(message, client);
             }
             else
                 ERR_NOSUCHCHANNEL(client, target);
+
         }
     }   
     return;

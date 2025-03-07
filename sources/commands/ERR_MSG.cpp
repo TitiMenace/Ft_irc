@@ -115,7 +115,8 @@ void    ERR_NOSUCHNICK(Client &client, std::string channel){
 
 	soutput << "401";
 	soutput << " " << client.nickname;
-	soutput << " " << channel;
+	if (channel != "")
+		soutput << " " << channel;
 	soutput << " :" << "No such nick/channel";
 	soutput << "\r\n";
     output = soutput.str();
