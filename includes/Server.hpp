@@ -5,7 +5,7 @@
 
 #include "includes.hpp"
 #include <map>
-
+#include <vector>
 #include "Message.hpp"
 #include "Channel.hpp"
 #include "Client.hpp"
@@ -39,12 +39,12 @@ class Server{
 		void pass(Message message, Client &client);
 		void join(Message message, Client &client);
 		void ping(Message message, Client &client);
+		void kick(Message message, Client &client);
 		void mode(Message message, Client &client);
 		void topic(Message message, Client &client);
 		void invite(Message message, Client &client);
 		void privmsg(Message message, Client &client); 
 		void flagsGestion(Message message, Client &client);
-
 	
 		class Aziz : public std::exception{
 		

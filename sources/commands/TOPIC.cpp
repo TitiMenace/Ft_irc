@@ -22,6 +22,7 @@ void	RPL_TOPIC(Channel &channel, Client &client){
 void	RPL_NOTOPIC(Channel &channel, Client &client){
     dprintf(client.socket_fd, "331 %s %s :%s\r\n",client.nickname.c_str(), channel.name.c_str(), "No topic is set");
 }
+
 void Server::topic(Message message, Client &client){
     std::cout << "TOPIC command recieved" << std::endl;
     if (message.params.size() < 1){ 

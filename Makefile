@@ -19,6 +19,7 @@ FILES		= main \
 			commands/ERR_MSG \
 			commands/INVITE \
 			commands/MODE \
+			commands/KICK \
 			commands/TOPIC \
 
 SRCS_DIR	= sources

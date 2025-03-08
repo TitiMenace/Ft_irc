@@ -37,6 +37,7 @@ void Server::invite(Message message, Client &client) {
 std::cout << "invite command starting"<< std::endl;
     if (message.params.size() < 2){ 
         std::cout << "not enough params"<< std::endl;
+        ERR_NEEDMOREPARAMS(client);
         return; // ERR_NEEDMOREPARAMS (461)
     }
     std::string nickname = message.params[0];
@@ -94,7 +95,6 @@ std::cout << "invite command starting"<< std::endl;
     }
 
     // RPL_INVITING (341)
-    
 // When the invite is successful, the server MUST send a RPL_INVITING numeric to the command issuer
 // , and an INVITE message, with the issuer as <source>, to the target user. Other channel members SHOULD NOT be notified.
 
