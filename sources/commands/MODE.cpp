@@ -2,6 +2,41 @@
 #include "includes.hpp"
 #include "Channel.hpp"
 
+
+
+
+void    RPL_INVEXLIST(Client &client, Channel &channel){
+
+
+    std::stringstream	soutput;
+
+    std::string cname = channel.name;
+    std::string output;
+
+	soutput << "346 " << client.nickname << " ";
+	soutput << channel.name << " ";
+    soutput << "INVITE_ONLY";
+    dprintf(2, "%s\n", output.c_str());
+    dprintf(client.socket_fd, "%s\r\n", output.c_str());
+	return;
+}
+
+void    RPL_ENDOFINVEXLIST(Client &client, Channel &channel){
+
+
+    std::stringstream	soutput;
+
+    std::string cname = channel.name;
+    std::string output;
+
+	soutput << "347 " << client.nickname << " ";
+	soutput << channel.name << " :";
+    soutput << "End of Channel Invite Exception List";
+    dprintf(2, "%s\n", output.c_str());
+    dprintf(client.socket_fd, "%s\r\n", output.c_str());
+	return;
+}
+
 void    Server::channelflagsGestion(Message message, Client &client){
 
     std::string flags;
@@ -21,43 +56,52 @@ void    Server::channelflagsGestion(Message message, Client &client){
             switch (flags[i]){
 
                 case 't':
-                        if (!(_channel_list[channel].mode & TOPIC_ONLY_OP))
-                            _channel_list[channel].mode += TOPIC_ONLY_OP;   
+                            if (!(_channel_list[channel].mode & TOPIC_ONLY_OP))
+                                _channel_list[channel].mode += TOPIC_ONLY_OP;  
+                            break;
+                     
                 case 'k':
-                        if (message.params.size() >= 3 + nb_arg){
-                           std::cout << "le mot de passe " << message.params[nb_arg + 2] << " est bien assigne" << std::endl;
-                           _channel_list[channel].key = message.params[nb_arg + 2];
-                           nb_arg++;
-                        }
-
-                case 'I':
-                        if (!(_channel_list[channel].mode & INVITE_ONLY)){
-                            std::cout  << "channel passe bien en invite only" << std::endl;
-                            _channel_list[channel].mode += INVITE_ONLY;
-                        }
-                case 'l':
-                        if (message.params.size() >= 3 + nb_arg){
-                            std::cout << "la size max" << message.params[nb_arg + 2] << " est bien assigne" << std::endl;
+                            if (message.params.size() >= 3 + nb_arg){
+                            std::cout << "le mot de passe " << message.params[nb_arg + 2] << " est bien assigne" << std::endl;
                             _channel_list[channel].key = message.params[nb_arg + 2];
                             nb_arg++;
+                            }
+                            break;
 
-                        }
+                case 'I':
+                            if (!(_channel_list[channel].mode & INVITE_ONLY)){
+                                std::cout  << "channel passe bien en invite only" << std::endl;
+                                _channel_list[channel].mode += INVITE_ONLY;
+                                RPL_INVEXLIST(client, _channel_list[channel]);
+                                RPL_ENDOFINVEXLIST(client, _channel_list[channel]);
+                            }
+                            break;
+
+                case 'l':
+                            if (message.params.size() >= 3 + nb_arg){
+                                std::cout << "la size max" << message.params[nb_arg + 2] << " est bien assigne" << std::endl;
+                                _channel_list[channel].key = message.params[nb_arg + 2];
+                                nb_arg++;
+
+                            }
+                            break;
                 
                 case 'o':
-                        if (message.params.size() >= 3 + nb_arg){
-                            for(std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
-                                if (it->second.nickname == message.params[nb_arg + 2]){
-                                
-                                    std::cout << "le user " << message.params[nb_arg + 2] << " est bien devenu operateur" << std::endl;
-                                    _channel_list[channel].list_operator[it->first] = it->second;
-                                    nb_arg++;
-                                    std::cout << "le channel name = " << channel << std::endl;
-                                    std::cout << "info user le fd : " << it->first << " puis le client nickname : " << it->second.nickname << std::endl;
-                                    std::cout << "le nom de kaaris qui est stocke c'est : " << _channel_list[channel].list_operator[5].nickname << std::endl;
+                            if (message.params.size() >= 3 + nb_arg){
+                                for(std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
+                                    if (it->second.nickname == message.params[nb_arg + 2]){
+                                    
+                                        std::cout << "le user " << message.params[nb_arg + 2] << " est bien devenu operateur" << std::endl;
+                                        _channel_list[channel].list_operator[it->first] = it->second;
+                                        nb_arg++;
+                                        std::cout << "le channel name = " << channel << std::endl;
+                                        std::cout << "info user le fd : " << it->first << " puis le client nickname : " << it->second.nickname << std::endl;
+                                        std::cout << "le nom de kaaris qui est stocke c'est : " << _channel_list[channel].list_operator[5].nickname << std::endl;
 
+                                    }
                                 }
                             }
-                        }
+                            break;
 
                 default : 
                             ERR_UMODEUNKNOWNFLAG(client, '0');
@@ -72,23 +116,36 @@ void    Server::channelflagsGestion(Message message, Client &client){
             switch (flags[i]){
 
                 case 't':
-                        if (_channel_list[channel].mode & TOPIC_ONLY_OP)
-                            _channel_list[channel].mode -= TOPIC_ONLY_OP;   
+                            if (_channel_list[channel].mode & TOPIC_ONLY_OP)
+                                _channel_list[channel].mode -= TOPIC_ONLY_OP;
+                            break;   
                 case 'k':
-                           std::cout << "le mot de passe est bien enleve" << std::endl;
-                           _channel_list[channel].key = "";
+                            std::cout << "le mot de passe est bien enleve" << std::endl;
+                            _channel_list[channel].key = "";
+                            break;
 
                 case 'I':
-                        if (_channel_list[channel].mode & INVITE_ONLY){
-                            std::cout  << "channel n'est plus en invite only" << std::endl;
-                            _channel_list[channel].mode -= INVITE_ONLY;
-                        }
+                            if (_channel_list[channel].mode & INVITE_ONLY){
+                                std::cout  << "channel n'est plus en invite only" << std::endl;
+                                _channel_list[channel].mode -= INVITE_ONLY;
+                            }
+                            break;
                 case 'l':
                             std::cout << "size limit du channel est bien revenue par defaut" << std::endl;
                             _channel_list[channel].size_limit = SIZE_LIMIT;
+                            break;
                 
                 case 'o':
-                            ERR_UMODEUNKNOWNFLAG(client, flags[i]);
+                            for (std::map<int, Client>::iterator it = _channel_list[channel].list_operator.begin(); it != _channel_list[channel].list_operator.end(); it++){
+                                if (it->second.nickname == message.params[2 + nb_arg]){
+                                    std::cout << "on enleve le statut d'operateur au client : " << message.params[2 + nb_arg] << std::endl;
+                                    _channel_list[channel].list_operator.erase(it);
+                                }
+                                else if (it == _channel_list[channel].list_operator.end())
+                                    std::cout << "Can't find operator in the channel's list" << std::endl;
+                            }
+                            break;
+
                 default :
                             ERR_UMODEUNKNOWNFLAG(client, flags[i]);
                 
