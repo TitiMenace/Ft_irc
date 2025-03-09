@@ -68,12 +68,10 @@ void    Server::channelflagsGestion(Message message, Client &client){
                             }
                             break;
 
-                case 'I':
+                case 'i':
                             if (!(_channel_list[channel].mode & INVITE_ONLY)){
                                 std::cout  << "channel passe bien en invite only" << std::endl;
                                 _channel_list[channel].mode += INVITE_ONLY;
-                                RPL_INVEXLIST(client, _channel_list[channel]);
-                                RPL_ENDOFINVEXLIST(client, _channel_list[channel]);
                             }
                             break;
 
@@ -124,7 +122,7 @@ void    Server::channelflagsGestion(Message message, Client &client){
                             _channel_list[channel].key = "";
                             break;
 
-                case 'I':
+                case 'i':
                             if (_channel_list[channel].mode & INVITE_ONLY){
                                 std::cout  << "channel n'est plus en invite only" << std::endl;
                                 _channel_list[channel].mode -= INVITE_ONLY;
@@ -182,7 +180,7 @@ void    Server::userflagsGestion(Message message, Client client){
             }
         }  
     }*/
-    ERR_UMODEUNKNOWNFLAG(client, '0');
+    //ERR_UMODEUNKNOWNFLAG(client, '0');
     return;
 
 }
@@ -210,11 +208,16 @@ void Server::mode(Message message, Client &client) {
         for ( std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
             
             if (it == _users.end())
-                ERR_NOSUCHNICK(client, "");
-            else if (it->second.nickname != client.nickname)
-                ERR_USERSDONTMATCH(client);
-            else
+                return ERR_NOSUCHNICK(client, "");
+            else if (it->second.nickname == target && it->second.nickname != client.nickname){
+                std::cout << "\n\n user qui appelle mode : " << client.nickname << " et recherche avec second.nickname : " << it->second.nickname << std::endl;
+                return ERR_USERSDONTMATCH(client);
+            }
+            else {
                 userflagsGestion(message, client);
+                return;
+            }
+
         }
     }
     else {
@@ -222,7 +225,7 @@ void Server::mode(Message message, Client &client) {
         for ( std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
             if (it->first == target){
             
-                if (_channel_list[target].list_operator.find(client.socket_fd) != _channel_list[target].list_operator.end())
+                if (_channel_list[target].list_operator.find(client.socket_fd) == _channel_list[target].list_operator.end())
                     ERR_CHANOPRIVSNEEDED(client, target);
                 else if (message.params[1].empty())
                     RPL_CHANNELMODEIS(_channel_list[target], client);
