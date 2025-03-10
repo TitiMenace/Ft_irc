@@ -1,4 +1,24 @@
 #include "includes.hpp"
+#include <stdint.h>
+#include <ctype.h>
+
+bool parseU16(const std::string &str, uint16_t &out_value) {
+	uint16_t	value = 0;
+	char		digit;
+
+	if (str.size() == 0)
+		return false;
+	for (size_t i = 0; i < str.length(); i++) {
+		if (!isdigit(str[i]))
+			return false;
+		digit = str[i] - '0';
+		if (value > (UINT16_MAX - digit) / 10)
+			return false;
+		value = value * 10 + digit;
+	}
+	out_value = value;
+	return true;
+}
 
 bool matchChar(std::string &buffer, std::size_t &buffer_pos, char c) {
 	if (buffer_pos == buffer.length() || buffer[buffer_pos] != c)

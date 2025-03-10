@@ -1,6 +1,8 @@
 #pragma once
 #include <map>
 
+bool parseU16(const std::string &str, uint16_t &out_value);
+
 bool matchChar(std::string &buffer, std::size_t &buffer_pos, char c);
 
 bool charInSet(char c, std::string set);
