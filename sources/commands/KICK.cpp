@@ -42,17 +42,17 @@ void Server::kick(Message message, Client &client){
         ERR_NOTONCHANNEL(client, channel_name);
         return; // ERR_NOTONCHANNEL (442)
     }
+    
+    if (!findInMap(channel.list_user, client.socket_fd)){
+        std::cout << "need to be in the channel to kick someone" << std::endl;
+        ERR_NOTONCHANNEL(client, channel_name);
+        return; // ERR_NOTONCHANNEL (442)
+    }
 
     if (!findInMap(channel.list_operator, client.socket_fd)){
         std::cout << "Needs to be operator to kick someone from channel" << std::endl;
         ERR_CHANOPRIVSNEEDED(client, channel_name);
         return; //  ERR_CHANOPRIVSNEEDED (482) 
-    }
-
-    if (!findInMap(channel.list_user, client.socket_fd)){
-        std::cout << "need to be in the channel to kick someone" << std::endl;
-        ERR_NOTONCHANNEL(client, channel_name);
-        return; // ERR_NOTONCHANNEL (442)
     }
 
     std::string nickname = message.params[1];
