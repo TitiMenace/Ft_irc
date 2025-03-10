@@ -77,7 +77,7 @@ std::cout << "invite command starting"<< std::endl;
 
     if (invited == NULL) {
         std::cout << "user to invite doesnt exists" << std::endl;
-        ERR_NOSUCHNICK(client, channel_name);
+        ERR_NOSUCHNICK(client, nickname);
         return;// ERR_NOSUCHNICK (401)
     }
 

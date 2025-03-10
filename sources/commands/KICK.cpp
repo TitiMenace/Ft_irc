@@ -68,7 +68,7 @@ void Server::kick(Message message, Client &client){
 
     if (kicked == NULL) {
         std::cout << "user to kick doesnt exists" << std::endl;
-        ERR_NOSUCHNICK(client, channel_name);
+        ERR_NOSUCHNICK(client, nickname);
         return;// ERR_NOSUCHNICK (401)
     }
 
