@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "parsingUtils.hpp"
 #include <stdio.h>
 
 // Can send errors:
@@ -17,6 +18,15 @@ void	channelMessage(Channel &channel, std::string output, Client &client){
 	
 }
 
+Client* Server::findUser(std::string nickname)
+{
+	for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++) {
+		if (it->second.nickname == nickname) {
+			return (&it->second);
+		}
+	}
+	return NULL;
+} 
 
 void Server::privmsg(Message message, Client &client) {
 	std::cout << "debut de la commande privmsg" << std::endl;
@@ -37,28 +47,24 @@ void Server::privmsg(Message message, Client &client) {
 		return;
 	}
 
-	std::string &target =  message.params[0];
+	std::string &target_name =  message.params[0];
 	std::string text = message.params[1];
 
-
-	if (target[0] == '#'){
-	
-		for (std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
-			if (it->first == target){
-				channelMessage(_channel_list[it->first], text, client);
-			}
-		}
+	Channel *channel;
+	if ((channel = findInMap(_channel_list, target_name)) != NULL){
+		channelMessage(*channel, text, client);
+		return;
 	}
-	else {
-		
-		for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++) {
-			if (it->second.nickname == target) {
-				std::cout << "on entre bien dans la boucle et " << client.nickname << " envoie bien un message a " << target << " : " << text << std::endl;
-				dprintf(it->first, ":%s PRIVMSG %s :%s\r\n", client.nickname.c_str(), target.c_str(), text.c_str());
-				
-			}
-		}
+	Client *target;
+	if ((target = findUser(target_name)) == NULL){
 		ERR_NOSUCHNICK(client, "");
+		return;
 	}
+	if (target->state != REGISTERED){
+		ERR_NOSUCHNICK(client, "");
+		// whatever error when you send a message to someone not registered
+		return;
+	}
+	dprintf(target->socket_fd, ":%s PRIVMSG %s :%s\r\n", client.nickname.c_str(), target_name.c_str(), text.c_str());
 }
 

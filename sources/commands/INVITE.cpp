@@ -66,21 +66,17 @@ std::cout << "invite command starting"<< std::endl;
     }
 
 
-    Client* invited = NULL;
-    
-    for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); ++it) {
-        if (it->second.nickname == nickname) {
-            invited = &(it->second);
-            break;
-        }
-    }
-
-    if (invited == NULL) {
+    Client* invited;
+    if ((invited = findUser(nickname)) == NULL) {
         std::cout << "user to invite doesnt exists" << std::endl;
         ERR_NOSUCHNICK(client, nickname);
         return;// ERR_NOSUCHNICK (401)
     }
-
+    if (invited->state != REGISTERED){
+        ERR_NOSUCHNICK(client, nickname);
+        //whatever error you knw
+        return;
+    }
     if (findInMap(channel.list_user, invited->socket_fd)){
         std::cout << "user to invite already in the channel" << std::endl;
         ERR_USERONCHANNEL(client, channel_name, invited->nickname);

@@ -115,10 +115,9 @@ void Server::join(Message message, Client &client){
         std::map<std::string, Channel>::iterator it= _channel_list.find(channel_name);
         
         if (it == _channel_list.end()) {
-            
-        _channel_list[channel_name] = Channel(channel_name, "topic", "password", 1);
-        _channel_list[channel_name].list_user[client.socket_fd] = client;
-        _channel_list[channel_name].list_operator[client.socket_fd] = client;
+            _channel_list[channel_name] = Channel(channel_name, "topic", "password", 1);
+            _channel_list[channel_name].list_user[client.socket_fd] = client;
+            _channel_list[channel_name].list_operator[client.socket_fd] = client;
             dprintf(2, "Channel : %s a bien ete cree et %s est bien user et %s est bien operateur\r\n", _channel_list[channel_name].name.c_str(), _channel_list[channel_name].list_user[client.socket_fd].nickname.c_str(), _channel_list[channel_name].list_operator[client.socket_fd].nickname.c_str());
             joinMessage(client, channel_name);
             RPLNAMREPLY(client, _channel_list[channel_name]);
@@ -127,18 +126,21 @@ void Server::join(Message message, Client &client){
         }
         // /join #canel1,#canel2,#acan3
         else if (_channel_list[channel_name].mode & KEY_PROTECTED &&
-            (message.params.size() < 2 || (i < keys_list.size() && _channel_list[channel_name].key != keys_list[i]))){
+            (message.params.size() < 2 || (i < keys_list.size() &&
+            _channel_list[channel_name].key != keys_list[i]))){
             dprintf(2, "incorrect key for channel %s or no key gven\r\n", channel_name.c_str());
             //ERR_BADCHANNELKEY (475) 
             continue;
         }
-        else if (_channel_list[channel_name].mode & USER_LIMIT && _channel_list[channel_name].list_user.size() >= _channel_list[channel_name].size_limit){
+        else if (_channel_list[channel_name].mode & USER_LIMIT &&
+            _channel_list[channel_name].list_user.size() >= _channel_list[channel_name].size_limit){
 
             ERR_CHANNELISFULL(client, _channel_list[channel_name]);
             dprintf(2, "User limit for channel %s has been reached\r\n", channel_name.c_str());
             continue;
         }
-        else if (_channel_list[channel_name].mode & INVITE_ONLY){ //&& check_invite_list(client)){
+        else if (_channel_list[channel_name].mode & INVITE_ONLY &&
+            findInMap(_channel_list[channel_name].list_invite,client.socket_fd) == NULL){
             ERR_INVITEONLYCHAN(client, _channel_list[channel_name]);
             std::cerr << channel_name << " is an invite only channel" << client.nickname << " can't join it" << std::endl; 
             continue;
