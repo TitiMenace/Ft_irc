@@ -7,7 +7,7 @@
 void Server::user(Message message, Client &client){
 	std::cout << "Command USER starting" << std::endl;
 	if (client.username != ""){
-		dprintf(client.socket_fd,"462 ERR_ALREADYREGISTERED\r\n");
+		ERR_ALREADYREGISTERED(client);
 		return;
 	}
 	if (message.params.size() != 4)

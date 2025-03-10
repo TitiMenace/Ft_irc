@@ -205,21 +205,25 @@ void Server::mode(Message message, Client &client) {
     std::string arg;
 
     if (target[0] != '#'){
+        std::cout << "mode lance avec cette target " << target << std::endl;
         for ( std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
             
-            if (it == _users.end())
-                return ERR_NOSUCHNICK(client, "");
-            else if (it->second.nickname == target && it->second.nickname != client.nickname){
-                std::cout << "\n\n user qui appelle mode : " << client.nickname << " et recherche avec second.nickname : " << it->second.nickname << std::endl;
-                return ERR_USERSDONTMATCH(client);
+            std::cout << "it pointe vers : " << it->second.nickname << std::endl;
+            if (it->second.nickname == target){
+                if (it->second.nickname != client.nickname){
+                    std::cout << "\n\n user qui appelle mode : " << client.nickname << " et recherche avec second.nickname : " << it->second.nickname << std::endl;
+                    return ERR_USERSDONTMATCH(client);
+                }
+                else {
+                    userflagsGestion(message, client);
+                    return;
+                }
             }
-            else {
-                userflagsGestion(message, client);
-                return;
-            }
-
         }
+        return ERR_NOSUCHNICK(client, "");
+        
     }
+    
     else {
         std::cout << "fonctione mode pour le channel activated" << std::endl;    
         for ( std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){

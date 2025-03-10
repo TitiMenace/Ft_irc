@@ -3,6 +3,7 @@
 
 #include <map>
 #include "Client.hpp"
+#include "Message.hpp"
 #define SIZE_LIMIT 10
 
 enum ChannelMode {
@@ -51,4 +52,10 @@ void    ERR_USERONCHANNEL(Client &client, std::string channel, std::string nick)
 
 void    ERR_NEEDMOREPARAMS(Client &client);
 void    ERR_USERSDONTMATCH(Client &client);
+void    ERR_ALREADYREGISTERED(Client &client);
+void    ERR_NORECIPIENT(Client &client, std::string nickname, Message &message);
+
+void    ERR_NOTEXTTOSEND(Client &client, std::string nickname);
+void    ERR_NOTREGISTERED(Client &client);
+
 

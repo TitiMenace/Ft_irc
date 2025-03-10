@@ -4,8 +4,6 @@
 #include "parsingUtils.hpp"
 #include "Channel.hpp"
 
-
-
 void    ERR_CHANNELISFULL(Client &client, Channel &channel){
 	std::stringstream	soutput;
     std::string         output;
@@ -160,6 +158,58 @@ void    ERR_USERSDONTMATCH(Client &client){
 	soutput << "502";
 	soutput << " " << client.nickname;
 	soutput << " :" << "Cant change mode for other users";
+	soutput << "\r\n";
+    output = soutput.str();
+    dprintf(client.socket_fd, "%s", output.c_str());
+	return;
+}
+
+void    ERR_ALREADYREGISTERED(Client &client){
+	std::stringstream	soutput;
+    std::string         output;
+
+	soutput << "462";
+	soutput << " " << client.nickname;
+	soutput << " :" << "You may not reregister";
+	soutput << "\r\n";
+    output = soutput.str();
+    dprintf(client.socket_fd, "%s", output.c_str());
+	return;
+}
+
+void    ERR_NORECIPIENT(Client &client, std::string nickname, Message &message){
+	std::stringstream	soutput;
+    std::string         output;
+
+	soutput << "411";
+	soutput << " " << nickname;
+	soutput << " :" << "No recipient given (" << message.command << ")";
+	soutput << "\r\n";
+    output = soutput.str();
+    dprintf(client.socket_fd, "%s", output.c_str());
+	return;
+}
+
+void    ERR_NOTEXTTOSEND(Client &client, std::string nickname){
+	std::stringstream	soutput;
+    std::string         output;
+
+	soutput << "412";
+	soutput << " " << nickname;
+	soutput << " :" << "No text to send";
+	soutput << "\r\n";
+    output = soutput.str();
+    dprintf(client.socket_fd, "%s", output.c_str());
+	return;
+}
+
+void    ERR_NOTREGISTERED(Client &client){
+	std::stringstream	soutput;
+    std::string         output;
+
+	soutput << "451";
+	soutput << " " << client.nickname;
+	soutput << " :" << "You have not registered";
 	soutput << "\r\n";
     output = soutput.str();
     dprintf(client.socket_fd, "%s", output.c_str());

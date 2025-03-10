@@ -22,18 +22,18 @@ void Server::privmsg(Message message, Client &client) {
 	
 	std::cout << "debut de la commande privmsg" << std::endl;
 	
-	const char *nickname = client.nickname.empty() ? "*" : client.nickname.c_str();
+	std::string nickname = client.nickname.empty() ? "*" : client.nickname;
 
 	if (message.params.size() == 0) {
-		dprintf(client.socket_fd, ":localhost 411 %s :No recipient given (%s)\r\n", nickname, message.command.c_str());
+		ERR_NORECIPIENT(client,nickname, message);
 		return;
 	}
 	if (message.params.size() == 1) {
-		dprintf(client.socket_fd, ":localhost 412 %s :No text to send\r\n", nickname);
+		ERR_NOTEXTTOSEND(client, nickname);
 		return;
 	}
 	if (client.state != REGISTERED) {
-		dprintf(client.socket_fd, ":localhost 451 %s :You have not registered\r\n", client.nickname.c_str());
+		ERR_NOTREGISTERED(client);
 		return;
 	}
 
@@ -57,7 +57,8 @@ void Server::privmsg(Message message, Client &client) {
 				dprintf(it->first, ":%s PRIVMSG %s :%s\r\n", client.nickname.c_str(), target.c_str(), text.c_str());
 				
 			}
-	}	
+		}
+		ERR_NOSUCHNICK(client, "");
 	}
 }
 
