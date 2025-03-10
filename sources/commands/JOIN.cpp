@@ -82,6 +82,7 @@ void Server::join(Message message, Client &client){
     }
     std::vector<std::string> params_channels_list;
     if (!parseChannelList(message.params[0], params_channels_list)){
+        // ERR_BADCHANMASK (476)
         std::cout << "---parsechannel issue ----- \n";
         return;
     }
@@ -117,7 +118,7 @@ void Server::join(Message message, Client &client){
         _channel_list[channel_name] = Channel(channel_name, "topic", "password", 1);
         _channel_list[channel_name].list_user[client.socket_fd] = client;
         _channel_list[channel_name].list_operator[client.socket_fd] = client;
-     dprintf(2, "Channel : %s a bien ete cree et %s est bien user et %s est bien operateur\r\n", _channel_list[channel_name].name.c_str(), _channel_list[channel_name].list_user[client.socket_fd].nickname.c_str(), _channel_list[channel_name].list_operator[client.socket_fd].nickname.c_str());
+            dprintf(2, "Channel : %s a bien ete cree et %s est bien user et %s est bien operateur\r\n", _channel_list[channel_name].name.c_str(), _channel_list[channel_name].list_user[client.socket_fd].nickname.c_str(), _channel_list[channel_name].list_operator[client.socket_fd].nickname.c_str());
             joinMessage(client, channel_name);
             RPLNAMREPLY(client, _channel_list[channel_name]);
             RPL_ENDOFNAMES(client, _channel_list[channel_name]);
@@ -125,9 +126,8 @@ void Server::join(Message message, Client &client){
         }
         // /join #canel1,#canel2,#acan3
         else if (_channel_list[channel_name].mode & KEY_PROTECTED &&
-            (message.params.size() < 2 || _channel_list[channel_name].key  != keys_list[i])){
-
-            dprintf(2, "incorrect key for channel %s or no key given\r\n", channel_name.c_str());
+            (message.params.size() < 2 || (i < keys_list.size() && _channel_list[channel_name].key != keys_list[i]))){
+            dprintf(2, "incorrect key for channel %s or no key gven\r\n", channel_name.c_str());
             //ERR_BADCHANNELKEY (475) 
             continue;
         }
