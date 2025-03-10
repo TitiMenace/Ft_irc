@@ -181,16 +181,19 @@ void Server::mode(Message message, Client &client) {
 
     for ( std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
         if (it->first == target){
-            if (_channel_list[target].list_operator.find(client.socket_fd) == _channel_list[target].list_operator.end())
+            if (_channel_list[target].list_operator.find(client.socket_fd) == _channel_list[target].list_operator.end()) {
                 ERR_CHANOPRIVSNEEDED(client, target);
-            else if (message.params[1].empty())
+                return;
+            }
+            if (message.params[1].empty()) {
                 RPL_CHANNELMODEIS(_channel_list[target], client);
-            else
-                channelflagsGestion(message, client);
+                return;
+            }
+            channelflagsGestion(message, client);
+            return;
         }
-        else
-            ERR_NOSUCHCHANNEL(client, target);
     }
+    ERR_NOSUCHCHANNEL(client, target);
 }
 
 // · i: Set/remove Invite-only channel
@@ -201,4 +204,4 @@ void Server::mode(Message message, Client &client) {
 
 // · o: Give/take channel operator privilege
 
-// · l: Set/remove the user limit to channel
+//  l: Set/remove the user limit to channel
