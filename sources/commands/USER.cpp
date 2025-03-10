@@ -9,12 +9,11 @@
 
 void Server::user(Message message, Client &client){
 	std::cout << "Command USER starting" << std::endl;
-	if (client.username != ""){
+	if (client.state == REGISTERED) {
 		ERR_ALREADYREGISTERED(client);
 		return;
 	}
-	if (message.params.size() != 4)
-	{
+	if (message.params.size() != 4) {
 		ERR_NEEDMOREPARAMS(client);
 		return;
 	}
