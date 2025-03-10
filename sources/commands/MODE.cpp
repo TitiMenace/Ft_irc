@@ -1,41 +1,9 @@
 #include "Server.hpp"
 #include "includes.hpp"
 #include "Channel.hpp"
+#include "RPL.hpp"
 
 
-
-
-void    RPL_INVEXLIST(Client &client, Channel &channel){
-
-
-    std::stringstream	soutput;
-
-    std::string cname = channel.name;
-    std::string output;
-
-	soutput << "346 " << client.nickname << " ";
-	soutput << channel.name << " ";
-    soutput << "INVITE_ONLY";
-    dprintf(2, "%s\n", output.c_str());
-    dprintf(client.socket_fd, "%s\r\n", output.c_str());
-	return;
-}
-
-void    RPL_ENDOFINVEXLIST(Client &client, Channel &channel){
-
-
-    std::stringstream	soutput;
-
-    std::string cname = channel.name;
-    std::string output;
-
-	soutput << "347 " << client.nickname << " ";
-	soutput << channel.name << " :";
-    soutput << "End of Channel Invite Exception List";
-    dprintf(2, "%s\n", output.c_str());
-    dprintf(client.socket_fd, "%s\r\n", output.c_str());
-	return;
-}
 
 void    Server::channelflagsGestion(Message message, Client &client){
 
@@ -156,12 +124,6 @@ void    Server::channelflagsGestion(Message message, Client &client){
 
 }
 
-void	RPL_CHANNELMODEIS(Channel &channel, Client &client){
-
-    std::string modes = getchannelmodes(channel);
-    std::string modargs = getchannelmodarg(channel);
-    dprintf(client.socket_fd, "324 %s %s :%s %s...\r\n",client.nickname.c_str(), channel.name.c_str(), modes.c_str(), modargs.c_str());
-}
 
 void Server::mode(Message message, Client &client) {
     std::cout << "mode appele avec " << message.params.size() << " arguments" << std::endl;

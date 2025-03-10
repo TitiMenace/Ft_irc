@@ -4,6 +4,7 @@
 #include "Channel.hpp"
 #include "parsingUtils.hpp"
 
+#include "RPL.hpp"
 void sendChannelTopic(Channel &channel, std::string topic, Client &client) {
     std::cout << "on envoit le topic a tout le monde dans le channel" << std::endl;
     
@@ -18,25 +19,6 @@ void sendChannelTopic(Channel &channel, std::string topic, Client &client) {
     }
 }
 
-void RPL_TOPIC(Channel &channel, Client &client) {
-    std::stringstream soutput;
-    std::string output;
-    
-    soutput << "332 " << client.nickname << " " << channel.name << " :" << channel.topic << "\r\n";
-    output = soutput.str();
-    
-    dprintf(client.socket_fd, "%s", output.c_str());
-}
-
-void RPL_NOTOPIC(Channel &channel, Client &client) {
-    std::stringstream soutput;
-    std::string output;
-    
-    soutput << "331 " << client.nickname << " " << channel.name << " :No topic is set\r\n";
-    output = soutput.str();
-    
-    dprintf(client.socket_fd, "%s", output.c_str());
-}
 
 void Server::topic(Message message, Client &client){
     std::cout << "TOPIC command recieved" << std::endl;

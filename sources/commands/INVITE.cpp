@@ -2,36 +2,7 @@
 #include "Channel.hpp"
 #include "parsingUtils.hpp"
 
-
-void    RPL_INVITE(Client &client, std::string channel, std::string nick){
-	std::stringstream	soutput;
-    std::string         output;
-    std::string         source;
-    
-    soutput << ":" << nick;
-	soutput << " " << "INVITE";
-    soutput << " " << nick;
-	soutput << " " << client.nickname;
-	soutput << " " << channel;
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
-	return;
-}
-void    RPL_INVITING(Client &client, std::string channel, std::string nick){
-	std::stringstream	soutput;
-    std::string         output;
-
-	soutput << "341";
-	soutput << " " << client.nickname;
-    soutput << " " << nick;
-	soutput << " " << channel;
-	soutput << " :" << "Inviting " << nick << " in channel " << channel;
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
-	return;
-}
+#include "RPL.hpp"
 
 void Server::invite(Message message, Client &client) {
 std::cout << "invite command starting"<< std::endl;
