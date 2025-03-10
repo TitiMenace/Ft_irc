@@ -23,7 +23,7 @@ bool validateNickname(const std::string& nickname) {
 void Server::nick(Message message, Client &client){
     std::cout << "Command NICK starting" << std::endl;
    
-    if (!(client.state & ALLOWED) && !(client.state & REGISTERED)) {
+    if (client.state != ALLOWED && client.state != REGISTERED) {
         std::cerr << "NOT ALLOWED OR NOT REGISTERED" << std::endl;
         return;
     }
