@@ -193,8 +193,12 @@ void	RPL_CHANNELMODEIS(Channel &channel, Client &client){
 }
 
 void Server::mode(Message message, Client &client) {
-    
     std::cout << "mode appele avec " << message.params.size() << " arguments" << std::endl;
+
+    if (client.state != REGISTERED) {
+        ERR_NOTREGISTERED(client);
+        return;
+    }
 
     if (message.params.empty()){
         std::cout << "pas de arguments de mod" << std::endl;

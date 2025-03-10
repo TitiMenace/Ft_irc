@@ -68,8 +68,9 @@ void Server::join(Message message, Client &client){
     // std::cerr << "param 3 " << message.params[2] << std::endl;
     // std::cerr << "param 4 " << message.params[3] << std::endl;
    
-    if (client.state != ALLOWED && client.state != REGISTERED) {
-        std::cerr << "NOT ALLOWED OR NOT REGISTERED" << std::endl;
+    if (client.state != REGISTERED) {
+        std::cerr << "NOT REGISTERED" << std::endl;
+        ERR_NOTREGISTERED(client);
         return;
     }
     

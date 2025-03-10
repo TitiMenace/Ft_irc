@@ -19,8 +19,12 @@ void	channelMessage(Channel &channel, std::string output, Client &client){
 
 
 void Server::privmsg(Message message, Client &client) {
-	
 	std::cout << "debut de la commande privmsg" << std::endl;
+	
+	if (client.state != REGISTERED) {
+		ERR_NOTREGISTERED(client);
+		return;
+	}
 	
 	std::string nickname = client.nickname.empty() ? "*" : client.nickname;
 
@@ -30,10 +34,6 @@ void Server::privmsg(Message message, Client &client) {
 	}
 	if (message.params.size() == 1) {
 		ERR_NOTEXTTOSEND(client, nickname);
-		return;
-	}
-	if (client.state != REGISTERED) {
-		ERR_NOTREGISTERED(client);
 		return;
 	}
 
