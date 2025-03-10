@@ -17,9 +17,9 @@ void Server::user(Message message, Client &client){
 		ERR_NEEDMOREPARAMS(client);
 		return;
 	}
-	client.username = message.params[0].substr(0, USRLEN);	
-	if (message.params[1] != "0" && message.params[1] != "*")		
-		client.hostname = message.params[1]; 
+
+	if (message.params[1] != "0" && message.params[1] != "*")
+		client.hostname = message.params[1];
 	if (message.params[2] != "0" && message.params[2] != "*")
 		client.servername = message.params[2];
 	client.username = message.params[0].substr(0, USRLEN);
