@@ -8,11 +8,12 @@ void Server::pass(Message message, Client &client){
         ERR_NEEDMOREPARAMS(client);
         return;
     }
-    if (client.state == ALLOWED || client.state == REGISTERED){
+    if (client.state == REGISTERED){
         dprintf(client.socket_fd, "462 ERR_ALREADYREGISTERED\r\n");
         return;
     }
     if (message.params[0] != _password){
+        client.state = ANONYMOUS;
         dprintf(client.socket_fd, "464 ERR_PASSWDMISMATCH\r\n");
         return;
     }
