@@ -9,6 +9,7 @@
 #include "Message.hpp"
 #include "Channel.hpp"
 #include "Client.hpp"
+#include "ERR_MSG.hpp"
 class Server{
 	
 	private:
