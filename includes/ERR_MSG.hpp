@@ -16,9 +16,9 @@ void    ERR_USERONCHANNEL(Client &client, std::string channel, std::string nick)
 void    ERR_NEEDMOREPARAMS(Client &client);
 void    ERR_USERSDONTMATCH(Client &client);
 void    ERR_ALREADYREGISTERED(Client &client);
-void    ERR_NORECIPIENT(Client &client, std::string nickname, Message &message);
+void    ERR_NORECIPIENT(Client &client, Message &message);
 
-void    ERR_NOTEXTTOSEND(Client &client, std::string nickname);
+void    ERR_NOTEXTTOSEND(Client &client);
 void    ERR_NOTREGISTERED(Client &client);
 
 void    ERR_BADCHANMASK(Client &client, std::string channel_name);

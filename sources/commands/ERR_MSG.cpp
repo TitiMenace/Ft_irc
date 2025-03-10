@@ -189,12 +189,12 @@ void    ERR_ALREADYREGISTERED(Client &client){
 	return;
 }
 
-void    ERR_NORECIPIENT(Client &client, std::string nickname, Message &message){
+void    ERR_NORECIPIENT(Client &client, Message &message){
 	std::stringstream	soutput;
     std::string         output;
 
 	soutput << "411";
-	soutput << " " << nickname;
+	soutput << " " << client.nickname;
 	soutput << " :" << "No recipient given (" << message.command << ")";
 	soutput << "\r\n";
     output = soutput.str();
@@ -202,12 +202,12 @@ void    ERR_NORECIPIENT(Client &client, std::string nickname, Message &message){
 	return;
 }
 
-void    ERR_NOTEXTTOSEND(Client &client, std::string nickname){
+void    ERR_NOTEXTTOSEND(Client &client){
 	std::stringstream	soutput;
     std::string         output;
 
 	soutput << "412";
-	soutput << " " << nickname;
+	soutput << " " << client.nickname;
 	soutput << " :" << "No text to send";
 	soutput << "\r\n";
     output = soutput.str();

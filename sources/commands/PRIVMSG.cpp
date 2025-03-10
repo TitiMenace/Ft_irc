@@ -36,14 +36,12 @@ void Server::privmsg(Message message, Client &client) {
 		return;
 	}
 	
-	std::string nickname = client.nickname.empty() ? "*" : client.nickname;
-
 	if (message.params.size() == 0) {
-		ERR_NORECIPIENT(client,nickname, message);
+		ERR_NORECIPIENT(client, message);
 		return;
 	}
 	if (message.params.size() == 1) {
-		ERR_NOTEXTTOSEND(client, nickname);
+		ERR_NOTEXTTOSEND(client);
 		return;
 	}
 
