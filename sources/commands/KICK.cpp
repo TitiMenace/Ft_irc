@@ -90,7 +90,9 @@ void Server::kick(Message message, Client &client){
 
     channel.list_user.erase(kicked->socket_fd);
     channel.list_operator.erase(kicked->socket_fd);
-    
+    if (channel.list_user.empty())
+        _channel_list.erase(channel.name);
+    //check if channel is empty; if it is remove it
     std::cout << "User " << nickname << " has been kicked from " << channel_name << std::endl;
     //remove the user from the channel (if its in it)
     //send the thing
