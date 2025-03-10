@@ -156,35 +156,6 @@ void    Server::channelflagsGestion(Message message, Client &client){
 
 }
 
-void    Server::userflagsGestion(Message message, Client client){
-
-    std::string user = message.params[0];
-    std::string flags;
-   // size_t  nb_args = 0;
-
-    if (message.params.size() <= 1){
-        std::cout << "missing flags" << std::endl;
-        ERR_UMODEUNKNOWNFLAG(client, '0');
-        return;
-   }
-  /* if(message.params[1][0] == '+'){
-        flags = message.params[1].substr(1, message.params.size());
-        for (size_t i = 0; i < flags.size(); i++){
-        
-            switch (flags[i]){
-
-                case 't':
-                            break;
-                default:
-                            break;
-            }
-        }  
-    }*/
-    //ERR_UMODEUNKNOWNFLAG(client, '0');
-    return;
-
-}
- 
 void	RPL_CHANNELMODEIS(Channel &channel, Client &client){
 
     std::string modes = getchannelmodes(channel);
@@ -208,60 +179,19 @@ void Server::mode(Message message, Client &client) {
     std::string target = message.params[0];
     std::string arg;
 
-    if (target[0] != '#'){
-        std::cout << "mode lance avec cette target " << target << std::endl;
-        for ( std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
-            
-            std::cout << "it pointe vers : " << it->second.nickname << std::endl;
-            if (it->second.nickname == target){
-                if (it->second.nickname != client.nickname){
-                    std::cout << "\n\n user qui appelle mode : " << client.nickname << " et recherche avec second.nickname : " << it->second.nickname << std::endl;
-                    return ERR_USERSDONTMATCH(client);
-                }
-                else {
-                    userflagsGestion(message, client);
-                    return;
-                }
-            }
-        }
-        return ERR_NOSUCHNICK(client, "");
-        
-    }
-    
-    else {
-        std::cout << "fonctione mode pour le channel activated" << std::endl;    
-        for ( std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
-            if (it->first == target){
-            
-                if (_channel_list[target].list_operator.find(client.socket_fd) == _channel_list[target].list_operator.end())
-                    ERR_CHANOPRIVSNEEDED(client, target);
-                else if (message.params[1].empty())
-                    RPL_CHANNELMODEIS(_channel_list[target], client);
-                else
-                    channelflagsGestion(message, client);
-            }
+    for ( std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
+        if (it->first == target){
+            if (_channel_list[target].list_operator.find(client.socket_fd) == _channel_list[target].list_operator.end())
+                ERR_CHANOPRIVSNEEDED(client, target);
+            else if (message.params[1].empty())
+                RPL_CHANNELMODEIS(_channel_list[target], client);
             else
-                ERR_NOSUCHCHANNEL(client, target);
-
+                channelflagsGestion(message, client);
         }
-    }   
-    return;
-}
-    //if (!message.params[2].empty())
-      //  arg = message.params[2];
-
-    /*for (size_t i = 0; i < modes.lengthRR_UMODEUNKNOWNFLAG(Client (); ++i) {
-        char mode = modes[i];
-        if (mode == '+' || mode == '-') {
-            std::cout << channel << " has mode " << mode << std::endl;
-        }
-        else{
-            std::cout << "incorrect begin char for mode : " << mode << std::endl;    
-        }
+        else
+            ERR_NOSUCHCHANNEL(client, target);
     }
-    for (size_t i = 2; i < message.params.size(); ++i) {
-        std::cout << "Mode parameter: " << message.params[i] << std::endl;
-    }}
+}
 
 // · i: Set/remove Invite-only channel
 
@@ -270,4 +200,5 @@ void Server::mode(Message message, Client &client) {
 // · k: Set/remove the channel key (password)
 
 // · o: Give/take channel operator privilege
-*/
+
+// · l: Set/remove the user limit to channel
