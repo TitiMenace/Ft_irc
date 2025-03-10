@@ -4,23 +4,38 @@
 #include "Channel.hpp"
 #include "parsingUtils.hpp"
 
-void	sendChannelTopic(Channel &channel, std::string topic, Client &client){
+void sendChannelTopic(Channel &channel, std::string topic, Client &client) {
+    std::cout << "on envoit le topic a tout le monde dans le channel" << std::endl;
     
-	std::cout << "on envoit le topic a tout le monde dans le channel" << std::endl;
-    
-    for (std::map<int, Client>::iterator it = channel.list_user.begin(); it != channel.list_user.end(); it++){
-        dprintf(it->first, ":%s TOPIC %s :%s\r\n",client.nickname.c_str(), channel.name.c_str(), topic.c_str());
-	
-        //If RPL_TOPIC is returned to the client sending this command,
-        //  RPL_TOPICWHOTIME SHOULD also be sent to that client.
+    for (std::map<int, Client>::iterator it = channel.list_user.begin(); it != channel.list_user.end(); it++) {
+        std::stringstream soutput;
+        std::string output;
+        
+        soutput << ":" << client.nickname << " TOPIC " << channel.name << " :" << topic << "\r\n";
+        output = soutput.str();
+        
+        dprintf(it->first, "%s", output.c_str());
     }
-	
 }
-void	RPL_TOPIC(Channel &channel, Client &client){
-    dprintf(client.socket_fd, "332 %s %s :%s\r\n",client.nickname.c_str(), channel.name.c_str(), channel.topic.c_str());
+
+void RPL_TOPIC(Channel &channel, Client &client) {
+    std::stringstream soutput;
+    std::string output;
+    
+    soutput << "332 " << client.nickname << " " << channel.name << " :" << channel.topic << "\r\n";
+    output = soutput.str();
+    
+    dprintf(client.socket_fd, "%s", output.c_str());
 }
-void	RPL_NOTOPIC(Channel &channel, Client &client){
-    dprintf(client.socket_fd, "331 %s %s :%s\r\n",client.nickname.c_str(), channel.name.c_str(), "No topic is set");
+
+void RPL_NOTOPIC(Channel &channel, Client &client) {
+    std::stringstream soutput;
+    std::string output;
+    
+    soutput << "331 " << client.nickname << " " << channel.name << " :No topic is set\r\n";
+    output = soutput.str();
+    
+    dprintf(client.socket_fd, "%s", output.c_str());
 }
 
 void Server::topic(Message message, Client &client){

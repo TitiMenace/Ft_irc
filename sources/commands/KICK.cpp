@@ -3,13 +3,22 @@
 #include "Server.hpp"
 #include "parsingUtils.hpp"
 #include <vector>
-void	RPL_KICK(Channel &channel, Client &client, std::string kicked, std::string source, std::string comment = ""){
-    if (!comment.empty())
-        dprintf(client.socket_fd, ":%s KICK %s %s :%s\r\n",source.c_str(),channel.name.c_str(),kicked.c_str(),  comment.c_str());
-    else
-        dprintf(client.socket_fd, ":%s KICK %s %s\r\n",source.c_str(),channel.name.c_str(),kicked.c_str());
+void RPL_KICK(Channel &channel, Client &client, std::string kicked, std::string source, std::string comment = "") {
+    std::stringstream soutput;
+    std::string output;
     
+    soutput << ":" << source << " KICK " << channel.name << " " << kicked;
+    
+    if (!comment.empty()) {
+        soutput << " :" << comment;
+    }
+    
+    soutput << "\r\n";
+    output = soutput.str();
+    
+    dprintf(client.socket_fd, "%s", output.c_str());
 }
+
 void Server::kick(Message message, Client &client){
     std::cout << "KICK command recieved" << std::endl;
     if (message.params.size() < 2){
