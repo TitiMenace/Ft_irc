@@ -10,6 +10,7 @@ FILES		= main \
 			Server \
 			Channel \
 			Message \
+			commands/RPL \
 			commands/PASS \
 			commands/NICK \
 			commands/USER \
