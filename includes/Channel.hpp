@@ -58,4 +58,4 @@ void    ERR_NORECIPIENT(Client &client, std::string nickname, Message &message);
 void    ERR_NOTEXTTOSEND(Client &client, std::string nickname);
 void    ERR_NOTREGISTERED(Client &client);
 
-
+void    ERR_BADCHANMASK(Client &client, std::string channel_name);

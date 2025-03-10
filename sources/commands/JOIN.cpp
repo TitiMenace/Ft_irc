@@ -82,7 +82,8 @@ void Server::join(Message message, Client &client){
     }
     std::vector<std::string> params_channels_list;
     if (!parseChannelList(message.params[0], params_channels_list)){
-        // ERR_BADCHANMASK (476)
+        // ERR_BADCHANMASK (476)ERR_BADCHANMASK
+        ERR_BADCHANMASK(client, message.params[0]);
         std::cout << "---parsechannel issue ----- \n";
         return;
     }

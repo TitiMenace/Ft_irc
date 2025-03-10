@@ -37,6 +37,20 @@ void    ERR_INVITEONLYCHAN(Client &client, Channel &channel){
 	return;
 }
 
+void    ERR_BADCHANMASK(Client &client, std::string channel_name){
+	std::stringstream	soutput;
+    std::string         output;
+
+	soutput << "475";
+	soutput << " " << channel_name;
+	soutput << " :" << "Bad Channel Mask";
+	soutput << "\r\n";
+    output = soutput.str();
+
+    dprintf(client.socket_fd, "%s", output.c_str());
+	return;
+}
+
 void    ERR_BADCHANNELKEY(Client &client, Channel &channel){
 	std::stringstream	soutput;
     std::string         output;
