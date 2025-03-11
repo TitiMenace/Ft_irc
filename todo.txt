@@ -39,3 +39,310 @@ Style:
 
 Errors:
 - If TCP connection failed, don't run the server
+
+
+CLIENT 1 connect disconnect
+=====================================================================
+CLIENT1 connect
+signal tests?
+=====================================================================
+CLIENT1 connect
+PASS erroneous
+=====================================================================
+CLIENT1 connect
+PASS not enough params
+=====================================================================
+CLIENT1 connect
+PASS valid
+NICK erroneous
+=====================================================================
+CLIENT1 connect
+PASS valid
+NICK not enough params
+=====================================================================
+CLIENT1 connect
+PASS valid
+NICK valid
+USER erroneous
+=====================================================================
+CLIENT1 connect
+PASS valid
+NICK valid
+USER not enough params
+=====================================================================
+CLIENT1 connect
+PASS valid
+NICK valid
+USER valid
+PASS valid
+NICK already registered
+USER already registered
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK already in use
+=====================================================================
+
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+=====================================================================
+CLIENT1 connect
+CLIENT1 JOIN  #channel1
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 JOIN  #channel1
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN bad_channel_mask
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN not enough params
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN #channel1
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 MODE not registered
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 MODE no arguments
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN #channel1
+CLIENT1 MODE #channel1 missing flag
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN #channel1
+CLIENT1 MODE #channel1 +i
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN #channel1
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN #channel1
+CLIENT2 MODE need operator privilege
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN #channel1
+CLIENT1 MODE #channel1 +i
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN #channel1 needs to be invited
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN #channel1
+CLIENT1 MODE #channel1 +l 1
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN #channel1 is limited
+
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN #channel1
+CLIENT1 MODE #channel1 +il 1
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN #channel1 invite only
+
+CLIENT1 MODE #channel1 -i
+
+CLIENT2 JOIN #channel1 is limited
+
+CLIENT1 MODE #channel1 -l
+
+CLIENT2 JOIN #channel1
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN  #channel1
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN  #channel1
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN  #channel1,#channel2,#channel3
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN  #channel3
+=====================================================================
+
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN  #channel1
+
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN  #channel1
+
+CLIENT3 connect
+CLIENT3 PASS valid
+CLIENT3 NICK valid
+CLIENT3 USER valid
+CLIENT3 JOIN  #channel1
+
+CLIENT1 TOPIC  #channel1 :changed_topic
+======================================================================================
+
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN  #channel1
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN  #channel1
+
+CLIENT1 KICK not enough params
+
+======================================================================================
+
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN  #channel1
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN  #channel1
+
+CLIENT1 KICK #channel1 not enough params
+
+
+======================================================================================
+
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN  #channel1
+CLIENT1 KICK #channel1 nonexistant_target
+
+======================================================================================
+
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN  #channel1
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN  #channel1
+
+CLIENT1 KICK #channel1 CLIENT2 
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN  #channel1
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN  #channel1
+
+
+=====================================================================
+CLIENT1 connect
+CLIENT1 PASS valid
+CLIENT1 NICK valid
+CLIENT1 USER valid
+CLIENT1 JOIN  #channel1
+
+CLIENT2 connect
+CLIENT2 PASS valid
+CLIENT2 NICK valid
+CLIENT2 USER valid
+CLIENT2 JOIN  #channel1
