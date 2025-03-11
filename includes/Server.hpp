@@ -23,6 +23,7 @@ class Server{
 		void	_acceptClient(int epoll_fd);
 		bool	_runCommand(Client &client, std::string &buffer, std::size_t &buffer_pos);
 		void	_readMessages(struct epoll_event event);
+		void	_sendMessages(Client &client);
 		void	_disconnectClient(Client &client);
 
 	public:

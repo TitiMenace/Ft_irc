@@ -102,10 +102,10 @@ void	Server::_acceptClient(int epoll_fd) {
 	std::cout << "New connection, fd: " << "[" << client_socket  << "]" << std::endl;
 
 	event.data.fd = client_socket;
-	event.events = EPOLLIN; // | EPOLLOUT | EPOLLHUP | EPOLLRDHUP;
+	event.events = EPOLLIN | EPOLLOUT; // | EPOLLHUP | EPOLLRDHUP;
 	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_socket, &event);
 	//Add a client to the client map users
-	Client client = {client_socket, ANONYMOUS, "", "", "", "", "", ""};
+	Client client = {client_socket, ANONYMOUS, "", "", "", "", "", "", ""};
 	_users[client_socket] = client;
 }
 
@@ -171,6 +171,17 @@ void	Server::_disconnectClient(Client &client) {
 	close(client.socket_fd);
 }
 
+void	Server::_sendMessages(Client &client) {
+	if (client.outBuffer.empty())
+		return;
+
+	ssize_t nbBytes = send(client.socket_fd, &client.outBuffer[0], client.outBuffer.size(), 0);
+	if (nbBytes == -1)
+		return;
+	
+	client.outBuffer = client.outBuffer.substr(nbBytes);
+}
+
 void	Server::_readMessages(struct epoll_event event) {
 	int client_socket = event.data.fd;
 	if (event.events & EPOLLIN) {
@@ -186,7 +197,7 @@ void	Server::_readMessages(struct epoll_event event) {
 		}
 		std::cout << "[" << client_socket << "] Message recieved: " << std::endl << std::string(buffer, bytes_received) << std::endl;					
 		
-		std::string &client_buffer = _users[client_socket].buffer;
+		std::string &client_buffer = _users[client_socket].inBuffer;
 		std::size_t buffer_pos = 0;//client_buffer.length();
 		client_buffer.append(buffer, bytes_received);
 	
@@ -230,6 +241,9 @@ void	Server::runServer(void){
 			if (events[i].data.fd == _master_fd) {
 				_acceptClient(epoll_fd);
 			} else {
+				if (event.events & EPOLLOUT) {
+					_sendMessages(_users[events[i].data.fd]);
+				}
 				_readMessages(events[i]);
 			}
 			debug_users_map(_users); 

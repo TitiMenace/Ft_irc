@@ -63,6 +63,9 @@ void Server::privmsg(Message message, Client &client) {
 		// whatever error when you send a message to someone not registered
 		return;
 	}
-	dprintf(target->socket_fd, ":%s PRIVMSG %s :%s\r\n", client.nickname.c_str(), target_name.c_str(), text.c_str());
+
+	std::stringstream output;
+	output << ":" << client.nickname << " PRIVMSG " << target_name << " :" << text << "\r\n";
+	target->outBuffer += output.str();
 }
 
