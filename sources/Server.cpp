@@ -167,8 +167,8 @@ void	Server::_disconnectClient(Client &client) {
 	}
 
 	// Erase client from the user list
-	_users.erase(client.socket_fd);
 	close(client.socket_fd);
+	_users.erase(client.socket_fd);
 }
 
 void	Server::_sendMessages(Client &client) {

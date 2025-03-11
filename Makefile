@@ -2,7 +2,7 @@
 NAME 		= ircserv
 
 CXX			= clang++
-CXXFLAGS	= -g3 -Wall -Wextra -Werror -std=c++98
+CXXFLAGS	= -gdwarf-4 -Wall -Wextra -Werror -std=c++98
 CPPFLAGS	= -Iincludes -MP -MMD
 
 FILES		= main \

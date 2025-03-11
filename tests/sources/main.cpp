@@ -52,25 +52,22 @@ void test_response(const std::string &request, const std::string &expected_respo
 		stop_server(server_pid);
 		throw std::runtime_error("Couldn't send the full request to the server");
 	}
-	
 	// Sleep 1 second
+
 	usleep(1000000);
 
 	std::string actual_reponse;
 	actual_reponse.resize(expected_response.size());
-
 	ssize_t nbBytes = recv(client_socket, &actual_reponse[0], expected_response.size(), MSG_DONTWAIT);
 	if (nbBytes == -1) {
 		stop_server(server_pid);
 		throw std::runtime_error("Couldn't receive data from the server (possible crash)");
 	}
 	actual_reponse.resize(nbBytes);
-	
 	if (actual_reponse != expected_response.substr(0, nbBytes)) {
 		stop_server(server_pid);
 		throw std::runtime_error(std::string("Response doesn't match what was expected: ") + actual_reponse);
 	}
-	
 	if (actual_reponse.size() != expected_response.size()) {
 		stop_server(server_pid);
 
@@ -94,14 +91,12 @@ void test_response(const std::string &request, const std::string &expected_respo
 	stop_server(server_pid);
 }
 
-
 Test(registration, valid) try {
 	std::string request = \
 		"PASS password\r\n"
 		"NICK velimir\r\n"
 		"USER velimir * 0 velimir\r\n"
 	;
-
 	std::string expected_response = \
 		"001 velimir :Welcome to the WiZ insane chat of distortion of reality between worlds, velimir!velimir@velimir\r\n"
 		"002 velimir :Your host is , running version v.1\r\n"
