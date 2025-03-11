@@ -1,6 +1,6 @@
 #include <stdexcept>
 #include <sstream>
-#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -18,7 +18,7 @@ std::string u16_to_string(uint16_t port) {
 // Launches the ircsrv executable in a separate process.
 // If the launch failed, the process will exit with status 125.
 // TODO: use pipes to detect a failed launch instead
-pid_t	launch_server(uint16_t port, const std::string &password) throw (std::runtime_error)
+pid_t	launch_server(uint16_t port, const std::string &password)
 {
 	int log_fd = open("/dev/null", O_WRONLY | O_CLOEXEC);
 	if (log_fd == -1)
@@ -59,7 +59,32 @@ pid_t	launch_server(uint16_t port, const std::string &password) throw (std::runt
 	return server_pid;
 }
 
-void	stop_server(pid_t server_pid) throw(std::runtime_error)
+// Creates a TCP socket and connects it to a local server on port `port`
+int	connect_to_server(uint16_t port) {
+	struct protoent		*protocol_entry;
+	int					protocol;
+	struct sockaddr_in	server_address;
+	int					client_fd;
+
+	if ((protocol_entry = getprotobyname("tcp")) == NULL)
+		throw std::runtime_error("The client couldn't retrieve the TCP protocol");
+
+	protocol = protocol_entry->p_proto;
+	if ((client_fd = socket(AF_INET, SOCK_STREAM, protocol)) == -1)
+		throw std::runtime_error(std::string("The client couldn't create a socket: ") + strerror(errno));
+
+	server_address.sin_family = AF_INET;
+	server_address.sin_port = htons(port);
+	inet_pton(AF_INET, "127.0.0.1", &server_address.sin_addr);
+	if (connect(client_fd, (struct sockaddr *)&server_address, sizeof(server_address)) == -1)
+	{
+		close(client_fd);
+		throw std::runtime_error(std::string("The client couldn't connect to the server: ") + strerror(errno));
+	}
+	return client_fd;
+}
+
+void	stop_server(pid_t server_pid)
 {
 	int wstatus;
 
