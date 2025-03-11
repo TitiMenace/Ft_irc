@@ -211,7 +211,7 @@ void ERR_NONICKNAMEGIVEN(Client &client) {
 void ERR_NICKNAMEINUSE(Client &client, std::string nickname) {
     std::stringstream output;
     
-    output << "433 ERR_NICKNAMEINUSE ";
+    output << "433 ";
     output << nickname;
     output << " :Nickname is already in use.";
     output << "\r\n";

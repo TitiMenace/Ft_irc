@@ -31,7 +31,7 @@ void Server::nick(Message message, Client &client){
         std::cerr << "NOT ALLOWED OR NOT REGISTERED" << std::endl;
         return;
     }
-   
+
     if (message.params.size() < 1){
         ERR_NONICKNAMEGIVEN(client);
         return;
@@ -40,17 +40,16 @@ void Server::nick(Message message, Client &client){
         ERR_ERRONEUSNICKNAME(client);
         return;
     }
-
+    
     for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); ++it) {
-        if (it->second.nickname == message.params[0]) {
+        if (it->second.nickname == message.params[0] && it->second.nickname != client.nickname) {
             ERR_NICKNAMEINUSE(client,  message.params[0]);
             return;
         }
     }
 
     client.nickname = message.params[0];
-    client.nickname = message.params[0];
-    if (!client.username.empty()){
+    if (!client.username.empty() && client.state == ALLOWED){
         client.state = REGISTERED;//send RPL_WELCOME and stuff
 		RPL_WELCOME(client);
     }
