@@ -124,11 +124,13 @@ void    ERR_USERONCHANNEL(Client &client, std::string channel, std::string nick)
 	return;
 }
 
-void    ERR_NEEDMOREPARAMS(Client &client){
+void    ERR_NEEDMOREPARAMS(Client &client, Message &message){
 	std::stringstream	output;
 
 	output << "461";
-	output << " " << client.nickname;
+	if (!client.nickname.empty())
+		output << " " << client.nickname;
+	output << " " << message.command;
 	output << " :" << "Not enough parameters";
 	output << "\r\n";
 	client.outBuffer += output.str();
@@ -193,7 +195,7 @@ void    ERR_NOTREGISTERED(Client &client){
 void ERR_ERRONEUSNICKNAME(Client &client) {
     std::stringstream output;
     
-    output << "432 ERR_ERRONEUSNICKNAME";
+    output << "432 " << ":Erroneus nickname";
     output << "\r\n";
     client.outBuffer += output.str();
 }
@@ -201,7 +203,7 @@ void ERR_ERRONEUSNICKNAME(Client &client) {
 void ERR_NONICKNAMEGIVEN(Client &client) {
     std::stringstream output;
     
-    output << "431 ERR_ERRONEUSNICKNAME";
+    output << "461 :No nickname given";
     output << "\r\n";
     client.outBuffer += output.str();
 }

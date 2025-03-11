@@ -62,10 +62,103 @@ Test(registration, valid) try {
 		"001 velimir :Welcome to the WiZ insane chat of distortion of reality between worlds, velimir!velimir@velimir\r\n"
 		"002 velimir :Your host is , running version v.1\r\n"
 		"003 velimir :This server was created le 01/01/01\r\n"
-		"004 velimir : v.1 no user mode support +tlkoiq\r\n"
+		"004 velimir :v.1 no user mode support +tlkoiq\r\n"
 	;
 
-	test_response(request, expected_response, 8080, "password");
+	test_response(request, expected_response, 3000, "password");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+Test(pass, password_mismatch) try {
+	std::string request = \
+		"PASS invalid\r\n"
+	;
+
+	std::string expected_response = \
+		"464 :Password incorrect\r\n"
+	;
+
+	test_response(request, expected_response, 3001, "password");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+
+Test(pass, not_enough_params) try {
+	std::string request = \
+		"PASS\r\n"
+	;
+
+	std::string expected_response = \
+	"461 PASS :Not enough parameters\r\n";
+	;
+
+	test_response(request, expected_response, 3001, "password");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+
+Test(nick, erroneous_nickname) try {
+	std::string request = \
+		"PASS password\r\n"
+		"NICK #velimir\r\n"
+	;
+
+	std::string expected_response = \
+		"432 :Erroneus nickname\r\n"
+	;
+
+	test_response(request, expected_response, 3002, "password");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+
+Test(nick, not_enough_params) try {
+	std::string request = \
+		"PASS password\r\n"
+		"NICK\r\n"
+	;
+
+	std::string expected_response = \
+		"461 :No nickname given\r\n"
+	;
+
+	test_response(request, expected_response, 3003, "password");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+Test(user, not_enough_params) try {
+	std::string request = \
+		"PASS password\r\n"
+		"NICK velimir\r\n"
+		"USER\r\n"
+	;
+
+	std::string expected_response = \
+		"461 velimir USER :Not enough parameters\r\n";
+	;
+
+	test_response(request, expected_response, 300 "password");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+Test(user, errorchecou) try {
+	std::string request = \
+		"PASS password\r\n"
+		"NICK velimir\r\n"
+		"USER\r\n"
+	;
+
+	std::string expected_response = \
+		"461 velimir USER :Not enough parameters\r\n";
+	;
+
+	test_response(request, expected_response, 300 "password");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
