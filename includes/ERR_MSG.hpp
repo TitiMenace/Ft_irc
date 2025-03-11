@@ -22,3 +22,10 @@ void    ERR_NOTEXTTOSEND(Client &client);
 void    ERR_NOTREGISTERED(Client &client);
 
 void    ERR_BADCHANMASK(Client &client, std::string channel_name);
+
+void    ERR_ERRONEUSNICKNAME(Client &client);
+void    ERR_NONICKNAMEGIVEN(Client &client);
+void    ERR_NICKNAMEINUSE(Client &client, std::string nickname);
+
+void    ERR_ALREADYREGISTERED(Client &client);
+void    ERR_PASSWDMISMATCH(Client &client);

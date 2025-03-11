@@ -10,12 +10,9 @@ void sendChannelTopic(Channel &channel, std::string topic, Client &client) {
     
     for (std::map<int, Client>::iterator it = channel.list_user.begin(); it != channel.list_user.end(); it++) {
         std::stringstream soutput;
-        std::string output;
-        
+
         soutput << ":" << client.nickname << " TOPIC " << channel.name << " :" << topic << "\r\n";
-        output = soutput.str();
-        
-        dprintf(it->first, "%s", output.c_str());
+        it->second.outBuffer += soutput.str();
     }
 }
 

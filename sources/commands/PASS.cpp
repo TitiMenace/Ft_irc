@@ -9,12 +9,12 @@ void Server::pass(Message message, Client &client){
         return;
     }
     if (client.state == REGISTERED){
-        dprintf(client.socket_fd, "462 ERR_ALREADYREGISTERED\r\n");
+        ERR_ALREADYREGISTERED(client);
         return;
     }
     if (message.params[0] != _password){
         client.state = ANONYMOUS;
-        dprintf(client.socket_fd, "464 ERR_PASSWDMISMATCH\r\n");
+        ERR_PASSWDMISMATCH(client);
         return;
     }
     client.state = ALLOWED;

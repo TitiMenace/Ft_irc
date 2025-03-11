@@ -8,20 +8,8 @@
 // chanstring =/ %x2D-39 / %x3B-FF
 //                 ; any octet except NUL, BELL, CR, LF, " ", "," and ":"
 
-void    joinMessage(Client &client, std::string channel_name){
-
-    std::string cname = channel_name;//.substr(1, channel_name.size());
-    dprintf(client.socket_fd, ":%s!%s@%s JOIN %s\r\n",client.nickname.c_str(),client.username.c_str(),client.hostname.c_str(), cname.c_str());
-    return;
-}
-
 void Server::join(Message message, Client &client){
-    
-    // std::cerr << "param 1 " << message.params[0] << std::endl;
-    // std::cerr << "param 2 " << message.params[1] << std::endl;
-    // std::cerr << "param 3 " << message.params[2] << std::endl;
-    // std::cerr << "param 4 " << message.params[3] << std::endl;
-   
+
     if (client.state != REGISTERED) {
         std::cerr << "NOT REGISTERED" << std::endl;
         ERR_NOTREGISTERED(client);
@@ -72,8 +60,7 @@ void Server::join(Message message, Client &client){
             _channel_list[channel_name] = Channel(channel_name, "topic", "password", 1);
             _channel_list[channel_name].list_user[client.socket_fd] = client;
             _channel_list[channel_name].list_operator[client.socket_fd] = client;
-            dprintf(2, "Channel : %s a bien ete cree et %s est bien user et %s est bien operateur\r\n", _channel_list[channel_name].name.c_str(), _channel_list[channel_name].list_user[client.socket_fd].nickname.c_str(), _channel_list[channel_name].list_operator[client.socket_fd].nickname.c_str());
-            joinMessage(client, channel_name);
+            RPL_JOIN(client, channel_name);
             RPL_NAMREPLY(client, _channel_list[channel_name]);
             RPL_ENDOFNAMES(client, _channel_list[channel_name]);
             continue;
@@ -82,7 +69,6 @@ void Server::join(Message message, Client &client){
         else if (_channel_list[channel_name].mode & KEY_PROTECTED &&
             (message.params.size() < 2 || (i < keys_list.size() &&
             _channel_list[channel_name].key != keys_list[i]))){
-            dprintf(2, "incorrect key for channel %s or no key gven\r\n", channel_name.c_str());
             //ERR_BADCHANNELKEY (475) 
             continue;
         }
@@ -90,7 +76,6 @@ void Server::join(Message message, Client &client){
             _channel_list[channel_name].list_user.size() >= _channel_list[channel_name].size_limit){
 
             ERR_CHANNELISFULL(client, _channel_list[channel_name]);
-            dprintf(2, "User limit for channel %s has been reached\r\n", channel_name.c_str());
             continue;
         }
         else if (_channel_list[channel_name].mode & INVITE_ONLY &&
@@ -100,8 +85,7 @@ void Server::join(Message message, Client &client){
             continue;
         }
             it->second.list_user[client.socket_fd] = client;
-            dprintf(2, "%s : est bien arrive dans le channel : %s\r\n", client.nickname.c_str(), _channel_list[channel_name].name.c_str());
-            joinMessage(client, channel_name);
+            RPL_JOIN(client, channel_name);
             RPL_NAMREPLY(client, _channel_list[channel_name]);
             RPL_ENDOFNAMES(client, _channel_list[channel_name]);
     }

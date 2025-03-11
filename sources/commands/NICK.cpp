@@ -22,6 +22,8 @@ bool validateNickname(const std::string& nickname) {
     return true;
 }
 
+
+ 
 void Server::nick(Message message, Client &client){
     std::cout << "Command NICK starting" << std::endl;
    
@@ -31,29 +33,22 @@ void Server::nick(Message message, Client &client){
     }
    
     if (message.params.size() < 1){
-        dprintf(client.socket_fd, "431 ERR_NONICKNAMEGIVEN\r\n");
+        ERR_NONICKNAMEGIVEN(client);
         return;
     }
     if (!validateNickname(message.params[0])){
-        dprintf(client.socket_fd, "432 ERR_ERRONEUSNICKNAME\r\n");  
-        std::cerr << "Nickname send by client is erroneous." << std::endl;
+        ERR_ERRONEUSNICKNAME(client);
         return;
     }
 
     for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); ++it) {
         if (it->second.nickname == message.params[0]) {
-            dprintf(client.socket_fd, "433 ERR_NICKNAMEINUSE %s :Nickname is already in use.\r\n", message.params[0].c_str());
-            std::cerr << "Nickname already in use: " << message.params[0] << std::endl;
+            ERR_NICKNAMEINUSE(client,  message.params[0]);
             return;
         }
     }
 
     client.nickname = message.params[0];
-
-    std::cout << "====NICK COMMAND DONE======\n\n" << std::endl;
-	std::cout << "For Client (" << client.socket_fd << ")\n\n";
-	std::cout << "Nickname : "<< client.nickname << std::endl;
-
     client.nickname = message.params[0];
     if (!client.username.empty()){
         client.state = REGISTERED;//send RPL_WELCOME and stuff

@@ -5,225 +5,221 @@
 #include "Channel.hpp"
 
 void    ERR_CHANNELISFULL(Client &client, Channel &channel){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
 	std::cerr << "err chann is full called\n";
 
-	soutput << "471";
-	soutput << " " << client.nickname;
-	soutput << " " << channel.name;
-	soutput << " :" << "Cannot join channel (+l)";
-	soutput << "\r\n";
-    output = soutput.str();
-
-	std::cerr << output;
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "471";
+	output << " " << client.nickname;
+	output << " " << channel.name;
+	output << " :" << "Cannot join channel (+l)";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_INVITEONLYCHAN(Client &client, Channel &channel){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "473";
-	soutput << " " << client.nickname;
-	soutput << " " << channel.name;
-	soutput << " :" << "Cannot join channel (+i)";
-	soutput << "\r\n";
-    output = soutput.str();
-
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "473";
+	output << " " << client.nickname;
+	output << " " << channel.name;
+	output << " :" << "Cannot join channel (+i)";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_BADCHANMASK(Client &client, std::string channel_name){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "475";
-	soutput << " " << channel_name;
-	soutput << " :" << "Bad Channel Mask";
-	soutput << "\r\n";
-    output = soutput.str();
-
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "475";
+	output << " " << channel_name;
+	output << " :" << "Bad Channel Mask";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_BADCHANNELKEY(Client &client, Channel &channel){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "475";
-	soutput << " " << client.nickname;
-	soutput << " " << channel.name;
-	soutput << " :" << "Cannot join channel (+k)";
-	soutput << "\r\n";
-    output = soutput.str();
-
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "475";
+	output << " " << client.nickname;
+	output << " " << channel.name;
+	output << " :" << "Cannot join channel (+k)";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_UMODEUNKNOWNFLAG(Client &client, char c){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "501";
-	soutput << " " << client.nickname;
-	soutput << " :" << "Unknown MODE flag (" << c << ")";
-	soutput << "\r\n";
-    output = soutput.str();
-
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "501";
+	output << " " << client.nickname;
+	output << " :" << "Unknown MODE flag (" << c << ")";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 void    ERR_NOSUCHCHANNEL(Client &client, std::string channel){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "403";
-	soutput << " " << client.nickname;
-	soutput << " " << channel;
-	soutput << " :" << "No such channel";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "403";
+	output << " " << client.nickname;
+	output << " " << channel;
+	output << " :" << "No such channel";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_CHANOPRIVSNEEDED(Client &client, std::string channel){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "482";
-	soutput << " " << client.nickname;
-	soutput << " " << channel;
-	soutput << " :" << "You're not channel operator";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "482";
+	output << " " << client.nickname;
+	output << " " << channel;
+	output << " :" << "You're not channel operator";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_NOTONCHANNEL(Client &client, std::string channel){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "442";
-	soutput << " " << client.nickname;
-	soutput << " " << channel;
-	soutput << " :" << "You're not on that channel";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "442";
+	output << " " << client.nickname;
+	output << " " << channel;
+	output << " :" << "You're not on that channel";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_NOSUCHNICK(Client &client, std::string nickname){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "401";
-	soutput << " " << client.nickname << " " << nickname;
-	soutput << " :" << "No such nick/channel";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "401";
+	output << " " << client.nickname << " " << nickname;
+	output << " :" << "No such nick/channel";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 
 void    ERR_USERONCHANNEL(Client &client, std::string channel, std::string nick){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "443";
-	soutput << " " << client.nickname;
-    soutput << " " << nick;
-	soutput << " " << channel;
-	soutput << " :" << "is already on channel";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "443";
+	output << " " << client.nickname;
+    output << " " << nick;
+	output << " " << channel;
+	output << " :" << "is already on channel";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_NEEDMOREPARAMS(Client &client){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "461";
-	soutput << " " << client.nickname;
-	soutput << " :" << "Not enough parameters";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "461";
+	output << " " << client.nickname;
+	output << " :" << "Not enough parameters";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_USERSDONTMATCH(Client &client){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "502";
-	soutput << " " << client.nickname;
-	soutput << " :" << "Cant change mode for other users";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "502";
+	output << " " << client.nickname;
+	output << " :" << "Cant change mode for other users";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_ALREADYREGISTERED(Client &client){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "462";
-	soutput << " " << client.nickname;
-	soutput << " :" << "You may not reregister";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "462";
+	output << " " << client.nickname;
+	output << " :" << "You may not reregister";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_NORECIPIENT(Client &client, Message &message){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "411";
-	soutput << " " << client.nickname;
-	soutput << " :" << "No recipient given (" << message.command << ")";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "411";
+	output << " " << client.nickname;
+	output << " :" << "No recipient given (" << message.command << ")";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_NOTEXTTOSEND(Client &client){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "412";
-	soutput << " " << client.nickname;
-	soutput << " :" << "No text to send";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "412";
+	output << " " << client.nickname;
+	output << " :" << "No text to send";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
 }
 
 void    ERR_NOTREGISTERED(Client &client){
-	std::stringstream	soutput;
-    std::string         output;
+	std::stringstream	output;
 
-	soutput << "451";
-	soutput << " " << client.nickname;
-	soutput << " :" << "You have not registered";
-	soutput << "\r\n";
-    output = soutput.str();
-    dprintf(client.socket_fd, "%s", output.c_str());
+	output << "451";
+	output << " " << client.nickname;
+	output << " :" << "You have not registered";
+	output << "\r\n";
+	client.outBuffer += output.str();
 	return;
+}
+
+void ERR_ERRONEUSNICKNAME(Client &client) {
+    std::stringstream output;
+    
+    output << "432 ERR_ERRONEUSNICKNAME";
+    output << "\r\n";
+    client.outBuffer += output.str();
+}
+
+void ERR_NONICKNAMEGIVEN(Client &client) {
+    std::stringstream output;
+    
+    output << "431 ERR_ERRONEUSNICKNAME";
+    output << "\r\n";
+    client.outBuffer += output.str();
+}
+
+void ERR_NICKNAMEINUSE(Client &client, std::string nickname) {
+    std::stringstream output;
+    
+    output << "433 ERR_NICKNAMEINUSE ";
+    output << nickname;
+    output << " :Nickname is already in use.";
+    output << "\r\n";
+    client.outBuffer += output.str();
+}
+
+void ERR_PASSWDMISMATCH(Client &client) {
+    std::stringstream output;
+    
+    output << "464 ERR_PASSWDMISMATCH";
+    output << "\r\n";
+    client.outBuffer += output.str();
 }

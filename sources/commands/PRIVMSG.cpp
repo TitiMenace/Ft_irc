@@ -1,19 +1,19 @@
 #include "Server.hpp"
 #include "parsingUtils.hpp"
 #include <stdio.h>
-
+#include "RPL.hpp"
 // Can send errors:
 // - ERR_NORECIPIENT (411)
 // - ERR_NOTEXTTOSEND (412)
 // - ERR_NOTREGISTERED (451)
 
+	
 void	channelMessage(Channel &channel, std::string output, Client &client){
 	
 	std::cout << "on ecrit a tout le monde dans le channel" << std::endl;
 	for (std::map<int, Client>::iterator it = channel.list_user.begin(); it != channel.list_user.end(); it++){
-
 		if (client.socket_fd != it->first)
-			dprintf(it->first, ":%s PRIVMSG %s :%s\r\n",client.nickname.c_str(), channel.name.c_str(), output.c_str());
+			RPL_PRIVMSG(client,client.nickname, channel.name, output);
 	}
 	
 }
@@ -64,8 +64,7 @@ void Server::privmsg(Message message, Client &client) {
 		return;
 	}
 
-	std::stringstream output;
-	output << ":" << client.nickname << " PRIVMSG " << target_name << " :" << text << "\r\n";
-	target->outBuffer += output.str();
+	RPL_PRIVMSG(*target,client.nickname, target_name, text);
+
 }
 
