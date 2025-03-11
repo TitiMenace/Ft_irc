@@ -234,19 +234,22 @@ void	Server::runServer(void){
 
 	while (true) {
 		int events_received = epoll_wait(epoll_fd, events, EPOLL_MAX_EVENTS, -1);
-		std::cout << "Events received: " << events_received << std::endl;
 		for (int i = 0; i < events_received; i++) {
-			std::cout << "[" << events[i].data.fd << "] ";
-			debug_epoll_events(events[i].events);
 			if (events[i].data.fd == _master_fd) {
 				_acceptClient(epoll_fd);
 			} else {
-				if (event.events & EPOLLOUT) {
+				if (events[i].events & EPOLLOUT) {
 					_sendMessages(_users[events[i].data.fd]);
 				}
 				_readMessages(events[i]);
 			}
-			debug_users_map(_users); 
+
+			if (events[i].events & EPOLLIN) {
+				std::cout << "[" << events[i].data.fd << "] ";
+				std::cout << "Events received: " << events_received << std::endl;
+				debug_epoll_events(events[i].events);
+				debug_users_map(_users);
+			}	 
 		}
 	}
 }

@@ -5,18 +5,18 @@
 void RPL_WELCOME(Client &client) {
     std::stringstream output;
 
-	output << "001" << client.nickname <<
-        ":Welcome to the WiZ insane chat of distortion of reality between worlds, " <<
+	output << "001 " << client.nickname <<
+        " :Welcome to the WiZ insane chat of distortion of reality between worlds, " <<
         client.nickname << "!" << client.nickname << "@" << client.username;
     output << "\r\n";
-	output << "002" << client.nickname << ":Your host is " << 
+	output << "002 " << client.nickname << " :Your host is " << 
         client.servername.c_str() << ", running version " << "v.1";
     output << "\r\n";
-	output << "003" << client.nickname << ":This server was created " << 
+	output << "003 " << client.nickname << " :This server was created " << 
     "le 01/01/01";
     output << "\r\n";	
-	output << "004" << client.nickname << ":" << client.servername
-        << " " << "v.1" << " " << "no user mode support" << " " << "+tlkoiq";
+	output << "004 " << client.nickname << " :" << client.servername
+     << "v.1" << " " << "no user mode support" << " " << "+tlkoiq";
     output << "\r\n";
     client.outBuffer += output.str();;
 }
