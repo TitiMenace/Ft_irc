@@ -5,16 +5,44 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include "tests.hpp"
-void test_response(const std::string &request, const std::string &expected_response, uint16_t port, const std::string &password) {
+uint16_t find_available_port() {
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock == -1) {
+        throw std::runtime_error("Failed to create socket");
+    }
+
+    sockaddr_in addr{};
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = INADDR_ANY;
+    addr.sin_port = 0;  // Let OS pick an available port
+
+    if (bind(sock, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
+        close(sock);
+        throw std::runtime_error("Failed to bind socket");
+    }
+
+    socklen_t addr_len = sizeof(addr);
+    if (getsockname(sock, (struct sockaddr*)&addr, &addr_len) == -1) {
+        close(sock);
+        throw std::runtime_error("Failed to get socket name");
+    }
+
+    uint16_t port = ntohs(addr.sin_port);
+    close(sock);  // Close the socket after getting the port
+    return port;
+}
+
+void test_response(const std::string &request, const std::string &expected_response, const std::string &password) {
 	pid_t	server_pid;
 	int		client_socket;
-
+	uint16_t port_test = find_available_port();
 	//how to check available port
 	//assign avaiable port to shiet
-	server_pid = launch_server(port, password);
+	server_pid = launch_server(port_test, password);
 	try {
-		client_socket = connect_to_server(port);
+		client_socket = connect_to_server(port_test);
 	} catch (...) {
 		stop_server(server_pid);
 		throw;
@@ -67,7 +95,7 @@ Test(registration, valid) try {
 		"004 velimir :v.1 no user mode support +tlkoiq\r\n"
 	;
 
-	test_response(request, expected_response, 3000, "password");
+	test_response(request, expected_response, "password");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
@@ -81,7 +109,7 @@ Test(pass, password_mismatch) try {
 		"464 :Password incorrect\r\n"
 	;
 
-	test_response(request, expected_response, 2999, "password");
+	test_response(request, expected_response, "password");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
@@ -96,7 +124,7 @@ Test(pass, not_enough_params) try {
 	"461 PASS :Not enough parameters\r\n";
 	;
 
-	test_response(request, expected_response, 3001, "password");
+	test_response(request, expected_response, "password");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
@@ -118,7 +146,7 @@ Test(pass, already_registered) try {
 		"462 velimir :You may not reregister\r\n"
 	;
 
-	test_response(request, expected_response, 3004, "password");
+	test_response(request, expected_response, "password");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
@@ -133,7 +161,7 @@ Test(nick, erroneous_nickname) try {
 		"432 :Erroneus nickname\r\n"
 	;
 
-	test_response(request, expected_response, 3002, "password");
+	test_response(request, expected_response, "password");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
@@ -149,7 +177,7 @@ Test(nick, not_enough_params) try {
 		"461 :No nickname given\r\n"
 	;
 
-	test_response(request, expected_response, 3003, "password");
+	test_response(request, expected_response, "password");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
@@ -165,7 +193,7 @@ Test(user, not_enough_params) try {
 		"461 velimir USER :Not enough parameters\r\n";
 	;
 
-	test_response(request, expected_response, 3005, "password");
+	test_response(request, expected_response, "password");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
