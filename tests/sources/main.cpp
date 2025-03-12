@@ -77,6 +77,20 @@ void test_response(const std::string &request, const std::string &expected_respo
 		throw std::runtime_error(std::string("Truncated response received. Maybe increase the response delay.") + actual_reponse);
 	}
 
+	char buffer[1024];
+	std::string extra_data;
+	ssize_t extra;
+	while ((extra = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT)) > 0) {
+		extra_data.append(buffer, extra);
+	}
+
+	if (!extra_data.empty()) {
+		actual_reponse += extra_data;
+		stop_server(server_pid);
+		throw std::runtime_error("Received more data than expected: Response too long. Full response: " + actual_reponse);
+	}
+
+
 	stop_server(server_pid);
 }
 
