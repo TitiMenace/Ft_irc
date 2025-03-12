@@ -146,7 +146,7 @@ void    RPL_ENDOFINVEXLIST(Client &client, Channel &channel){
 void    RPL_JOIN(Client &client, std::string channel_name){
     std::stringstream	output;
     std::string cname = channel_name;//.substr(1, channel_name.size());
-    output << client.socket_fd;
+    
     output << ":" << client.nickname;
     output << "!" << client.username;
     output << "@" << client.hostname; 
