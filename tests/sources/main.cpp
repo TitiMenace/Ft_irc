@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "tests.hpp"
+
 uint16_t find_available_port() {
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
@@ -35,60 +36,17 @@ uint16_t find_available_port() {
 }
 
 void test_response(const std::string &request, const std::string &expected_response, const std::string &password) {
-	pid_t	server_pid;
-	int		client_socket;
-	uint16_t port_test = find_available_port();
-	//how to check available port
-	//assign avaiable port to shiet
-	server_pid = launch_server(port_test, password);
-	try {
-		client_socket = connect_to_server(port_test);
-	} catch (...) {
-		stop_server(server_pid);
-		throw;
-	}
+	uint16_t port = find_available_port();
+	ServerProcess server(port, password);
 
-	if (send(client_socket, request.c_str(), request.size(), 0) != (ssize_t) request.size()) {
-		stop_server(server_pid);
-		throw std::runtime_error("Couldn't send the full request to the server");
-	}
+	Client client(port);
+
+	client.send(request);
+	
 	// Sleep 1 second
-
 	usleep(1000000);
-
-	std::string actual_reponse;
-	actual_reponse.resize(expected_response.size());
-	ssize_t nbBytes = recv(client_socket, &actual_reponse[0], expected_response.size(), MSG_DONTWAIT);
-	if (nbBytes == -1) {
-		stop_server(server_pid);
-		throw std::runtime_error("Couldn't receive data from the server (possible crash)");
-	}
-	actual_reponse.resize(nbBytes);
-	if (actual_reponse != expected_response.substr(0, nbBytes)) {
-		stop_server(server_pid);
-		throw std::runtime_error(std::string("Response doesn't match what was expected: ") + actual_reponse);
-	}
-	if (actual_reponse.size() != expected_response.size()) {
-		stop_server(server_pid);
-
-		throw std::runtime_error(std::string("Truncated response received. Maybe increase the response delay.") + actual_reponse);
-	}
-
-	char buffer[1024];
-	std::string extra_data;
-	ssize_t extra;
-	while ((extra = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT)) > 0) {
-		extra_data.append(buffer, extra);
-	}
-
-	if (!extra_data.empty()) {
-		actual_reponse += extra_data;
-		stop_server(server_pid);
-		throw std::runtime_error("Received more data than expected: Response too long. Full response: " + actual_reponse);
-	}
-
-
-	stop_server(server_pid);
+	
+	client.expectResponse(expected_response);
 }
 
 Test(registration, valid) try {

@@ -6,7 +6,7 @@ CXXFLAGS	= -g3 -Wall -Wextra -Werror -Wno-unused-parameter #-std=c++98
 CPPFLAGS	= -I../includes -Iincludes -Ilibraries/criterion-2.4.2/include -MP -MMD
 LDFLAGS		= -Wl,-rpath=libraries/criterion-2.4.2/lib -Llibraries/criterion-2.4.2/lib -lcriterion
 
-FILES		= main server
+FILES		= main ServerProcess Client
 
 SRCS_DIR	= sources
 SRCS		= $(addprefix $(SRCS_DIR)/, $(addsuffix .cpp, $(FILES)))
