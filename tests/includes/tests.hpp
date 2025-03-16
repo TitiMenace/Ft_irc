@@ -1,9 +1,11 @@
 #pragma once
 
-#include <sys/types.h>
+#include <string>
 #include <cstdint>
-#include <stdexcept>
+
 #define RESPONSE_BUFFER_SIZE 1024
+
+void test_response(const std::string &request, const std::string &expected_response, const std::string &password);
 
 class ServerProcess {
 	uint16_t	_port;
