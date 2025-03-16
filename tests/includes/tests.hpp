@@ -5,6 +5,7 @@
 
 #define RESPONSE_BUFFER_SIZE 1024
 
+void wait(float seconds);
 void test_response(const std::string &request, const std::string &expected_response, const std::string &password);
 
 class ServerProcess {
