@@ -1,6 +1,12 @@
 #include <criterion/criterion.h>
 #include "tests.hpp"
 
+// Note:
+// 	This is the usual format
+// 		431 <client> :No nickname given
+// 	Here client doesn't have a nickname yet.
+// 	I thought it would make more sense to write * instead.
+// 	Otherwise, if we omit <client> and send /quote NICK in irssi, it prints "nickname given" instead of "No nickname given".
 
 Test(nick, not_enough_params) try {
 	ServerProcess server("password");
@@ -12,7 +18,7 @@ Test(nick, not_enough_params) try {
 	);
 	wait(1);
 	client.expectResponse(
-		"461 :No nickname given\r\n"
+		"461 * :No nickname given\r\n"
 	);
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());

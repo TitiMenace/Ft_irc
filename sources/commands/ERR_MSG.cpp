@@ -202,7 +202,9 @@ void ERR_ERRONEUSNICKNAME(Client &client) {
 void ERR_NONICKNAMEGIVEN(Client &client) {
     std::stringstream output;
     
-    output << "461 :No nickname given";
+    output << "461 ";
+    output << (client.nickname.empty() ? "*" : client.nickname);
+	output << " :No nickname given";
     output << "\r\n";
     client.outBuffer += output.str();
 }
