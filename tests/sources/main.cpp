@@ -73,8 +73,6 @@ Test(Mode, test) try {
 		"USER velimir * 0 velimir\r\n"
 		"JOIN #room1\r\n"
 		"MODE dani\r\n"
-		"MODE dani\r\n"
-
 	;
 	std::string expected_response = \
 		"001 velimir :Welcome to the WiZ insane chat of distortion of reality between worlds, velimir!velimir@velimir\r\n"
