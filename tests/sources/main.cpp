@@ -8,38 +8,10 @@
 #include <netinet/in.h>
 #include "tests.hpp"
 
-uint16_t find_available_port() {
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock == -1) {
-        throw std::runtime_error("Failed to create socket");
-    }
-
-    sockaddr_in addr{};
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = 0;  // Let OS pick an available port
-
-    if (bind(sock, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
-        close(sock);
-        throw std::runtime_error("Failed to bind socket");
-    }
-
-    socklen_t addr_len = sizeof(addr);
-    if (getsockname(sock, (struct sockaddr*)&addr, &addr_len) == -1) {
-        close(sock);
-        throw std::runtime_error("Failed to get socket name");
-    }
-
-    uint16_t port = ntohs(addr.sin_port);
-    close(sock);  // Close the socket after getting the port
-    return port;
-}
-
 void test_response(const std::string &request, const std::string &expected_response, const std::string &password) {
-	uint16_t port = find_available_port();
-	ServerProcess server(port, password);
+	ServerProcess server(password);
 
-	Client client(port);
+	Client client(server.getPort());
 
 	client.send(request);
 	

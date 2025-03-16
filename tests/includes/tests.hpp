@@ -1,15 +1,21 @@
 #pragma once
 
 #include <sys/types.h>
+#include <cstdint>
 #include <stdexcept>
 #define RESPONSE_BUFFER_SIZE 1024
 
 class ServerProcess {
+	uint16_t	_port;
 	int			_pid;
 
+	static uint16_t find_available_port();
+
 public:
-	ServerProcess(uint16_t port, const std::string &password);
+	ServerProcess(const std::string &password);
 	~ServerProcess();
+
+	uint16_t getPort();
 };
 
 class Client {
