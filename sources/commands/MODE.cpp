@@ -2,6 +2,7 @@
 #include "includes.hpp"
 #include "Channel.hpp"
 #include "RPL.hpp"
+#include "parsingUtils.hpp"
 
 
 
@@ -141,21 +142,22 @@ void Server::mode(Message message, Client &client) {
     std::string target = message.params[0];
     std::string arg;
 
-    for ( std::map<std::string, Channel>::iterator it = _channel_list.begin(); it != _channel_list.end(); it++){
-        if (it->first == target){
-            if (_channel_list[target].list_operator.find(client.socket_fd) == _channel_list[target].list_operator.end()) {
-                ERR_CHANOPRIVSNEEDED(client, target);
-                return;
-            }
-            if (message.params[1].empty()) {
-                RPL_CHANNELMODEIS(_channel_list[target], client);
-                return;
-            }
-            channelflagsGestion(message, client);
-            return;
-        }
+	if (!findInMap(_channel_list, target)){
+		ERR_NOSUCHCHANNEL(client, target);
+        return;
     }
-    ERR_NOSUCHCHANNEL(client, target);
+
+	if (message.params.size() < 2) {
+		RPL_CHANNELMODEIS(_channel_list[target], client);
+		return;
+	}
+
+	if (_channel_list[target].list_operator.find(client.socket_fd) == _channel_list[target].list_operator.end()) {
+		ERR_CHANOPRIVSNEEDED(client, target);
+		return;
+	}
+	channelflagsGestion(message, client);
+	return;
 }
 
 // · i: Set/remove Invite-only channel
