@@ -225,7 +225,7 @@ void ERR_NICKNAMEINUSE(Client &client, std::string nickname) {
 void ERR_PASSWDMISMATCH(Client &client) {
     std::stringstream output;
     
-    output << "464 " << client.nickname << ":Password incorrect";
+    output << "464 " << (client.nickname.empty() ? "*" : client.nickname) << " :Password incorrect";
     output << "\r\n";
     client.outBuffer += output.str();
 }

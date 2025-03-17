@@ -8,7 +8,7 @@ Test(pass, password_mismatch) try {
 	;
 
 	std::string expected_response = \
-		"464 :Password incorrect\r\n"
+		"464 * :Password incorrect\r\n"
 	;
 
 	test_response(request, expected_response, "password");
