@@ -35,7 +35,7 @@ Test(nick, erroneous_nickname) try {
 	);
 	wait(1);
 	client.expectResponse(
-		"432 :Erroneus nickname\r\n"
+		"432 * #velimir :Erroneus nickname\r\n"
 	);
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());

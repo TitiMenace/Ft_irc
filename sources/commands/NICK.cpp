@@ -37,7 +37,7 @@ void Server::nick(Message message, Client &client){
         return;
     }
     if (!validateNickname(message.params[0])){
-        ERR_ERRONEUSNICKNAME(client);
+        ERR_ERRONEUSNICKNAME(client, message.params[0]);
         return;
     }
     

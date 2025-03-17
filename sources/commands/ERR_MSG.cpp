@@ -191,10 +191,13 @@ void    ERR_NOTREGISTERED(Client &client){
 	return;
 }
 
-void ERR_ERRONEUSNICKNAME(Client &client) {
+void ERR_ERRONEUSNICKNAME(Client &client, std::string nickname) {
     std::stringstream output;
     
-    output << "432 " << ":Erroneus nickname";
+    output << "432 ";
+    output << (client.nickname.empty() ? "*" : client.nickname);
+	output << " " << nickname;
+	output << " :Erroneus nickname";
     output << "\r\n";
     client.outBuffer += output.str();
 }
