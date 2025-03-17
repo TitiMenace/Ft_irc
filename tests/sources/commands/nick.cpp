@@ -58,7 +58,7 @@ Test(nick, nickname_in_use) try {
 	);
 	wait(1);
 	second.expectResponse(
-		"433 first :Nickname is already in use.\r\n"
+		"433 * first :Nickname is already in use.\r\n"
 	);
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());

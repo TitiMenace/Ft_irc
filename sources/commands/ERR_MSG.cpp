@@ -215,7 +215,8 @@ void ERR_NICKNAMEINUSE(Client &client, std::string nickname) {
     std::stringstream output;
     
     output << "433 ";
-    output << nickname;
+    output << (client.nickname.empty() ? "*" : client.nickname);
+    output << " " << nickname;
     output << " :Nickname is already in use.";
     output << "\r\n";
     client.outBuffer += output.str();
