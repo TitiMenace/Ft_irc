@@ -23,7 +23,7 @@ Test(pass, not_enough_params) try {
 	;
 
 	std::string expected_response = \
-	"461 PASS :Not enough parameters\r\n";
+		"461 * PASS :Not enough parameters\r\n";
 	;
 
 	test_response(request, expected_response, "password");

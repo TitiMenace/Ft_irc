@@ -128,8 +128,7 @@ void    ERR_NEEDMOREPARAMS(Client &client, Message &message){
 	std::stringstream	output;
 
 	output << "461";
-	if (!client.nickname.empty())
-		output << " " << client.nickname;
+	output << " " << (client.nickname.empty() ? "*" : client.nickname);
 	output << " " << message.command;
 	output << " :" << "Not enough parameters";
 	output << "\r\n";
