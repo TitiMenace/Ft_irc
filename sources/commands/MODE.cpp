@@ -29,6 +29,7 @@ void	Server::channelflagsGestion(Message message, Client &client){
 
 				case 'k':
 					if (nb_arg + 2 < message.params.size()){
+						_channel_list[channel].mode |= KEY_PROTECTED;
 						std::cout << "le mot de passe " << message.params[nb_arg + 2] << " est bien assigne" << std::endl;
 						_channel_list[channel].key = message.params[nb_arg + 2];
 						nb_arg++;
@@ -83,7 +84,7 @@ void	Server::channelflagsGestion(Message message, Client &client){
 
 				case 'k':
 					std::cout << "le mot de passe est bien enleve" << std::endl;
-					_channel_list[channel].key = "";
+					_channel_list[channel].mode &= ~KEY_PROTECTED;
 					break;
 
 				case 'i':

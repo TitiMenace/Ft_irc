@@ -69,7 +69,7 @@ void Server::join(Message message, Client &client){
         else if (_channel_list[channel_name].mode & KEY_PROTECTED &&
             (message.params.size() < 2 || (i < keys_list.size() &&
             _channel_list[channel_name].key != keys_list[i]))){
-            //ERR_BADCHANNELKEY (475) 
+            ERR_BADCHANNELKEY(client, _channel_list[channel_name]);
             continue;
         }
         else if (_channel_list[channel_name].mode & USER_LIMIT &&
