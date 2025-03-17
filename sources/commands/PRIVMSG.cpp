@@ -8,12 +8,12 @@
 // - ERR_NOTREGISTERED (451)
 
 	
-void	channelMessage(Channel &channel, std::string output, Client &client){
+void	Server::channelMessage(Channel &channel, std::string output, Client &client){
 	
 	std::cout << "on ecrit a tout le monde dans le channel" << std::endl;
 	for (std::map<int, Client>::iterator it = channel.list_user.begin(); it != channel.list_user.end(); it++){
 		if (client.socket_fd != it->first)
-			RPL_PRIVMSG(client,client.nickname, channel.name, output);
+			RPL_PRIVMSG(_users[it->first], client.nickname, channel.name, output);
 	}
 	
 }

@@ -47,6 +47,7 @@ class Server{
 		void invite(Message message, Client &client);
 		void privmsg(Message message, Client &client); 
 		Client* findUser(std::string nickname);
+		void channelMessage(Channel &channel, std::string output, Client &client);
 		void channelflagsGestion(Message message, Client &client);
 
 	
