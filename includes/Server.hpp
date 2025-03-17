@@ -49,15 +49,5 @@ class Server{
 		Client* findUser(std::string nickname);
 		void channelMessage(Channel &channel, std::string output, Client &client);
 		void channelflagsGestion(Message message, Client &client);
-
-	
-		class Aziz : public std::exception{
-		
-			public:
-				virtual const char* what() const throw()
-				{
-					return ("aziz");
-				}
-		};
 };
 

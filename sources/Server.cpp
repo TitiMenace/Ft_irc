@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include <cerrno>
 #define EPOLL_MAX_EVENTS 32
 #define BUFFER_SIZE 1024
 
@@ -11,35 +12,30 @@ Server::~Server(void){
 }
 
 Server::Server(int port, std::string password) : _password(password){
-	
-	try {
-		
-		//on cree le socket du server
-		_master_fd = socket(AF_INET, SOCK_STREAM, 0); 
-		if (_master_fd == -1) 
-			throw Aziz();
-		else
-			std::cout << "Socket successfully created..." << std::endl;
 
-		std::memset(&_servaddr, 0, sizeof(_servaddr));
-		
-		//ici on configure la structur sockaddr qui contient les infos pour identifier
-		//une adresse reseau commme une adresse IP et le port
-		_servaddr.sin_family = AF_INET; //famille d'adresse ici IPv4
-		_servaddr.sin_addr.s_addr = htonl(INADDR_ANY); //adresse IP que le socket va use
-		_servaddr.sin_port = htons(port); //Le port en format reseau
-    		//ici on autorise le socket a reutiliser la meme adresse multiple fois
-		int opt = 1;
-		setsockopt(_master_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-		
-		_addrlen = sizeof(_servaddr);
-		if ((bind(_master_fd, (SA*)&_servaddr, sizeof(_servaddr))) != 0)
-			throw Aziz();
-		else
-			std::cout << "Socket successfully binded" << std::endl;
-	} catch  (std::exception &e){
-		std::cerr << "TCP connect failed..." << std::endl;	
+	//on cree le socket du server
+	_master_fd = socket(AF_INET, SOCK_STREAM, 0); 
+	if (_master_fd == -1) 
+		throw std::runtime_error(strerror(errno));
+	std::cout << "Socket successfully created..." << std::endl;
+
+	std::memset(&_servaddr, 0, sizeof(_servaddr));
+	
+	//ici on configure la structur sockaddr qui contient les infos pour identifier
+	//une adresse reseau commme une adresse IP et le port
+	_servaddr.sin_family = AF_INET; //famille d'adresse ici IPv4
+	_servaddr.sin_addr.s_addr = htonl(INADDR_ANY); //adresse IP que le socket va use
+	_servaddr.sin_port = htons(port); //Le port en format reseau
+		//ici on autorise le socket a reutiliser la meme adresse multiple fois
+	int opt = 1;
+	setsockopt(_master_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	
+	_addrlen = sizeof(_servaddr);
+	if ((bind(_master_fd, (SA*)&_servaddr, sizeof(_servaddr))) != 0) {
+		close(_master_fd);
+		throw std::runtime_error(strerror(errno));
 	}
+	std::cout << "Socket successfully binded" << std::endl;
 }
 
 Server::Server(const Server& copy){

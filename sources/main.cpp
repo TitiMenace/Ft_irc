@@ -22,6 +22,11 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	Server	IrcServ(port, (std::string)argv[2]);
-	IrcServ.runServer();
+	try {
+		Server	ircServ(port, (std::string)argv[2]);
+
+		ircServ.runServer();
+	} catch (const std::runtime_error &e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+	}
 }
