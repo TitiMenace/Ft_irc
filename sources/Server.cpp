@@ -1,5 +1,7 @@
 #include "Server.hpp"
 #include <cerrno>
+#include <csignal>
+
 #define EPOLL_MAX_EVENTS 32
 #define BUFFER_SIZE 1024
 
@@ -208,6 +210,13 @@ void	Server::_readMessages(struct epoll_event event) {
 	}
 }
 
+bool Server::_running = true;
+
+void	Server::_stopServer(int signal) {
+	(void) signal;
+	_running = false;
+}
+
 void	Server::runServer(void){
 	std::cout << "Server password is " << _password << std::endl;
 
@@ -228,7 +237,9 @@ void	Server::runServer(void){
 
 	struct epoll_event events[EPOLL_MAX_EVENTS];
 
-	while (true) {
+	signal(SIGINT, _stopServer);
+
+	while (_running) {
 		int events_received = epoll_wait(epoll_fd, events, EPOLL_MAX_EVENTS, -1);
 		for (int i = 0; i < events_received; i++) {
 			if (events[i].data.fd == _master_fd) {
@@ -248,6 +259,13 @@ void	Server::runServer(void){
 			}	 
 		}
 	}
+
+	// Close open connections
+	std::map<int, Client>::iterator it;
+	for (it = _users.begin(); it != _users.end(); it++) {
+		close(it->first);
+	}
+	close(epoll_fd);
 }
 
 
