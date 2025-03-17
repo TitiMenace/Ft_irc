@@ -66,9 +66,8 @@ void Server::kick(Message message, Client &client){
     }
 
     if (message.params.size() > 2){
-        RPL_KICK(channel, *kicked, kicked->nickname, client.nickname, message.params[3]);
-        RPL_KICK(channel, client, kicked->nickname, client.nickname, message.params[3]);
-    
+        RPL_KICK(channel, *kicked, kicked->nickname, client.nickname, message.params[2]);
+        RPL_KICK(channel, client, kicked->nickname, client.nickname, message.params[2]);
     }
     else{
         RPL_KICK(channel, *kicked, kicked->nickname, client.nickname);

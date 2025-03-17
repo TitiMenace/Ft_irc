@@ -53,9 +53,7 @@ void RPL_KICK(Channel &channel, Client &client, std::string kicked, std::string 
     std::stringstream output;
     
     output << ":" << source << " KICK " << channel.name << " " << kicked;
-    if (!comment.empty()) {
-        output << " :" << comment;
-    }
+	output << " :" << (comment.empty() ? "No particular reason." : comment);
     output << "\r\n";
     client.outBuffer += output.str();
 }
