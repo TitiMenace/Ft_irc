@@ -108,3 +108,33 @@ Test(mode, unknown_mode) try {
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
+
+Test(mode, not_operator) try {
+	ServerProcess server("password");
+	Client first(server.getPort());
+	Client second(server.getPort());
+
+	first.register_("password", "first");
+	second.register_("password", "second");
+
+	first.send("JOIN #channel\r\n");
+	second.send("JOIN #channel\r\n");
+	wait(0.1);
+	first.expectResponse(
+		":first!first@ JOIN #channel\r\n"
+		"353 first = #channel :@first\r\n"
+		"366 first #channel :End of /NAMES list\r\n"
+	);
+	// TODO ^ first should also receive a JOIN message when second joins
+	second.expectResponse(
+		":second!second@ JOIN #channel\r\n"
+		"353 second = #channel :@first second\r\n"
+		"366 second #channel :End of /NAMES list\r\n"
+	);
+
+	second.send("MODE #channel +i\r\n");
+	wait(0.1);
+	second.expectResponse("482 second #channel :You're not channel operator\r\n");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
