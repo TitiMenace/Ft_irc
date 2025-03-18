@@ -230,3 +230,14 @@ void ERR_PASSWDMISMATCH(Client &client) {
     output << "\r\n";
     client.outBuffer += output.str();
 }
+
+void ERR_USERNOTINCHANNEL(Client &client, std::string nickname, std::string channel_name) {
+	std::stringstream output;
+
+	output << "441";
+	output << " " << client.nickname;
+	output << " " << nickname;
+	output << " " << channel_name;
+	output << " :They aren't on that channel\r\n";
+	client.outBuffer += output.str();
+}

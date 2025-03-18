@@ -1,11 +1,5 @@
 #include <criterion/criterion.h>
-#include <iostream>
 #include <stdexcept>
-#include <cstdint>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include "tests.hpp"
 
 Test(mode, no_password) try {

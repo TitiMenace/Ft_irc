@@ -53,7 +53,8 @@ void	Server::channelflagsGestion(Message message, Client &client){
 
 				case 'o':
 					if (nb_arg + 2 < message.params.size()){
-						for(std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); it++){
+						std::map<int, Client>::iterator it;
+						for(it = _channel_list[channel].list_user.begin(); it != _channel_list[channel].list_user.end(); it++){
 							if (it->second.nickname == message.params[nb_arg + 2]){
 
 								std::cout << "le user " << message.params[nb_arg + 2] << " est bien devenu operateur" << std::endl;
@@ -62,9 +63,11 @@ void	Server::channelflagsGestion(Message message, Client &client){
 								std::cout << "le channel name = " << channel << std::endl;
 								std::cout << "info user le fd : " << it->first << " puis le client nickname : " << it->second.nickname << std::endl;
 								std::cout << "le nom de kaaris qui est stocke c'est : " << _channel_list[channel].list_operator[5].nickname << std::endl;
-
+								break;
 							}
 						}
+						if (it == _channel_list[channel].list_user.end())
+							ERR_USERNOTINCHANNEL(client, message.params[nb_arg + 2], channel);
 					}
 					break;
 

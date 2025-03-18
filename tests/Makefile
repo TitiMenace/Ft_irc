@@ -11,7 +11,8 @@ FILES		= \
 				Client \
 				ServerProcess \
 				commands/join \
-				commands/mode \
+				commands/mode/mode \
+				commands/mode/operator \
 				commands/nick \
 				commands/pass \
 				commands/user \

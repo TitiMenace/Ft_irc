@@ -29,3 +29,5 @@ void    ERR_NICKNAMEINUSE(Client &client, std::string nickname);
 
 void    ERR_ALREADYREGISTERED(Client &client);
 void    ERR_PASSWDMISMATCH(Client &client);
+
+void	ERR_USERNOTINCHANNEL(Client &client, std::string nickname, std::string channel_name);
