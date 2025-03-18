@@ -58,10 +58,10 @@ void Server::join(Message message, Client &client){
         
         if (it == _channel_list.end()) {
             _channel_list[channel_name] = Channel(channel_name, "topic", "password", 1);
-            _channel_list[channel_name].list_user[client.socket_fd] = client;
-            _channel_list[channel_name].list_operator[client.socket_fd] = client;
+            _channel_list[channel_name].members.insert(client.socket_fd);
+            _channel_list[channel_name].operators.insert(client.socket_fd);
             RPL_JOIN(client, channel_name);
-            RPL_NAMREPLY(client, _channel_list[channel_name]);
+            RPL_NAMREPLY(client, _channel_list[channel_name], _users);
             RPL_ENDOFNAMES(client, _channel_list[channel_name]);
             continue;
         }
@@ -73,21 +73,21 @@ void Server::join(Message message, Client &client){
             continue;
         }
         else if (_channel_list[channel_name].mode & USER_LIMIT &&
-            _channel_list[channel_name].list_user.size() >= _channel_list[channel_name].size_limit){
+            _channel_list[channel_name].members.size() >= _channel_list[channel_name].size_limit){
 
             ERR_CHANNELISFULL(client, _channel_list[channel_name]);
             continue;
         }
         else if (_channel_list[channel_name].mode & INVITE_ONLY &&
-            findInMap(_channel_list[channel_name].list_invite,client.socket_fd) == NULL){
+            !_channel_list[channel_name].invites.count(client.socket_fd)){
             ERR_INVITEONLYCHAN(client, _channel_list[channel_name]);
             std::cerr << channel_name << " is an invite only channel" << client.nickname << " can't join it" << std::endl; 
             continue;
         }
-            it->second.list_user[client.socket_fd] = client;
-            RPL_JOIN(client, channel_name);
-            RPL_NAMREPLY(client, _channel_list[channel_name]);
-            RPL_ENDOFNAMES(client, _channel_list[channel_name]);
+		it->second.members.insert(client.socket_fd);
+		RPL_JOIN(client, channel_name);
+		RPL_NAMREPLY(client, _channel_list[channel_name], _users);
+		RPL_ENDOFNAMES(client, _channel_list[channel_name]);
     }
     std::cerr << std::endl;
 	// if (_channel_list.find(message.params[0]) =! it.end)

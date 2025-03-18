@@ -11,9 +11,9 @@
 void	Server::channelMessage(Channel &channel, std::string output, Client &client){
 	
 	std::cout << "on ecrit a tout le monde dans le channel" << std::endl;
-	for (std::map<int, Client>::iterator it = channel.list_user.begin(); it != channel.list_user.end(); it++){
-		if (client.socket_fd != it->first)
-			RPL_PRIVMSG(_users[it->first], client.nickname, channel.name, output);
+	for (std::set<int>::iterator it = channel.members.begin(); it != channel.members.end(); it++){
+		if (client.socket_fd != *it)
+			RPL_PRIVMSG(_users[*it], client.nickname, channel.name, output);
 	}
 	
 }

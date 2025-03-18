@@ -153,14 +153,14 @@ void	Server::_disconnectClient(Client &client) {
 	
 	for (it = _channel_list.begin(); it != _channel_list.end(); ) {
 		Channel &channel = it->second;
-		channel.list_user.erase(client.socket_fd);
-		channel.list_operator.erase(client.socket_fd);
-		channel.list_invite.erase(client.socket_fd);
+		channel.members.erase(client.socket_fd);
+		channel.operators.erase(client.socket_fd);
+		channel.invites.erase(client.socket_fd);
 		
 		// Erase the channel if there are no users
 		std::map<std::string, Channel>::iterator tmp = it;
 		it++;
-		if (channel.list_user.empty())
+		if (channel.members.empty())
 			_channel_list.erase(tmp);
 	}
 

@@ -95,18 +95,18 @@ void    RPL_ENDOFNAMES(Client &client, Channel &channel){
 	return;
 } 
 
-void    RPL_NAMREPLY(Client &client, Channel &channel){
+void    RPL_NAMREPLY(Client &client, Channel &channel, std::map<int, Client> &users){
     std::stringstream	soutput;
     std::string cname = channel.name;
     std::string output;
 
 	soutput << "353 " << client.nickname;
 	soutput << " = " << cname <<  " :";
-    for (std::map<int, Client>::iterator it = channel.list_user.begin(); it != channel.list_user.end(); it++){
-        if (channel.list_operator.find(it->first) != channel.list_operator.end()){
+    for (std::set<int>::iterator it = channel.members.begin(); it != channel.members.end(); it++){
+        if (channel.operators.count(*it)){
             soutput << "@";
         }
-	    soutput << it->second.nickname << " ";
+	    soutput << users[*it].nickname << " ";
     }
     output = soutput.str();
     output.erase(output.size() - 1);

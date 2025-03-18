@@ -21,7 +21,7 @@ std::string getchannelmodes(Channel channel){
         output << "I";
     if (channel.mode & USER_LIMIT)
         output << "l";
-    if (!channel.list_operator.empty())
+    if (!channel.operators.empty())
         output << "o";
 
     return (output.str());    

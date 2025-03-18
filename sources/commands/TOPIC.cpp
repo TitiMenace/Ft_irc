@@ -5,14 +5,14 @@
 #include "parsingUtils.hpp"
 
 #include "RPL.hpp"
-void sendChannelTopic(Channel &channel, std::string topic, Client &client) {
+void sendChannelTopic(Channel &channel, std::string topic, Client &client, std::map<int, Client> &users) {
     std::cout << "on envoit le topic a tout le monde dans le channel" << std::endl;
     
-    for (std::map<int, Client>::iterator it = channel.list_user.begin(); it != channel.list_user.end(); it++) {
+    for (std::set<int>::iterator it = channel.members.begin(); it != channel.members.end(); it++) {
         std::stringstream soutput;
 
         soutput << ":" << client.nickname << " TOPIC " << channel.name << " :" << topic << "\r\n";
-        it->second.outBuffer += soutput.str();
+        users[*it].outBuffer += soutput.str();
     }
 }
 
@@ -48,20 +48,20 @@ void Server::topic(Message message, Client &client){
     
     //changing topic part
     std::string topic = message.params[1];
-    if (!findInMap(channel.list_user, client.socket_fd)){
+    if (!channel.members.count(client.socket_fd)){
         std::cout << "need to be in the channel to change the topic" << std::endl;
         ERR_NOTONCHANNEL(client, channel_name);
         return; // ERR_NOTONCHANNEL (442)
     }
 
-    if (!findInMap(channel.list_operator, client.socket_fd) && channel.mode & TOPIC_ONLY_OP){
+    if (!channel.operators.count(client.socket_fd) && channel.mode & TOPIC_ONLY_OP){
         std::cout << "Needs to be operator to change topic in topic protected mode" << std::endl;
         ERR_CHANOPRIVSNEEDED(client, channel_name);
         return; //  ERR_CHANOPRIVSNEEDED (482) 
     }
 
     channel.topic = topic;
-    sendChannelTopic(channel,topic,client);
+    sendChannelTopic(channel, topic, client, _users);
 
 
     return;

@@ -24,13 +24,13 @@ std::cout << "invite command starting"<< std::endl;
     Channel &channel = _channel_list[channel_name];
     std::cout << "channel "<< channel.name << "exists" << std::endl;
 
-    if (!findInMap(channel.list_user, client.socket_fd)){
+    if (!channel.members.count(client.socket_fd)){
         std::cout << "need to be in the channel to invite someone in it" << std::endl;
         ERR_NOTONCHANNEL(client, channel_name);
         return; // ERR_NOTONCHANNEL (442)
     }
 
-    if (!findInMap(channel.list_operator, client.socket_fd) && channel.mode & INVITE_ONLY){
+    if (!channel.operators.count(client.socket_fd) && channel.mode & INVITE_ONLY){
         std::cout << "Needs to be operator to invite in invite only" << std::endl;
         ERR_CHANOPRIVSNEEDED(client, channel_name);
         return; //  ERR_CHANOPRIVSNEEDED (482) 
@@ -48,17 +48,17 @@ std::cout << "invite command starting"<< std::endl;
         //whatever error you knw
         return;
     }
-    if (findInMap(channel.list_user, invited->socket_fd)){
+    if (channel.members.count(invited->socket_fd)){
         std::cout << "user to invite already in the channel" << std::endl;
         ERR_USERONCHANNEL(client, channel_name, invited->nickname);
         return; // ERR_USERONCHANNEL (443)
     }
 
     // Continue with normal invite logic using 'invited'
-    channel.list_invite[invited->socket_fd] = *invited;
+    channel.invites.insert(invited->socket_fd);
     std::cout << "invite list:" << std::endl;
-    for (std::map<int, Client>::iterator it = channel.list_invite.begin(); it != channel.list_invite.end(); ++it) {
-        std::cout << it->second.nickname << std::endl;
+    for (std::set<int>::iterator it = channel.invites.begin(); it != channel.invites.end(); ++it) {
+        std::cout << _users[*it].nickname << std::endl;
     }
 
     // RPL_INVITING (341)

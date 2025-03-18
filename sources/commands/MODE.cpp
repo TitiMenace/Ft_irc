@@ -53,20 +53,19 @@ void	Server::channelflagsGestion(Message message, Client &client){
 
 				case 'o':
 					if (nb_arg + 2 < message.params.size()){
-						std::map<int, Client>::iterator it;
-						for(it = _channel_list[channel].list_user.begin(); it != _channel_list[channel].list_user.end(); it++){
-							if (it->second.nickname == message.params[nb_arg + 2]){
+						std::set<int>::iterator it;
+						for(it = _channel_list[channel].members.begin(); it != _channel_list[channel].members.end(); it++){
+							if (_users[*it].nickname == message.params[nb_arg + 2]){
 
 								std::cout << "le user " << message.params[nb_arg + 2] << " est bien devenu operateur" << std::endl;
-								_channel_list[channel].list_operator[it->first] = it->second;
+								_channel_list[channel].operators.insert(*it);
 								nb_arg++;
 								std::cout << "le channel name = " << channel << std::endl;
-								std::cout << "info user le fd : " << it->first << " puis le client nickname : " << it->second.nickname << std::endl;
-								std::cout << "le nom de kaaris qui est stocke c'est : " << _channel_list[channel].list_operator[5].nickname << std::endl;
+								std::cout << "info user le fd : " << *it << " puis le client nickname : " << _users[*it].nickname << std::endl;
 								break;
 							}
 						}
-						if (it == _channel_list[channel].list_user.end())
+						if (it == _channel_list[channel].members.end())
 							ERR_USERNOTINCHANNEL(client, message.params[nb_arg + 2], channel);
 					}
 					break;
@@ -102,12 +101,12 @@ void	Server::channelflagsGestion(Message message, Client &client){
 					break;
 				
 				case 'o':
-					for (std::map<int, Client>::iterator it = _channel_list[channel].list_operator.begin(); it != _channel_list[channel].list_operator.end(); it++){
-						if (it->second.nickname == message.params[2 + nb_arg]){
+					for (std::set<int>::iterator it = _channel_list[channel].operators.begin(); it != _channel_list[channel].operators.end(); it++){
+						if (_users[*it].nickname == message.params[2 + nb_arg]){
 							std::cout << "on enleve le statut d'operateur au client : " << message.params[2 + nb_arg] << std::endl;
-							_channel_list[channel].list_operator.erase(it);
+							_channel_list[channel].operators.erase(it);
 						}
-						else if (it == _channel_list[channel].list_operator.end())
+						else if (it == _channel_list[channel].operators.end())
 							std::cout << "Can't find operator in the channel's list" << std::endl;
 					}
 					break;
@@ -150,7 +149,7 @@ void Server::mode(Message message, Client &client) {
 		return;
 	}
 
-	if (_channel_list[target].list_operator.find(client.socket_fd) == _channel_list[target].list_operator.end()) {
+	if (!_channel_list[target].operators.count(client.socket_fd)) {
 		ERR_CHANOPRIVSNEEDED(client, target);
 		return;
 	}

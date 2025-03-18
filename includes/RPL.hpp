@@ -13,5 +13,5 @@ void    RPL_INVITING(Client &client, std::string channel, std::string nick);
 void    RPL_ENDOFNAMES(Client &client, Channel &channel);
 void    RPL_INVEXLIST(Client &client, Channel &channel);
 void    RPL_ENDOFINVEXLIST(Client &client, Channel &channel);
-void    RPL_NAMREPLY(Client &client, Channel &channel);
+void    RPL_NAMREPLY(Client &client, Channel &channel, std::map<int, Client> &users);
 void    RPL_PRIVMSG(Client &client, std::string source, std::string target, std::string message);

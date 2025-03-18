@@ -1,7 +1,7 @@
 #pragma once
 #include "includes.hpp"
 
-#include <map>
+#include <set>
 #include "Client.hpp"
 #include "Message.hpp"
 #define SIZE_LIMIT 10
@@ -14,21 +14,15 @@ enum ChannelMode {
 	USER_LIMIT		= 1 << 3    // 01000
 };
 
-// string name
-// string topic
-// map<client_socket, Client> list_user
-// map<client_socket, Client> list_operator
-// map<client_socket, Client> list_invite
-// enum mode
 struct Channel{
-	std::string           name;
-    std::string           topic;
-    std::string           key;
-    size_t                   size_limit;
-    std::map<int, Client> list_user;
-    std::map<int, Client> list_operator;
-    std::map<int, Client> list_invite;
-    int mode;
+	std::string		name;
+	std::string		topic;
+	std::string		key;
+	size_t			size_limit;
+	std::set<int>	members;
+	std::set<int>	operators;
+	std::set<int>	invites;
+	int mode;
 	
     Channel(std::string name = "", std::string topic = "", std::string key = "", int size_limit = 0, ChannelMode mode = NO_FLAG);
 };

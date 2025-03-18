@@ -24,19 +24,13 @@ void Server::kick(Message message, Client &client){
     
     Channel &channel = _channel_list[channel_name];
     
-    if (!findInMap(channel.list_user, client.socket_fd)){
-        std::cout << "need to be in the channel to kick someone" << std::endl;
-        ERR_NOTONCHANNEL(client, channel_name);
-        return; // ERR_NOTONCHANNEL (442)
-    }
-    
-    if (!findInMap(channel.list_user, client.socket_fd)){
+    if (!channel.members.count(client.socket_fd)){
         std::cout << "need to be in the channel to kick someone" << std::endl;
         ERR_NOTONCHANNEL(client, channel_name);
         return; // ERR_NOTONCHANNEL (442)
     }
 
-    if (!findInMap(channel.list_operator, client.socket_fd)){
+    if (!channel.operators.count(client.socket_fd)){
         std::cout << "Needs to be operator to kick someone from channel" << std::endl;
         ERR_CHANOPRIVSNEEDED(client, channel_name);
         return; //  ERR_CHANOPRIVSNEEDED (482) 
@@ -51,7 +45,7 @@ void Server::kick(Message message, Client &client){
         return;// ERR_NOSUCHNICK (401)
     }
 
-    if (!findInMap(channel.list_user, kicked->socket_fd)){
+    if (!channel.members.count(kicked->socket_fd)){
         std::cout << "kicked person needs to be in channel" << std::endl;
         ERR_NOTONCHANNEL(client, channel_name);
         return; // ERR_NOTONCHANNEL (442)
@@ -66,9 +60,9 @@ void Server::kick(Message message, Client &client){
         RPL_KICK(channel, client, kicked->nickname, client.nickname);
     }
 
-    channel.list_user.erase(kicked->socket_fd);
-    channel.list_operator.erase(kicked->socket_fd);
-    if (channel.list_user.empty())
+    channel.members.erase(kicked->socket_fd);
+    channel.operators.erase(kicked->socket_fd);
+    if (channel.members.empty())
         _channel_list.erase(channel.name);
     //check if channel is empty; if it is remove it
     std::cout << "User " << nickname << " has been kicked from " << channel_name << std::endl;
