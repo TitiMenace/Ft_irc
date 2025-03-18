@@ -8,6 +8,31 @@
 #include <netinet/in.h>
 #include "tests.hpp"
 
+Test(mode, no_password) try {
+	ServerProcess server("password");
+	Client client(server.getPort());
+
+	client.send("MODE #channel +i\r\n");
+	wait(1);
+	client.expectResponse("451 * :You have not registered\r\n");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+Test(mode, not_registered) try {
+	ServerProcess server("password");
+	Client client(server.getPort());
+
+	client.send(
+		"PASS password\r\n"
+		"MODE #channel +i\r\n"
+	);
+	wait(1);
+	client.expectResponse("451 * :You have not registered\r\n");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
 Test(mode, no_such_channel) try {
 	std::string request = \
 		"PASS password\r\n"
