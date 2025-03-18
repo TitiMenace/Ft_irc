@@ -44,16 +44,8 @@ void Server::kick(Message message, Client &client){
 
     std::string nickname = message.params[1];
 
-    Client* kicked = NULL;
-    
-    for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); ++it) {
-        if (it->second.nickname == nickname) {
-            kicked = &(it->second);
-            break;
-        }
-    }
-
-    if (kicked == NULL) {
+    Client* kicked = findUser(nickname);
+	if (kicked == NULL) {
         std::cout << "user to kick doesnt exists" << std::endl;
         ERR_NOSUCHNICK(client, nickname);
         return;// ERR_NOSUCHNICK (401)

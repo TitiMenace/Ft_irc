@@ -36,18 +36,22 @@ void Server::nick(Message message, Client &client){
         ERR_NONICKNAMEGIVEN(client);
         return;
     }
-    if (!validateNickname(message.params[0])){
-        ERR_ERRONEUSNICKNAME(client, message.params[0]);
+
+	std::string nickname = message.params[0];
+	if (client.nickname == nickname)
+		return;
+
+    if (!validateNickname(nickname)){
+        ERR_ERRONEUSNICKNAME(client, nickname);
         return;
     }
     
-    for (std::map<int, Client>::iterator it = _users.begin(); it != _users.end(); ++it) {
-        if (it->second.nickname == message.params[0] && it->second.nickname != client.nickname) {
-            ERR_NICKNAMEINUSE(client,  message.params[0]);
-            return;
-        }
-    }
-    client.nickname = message.params[0];
+	if (findUser(nickname)) {
+		ERR_NICKNAMEINUSE(client,  nickname);
+		return;
+	}
+
+	client.nickname = nickname;
     if (!client.username.empty() && client.state == ALLOWED){
         client.state = REGISTERED;//send RPL_WELCOME and stuff
 		RPL_WELCOME(client);
