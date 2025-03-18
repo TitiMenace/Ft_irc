@@ -33,7 +33,7 @@ void    ERR_INVITEONLYCHAN(Client &client, Channel &channel){
 void    ERR_BADCHANMASK(Client &client, std::string channel_name){
 	std::stringstream	output;
 
-	output << "475";
+	output << "476";
 	output << " " << channel_name;
 	output << " :" << "Bad Channel Mask";
 	output << "\r\n";
