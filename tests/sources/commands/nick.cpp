@@ -16,7 +16,7 @@ Test(nick, not_enough_params) try {
 		"PASS password\r\n"
 		"NICK\r\n"
 	);
-	wait(1);
+	wait(0.1);
 	client.expectResponse(
 		"461 * :No nickname given\r\n"
 	);
@@ -33,7 +33,7 @@ Test(nick, erroneous_nickname) try {
 		"PASS password\r\n"
 		"NICK #velimir\r\n"
 	);
-	wait(1);
+	wait(0.1);
 	client.expectResponse(
 		"432 * #velimir :Erroneus nickname\r\n"
 	);
@@ -56,7 +56,7 @@ Test(nick, nickname_in_use) try {
 		"PASS password\r\n"
 		"NICK first\r\n"
 	);
-	wait(1);
+	wait(0.1);
 	second.expectResponse(
 		"433 * first :Nickname is already in use.\r\n"
 	);
@@ -74,7 +74,7 @@ Test(nick, registration) try {
 		"USER velimir * 0 velimir\r\n"
 		"NICK velimir\r\n"
 	);
-	wait(1);
+	wait(0.1);
 	client.expectResponse(
 		"001 velimir :Welcome to the WiZ insane chat of distortion of reality between worlds, velimir!velimir@velimir\r\n"
 		"002 velimir :Your host is , running version v.1\r\n"

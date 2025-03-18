@@ -35,7 +35,7 @@ Test(join, not_enough_params) try {
 		"NICK client\r\n"
 		"USER client * 0 client\r\n"
 	);
-	wait(1);
+	wait(0.1);
 	client.expectResponse(
 		"001 client :Welcome to the WiZ insane chat of distortion of reality between worlds, client!client@client\r\n"
 		"002 client :Your host is , running version v.1\r\n"
@@ -44,7 +44,7 @@ Test(join, not_enough_params) try {
 	);
 
 	client.send("JOIN\r\n");
-	wait(1);
+	wait(0.1);
 	client.expectResponse("461 client JOIN :Not enough parameters\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
@@ -59,7 +59,7 @@ Test(join, invalid_channel) try {
 		"NICK client\r\n"
 		"USER client * 0 client\r\n"
 	);
-	wait(1);
+	wait(0.1);
 	client.expectResponse(
 		"001 client :Welcome to the WiZ insane chat of distortion of reality between worlds, client!client@client\r\n"
 		"002 client :Your host is , running version v.1\r\n"
@@ -68,7 +68,7 @@ Test(join, invalid_channel) try {
 	);
 
 	client.send("JOIN channel\r\n");
-	wait(1);
+	wait(0.1);
 	client.expectResponse("476 channel :Bad Channel Mask\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
@@ -83,7 +83,7 @@ Test(join, success) try {
 		"NICK client\r\n"
 		"USER client * 0 client\r\n"
 	);
-	wait(1);
+	wait(0.1);
 	client.expectResponse(
 		"001 client :Welcome to the WiZ insane chat of distortion of reality between worlds, client!client@client\r\n"
 		"002 client :Your host is , running version v.1\r\n"
@@ -92,7 +92,7 @@ Test(join, success) try {
 	);
 
 	client.send("JOIN #channel\r\n");
-	wait(1);
+	wait(0.1);
 	client.expectResponse(
 		":client!client@ JOIN #channel\r\n"
 		"353 client = #channel :@client\r\n"

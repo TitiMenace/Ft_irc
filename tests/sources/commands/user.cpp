@@ -10,7 +10,7 @@ Test(user, not_enough_params) try {
 		"NICK velimir\r\n"
 		"USER\r\n"
 	);
-	wait(1);
+	wait(0.1);
 	client.expectResponse(
 		"461 velimir USER :Not enough parameters\r\n"
 	);
@@ -27,7 +27,7 @@ Test(user, registration) try {
 		"NICK velimir\r\n"
 		"USER velimir * 0 velimir\r\n"
 	);
-	wait(1);
+	wait(0.1);
 	client.expectResponse(
 		"001 velimir :Welcome to the WiZ insane chat of distortion of reality between worlds, velimir!velimir@velimir\r\n"
 		"002 velimir :Your host is , running version v.1\r\n"
@@ -47,7 +47,7 @@ Test(user, already_registered) try {
 		"NICK velimir\r\n"
 		"USER velimir * 0 velimir\r\n"
 	);
-	wait(1);
+	wait(0.1);
 	client.expectResponse(
 		"001 velimir :Welcome to the WiZ insane chat of distortion of reality between worlds, velimir!velimir@velimir\r\n"
 		"002 velimir :Your host is , running version v.1\r\n"
@@ -56,7 +56,7 @@ Test(user, already_registered) try {
 	);
 
 	client.send("USER velimir * 0 velimir\r\n");
-	wait(1);
+	wait(0.1);
 	client.expectResponse("462 velimir :You may not reregister\r\n");
 
 } catch (std::runtime_error e) {

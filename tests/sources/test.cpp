@@ -14,8 +14,7 @@ void test_response(const std::string &request, const std::string &expected_respo
 
 	client.send(request);
 	
-	// Sleep 1 second
-	usleep(1000000);
+	wait(0.1);
 	
 	client.expectResponse(expected_response);
 }
