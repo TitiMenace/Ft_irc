@@ -73,3 +73,31 @@ Test(join, invalid_channel) try {
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
+
+Test(join, success) try {
+	ServerProcess server("password");
+	Client client(server.getPort());
+
+	client.send(
+		"PASS password\r\n"
+		"NICK client\r\n"
+		"USER client * 0 client\r\n"
+	);
+	wait(1);
+	client.expectResponse(
+		"001 client :Welcome to the WiZ insane chat of distortion of reality between worlds, client!client@client\r\n"
+		"002 client :Your host is , running version v.1\r\n"
+		"003 client :This server was created le 01/01/01\r\n"
+		"004 client :v.1 no user mode support +tlkoiq\r\n"
+	);
+
+	client.send("JOIN #channel\r\n");
+	wait(1);
+	client.expectResponse(
+		":client!client@ JOIN #channel\r\n"
+		"353 client = #channel :@client\r\n"
+		"366 client #channel :End of /NAMES list\r\n"
+	);
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}

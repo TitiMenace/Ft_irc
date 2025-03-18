@@ -22,7 +22,7 @@ Test(mode, no_such_channel) try {
 		"003 velimir :This server was created le 01/01/01\r\n"
 		"004 velimir :v.1 no user mode support +tlkoiq\r\n"
 		":velimir!velimir@ JOIN #room1\r\n"
-		"353 velimir = #room1 : @velimir\r\n"
+		"353 velimir = #room1 :@velimir\r\n"
 		"366 velimir #room1 :End of /NAMES list\r\n"
 		"403 velimir dani :No such channel\r\n"
 		;

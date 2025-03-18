@@ -101,7 +101,7 @@ void    RPL_NAMREPLY(Client &client, Channel &channel){
     std::string output;
 
 	soutput << "353 " << client.nickname;
-	soutput << " = " << cname <<  " : ";
+	soutput << " = " << cname <<  " :";
     for (std::map<int, Client>::iterator it = channel.list_user.begin(); it != channel.list_user.end(); it++){
         if (channel.list_operator.find(it->first) != channel.list_operator.end()){
             soutput << "@";
