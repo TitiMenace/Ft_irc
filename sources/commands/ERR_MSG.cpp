@@ -183,7 +183,8 @@ void    ERR_NOTEXTTOSEND(Client &client){
 void    ERR_NOTREGISTERED(Client &client){
 	std::stringstream	output;
 
-	output << "451";
+	output << "451 ";
+	output << (client.nickname.empty() ? "*" : client.nickname);
 	output << " :" << "You have not registered";
 	output << "\r\n";
 	client.outBuffer += output.str();
