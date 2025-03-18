@@ -30,4 +30,5 @@ public:
 	void send(const std::string &request);
 	std::string receive();
 	void expectResponse(const std::string &expectedResponse);
+	void register_(const std::string &password, const std::string &nickname);
 };

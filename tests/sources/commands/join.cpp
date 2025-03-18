@@ -30,19 +30,7 @@ Test(join, not_enough_params) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
-	client.send(
-		"PASS password\r\n"
-		"NICK client\r\n"
-		"USER client * 0 client\r\n"
-	);
-	wait(0.1);
-	client.expectResponse(
-		"001 client :Welcome to the WiZ insane chat of distortion of reality between worlds, client!client@client\r\n"
-		"002 client :Your host is , running version v.1\r\n"
-		"003 client :This server was created le 01/01/01\r\n"
-		"004 client :v.1 no user mode support +tlkoiq\r\n"
-	);
-
+	client.register_("password", "client");
 	client.send("JOIN\r\n");
 	wait(0.1);
 	client.expectResponse("461 client JOIN :Not enough parameters\r\n");
@@ -54,19 +42,7 @@ Test(join, invalid_channel) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
-	client.send(
-		"PASS password\r\n"
-		"NICK client\r\n"
-		"USER client * 0 client\r\n"
-	);
-	wait(0.1);
-	client.expectResponse(
-		"001 client :Welcome to the WiZ insane chat of distortion of reality between worlds, client!client@client\r\n"
-		"002 client :Your host is , running version v.1\r\n"
-		"003 client :This server was created le 01/01/01\r\n"
-		"004 client :v.1 no user mode support +tlkoiq\r\n"
-	);
-
+	client.register_("password", "client");
 	client.send("JOIN channel\r\n");
 	wait(0.1);
 	client.expectResponse("476 channel :Bad Channel Mask\r\n");
@@ -78,19 +54,7 @@ Test(join, success) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
-	client.send(
-		"PASS password\r\n"
-		"NICK client\r\n"
-		"USER client * 0 client\r\n"
-	);
-	wait(0.1);
-	client.expectResponse(
-		"001 client :Welcome to the WiZ insane chat of distortion of reality between worlds, client!client@client\r\n"
-		"002 client :Your host is , running version v.1\r\n"
-		"003 client :This server was created le 01/01/01\r\n"
-		"004 client :v.1 no user mode support +tlkoiq\r\n"
-	);
-
+	client.register_("password", "client");
 	client.send("JOIN #channel\r\n");
 	wait(0.1);
 	client.expectResponse(

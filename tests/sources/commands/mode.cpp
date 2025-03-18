@@ -37,19 +37,7 @@ Test(mode, not_enough_params) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
-	client.send(
-		"PASS password\r\n"
-		"NICK client\r\n"
-		"USER client * 0 client\r\n"
-	);
-	wait(0.1);
-	client.expectResponse(
-		"001 client :Welcome to the WiZ insane chat of distortion of reality between worlds, client!client@client\r\n"
-		"002 client :Your host is , running version v.1\r\n"
-		"003 client :This server was created le 01/01/01\r\n"
-		"004 client :v.1 no user mode support +tlkoiq\r\n"
-	);
-
+	client.register_("password", "client");
 	client.send("MODE\r\n");
 	wait(0.1);
 	client.expectResponse("461 client MODE :Not enough parameters\r\n");
@@ -61,19 +49,7 @@ Test(mode, invalid_channel) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
-	client.send(
-		"PASS password\r\n"
-		"NICK velimir\r\n"
-		"USER velimir * 0 velimir\r\n"
-	);
-	wait(0.1);
-	client.expectResponse(
-		"001 velimir :Welcome to the WiZ insane chat of distortion of reality between worlds, velimir!velimir@velimir\r\n"
-		"002 velimir :Your host is , running version v.1\r\n"
-		"003 velimir :This server was created le 01/01/01\r\n"
-		"004 velimir :v.1 no user mode support +tlkoiq\r\n"
-	);
-	
+	client.register_("password", "velimir");
 	client.send("MODE dani\r\n");
 	wait(0.1);
 	client.expectResponse("403 velimir dani :No such channel\r\n");
@@ -85,19 +61,7 @@ Test(mode, no_such_channel) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
-	client.send(
-		"PASS password\r\n"
-		"NICK velimir\r\n"
-		"USER velimir * 0 velimir\r\n"
-	);
-	wait(0.1);
-	client.expectResponse(
-		"001 velimir :Welcome to the WiZ insane chat of distortion of reality between worlds, velimir!velimir@velimir\r\n"
-		"002 velimir :Your host is , running version v.1\r\n"
-		"003 velimir :This server was created le 01/01/01\r\n"
-		"004 velimir :v.1 no user mode support +tlkoiq\r\n"
-	);
-	
+	client.register_("password", "velimir");
 	client.send("MODE #dani\r\n");
 	wait(0.1);
 	client.expectResponse("403 velimir #dani :No such channel\r\n");
@@ -109,19 +73,7 @@ Test(mode, mode_list) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
-	client.send(
-		"PASS password\r\n"
-		"NICK client\r\n"
-		"USER client * 0 client\r\n"
-	);
-	wait(0.1);
-	client.expectResponse(
-		"001 client :Welcome to the WiZ insane chat of distortion of reality between worlds, client!client@client\r\n"
-		"002 client :Your host is , running version v.1\r\n"
-		"003 client :This server was created le 01/01/01\r\n"
-		"004 client :v.1 no user mode support +tlkoiq\r\n"
-	);
-
+	client.register_("password", "client");
 	client.send("JOIN #channel\r\n");
 	wait(0.1);
 	client.expectResponse(
@@ -141,19 +93,7 @@ Test(mode, unknown_mode) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
-	client.send(
-		"PASS password\r\n"
-		"NICK client\r\n"
-		"USER client * 0 client\r\n"
-	);
-	wait(0.1);
-	client.expectResponse(
-		"001 client :Welcome to the WiZ insane chat of distortion of reality between worlds, client!client@client\r\n"
-		"002 client :Your host is , running version v.1\r\n"
-		"003 client :This server was created le 01/01/01\r\n"
-		"004 client :v.1 no user mode support +tlkoiq\r\n"
-	);
-
+	client.register_("password", "client");
 	client.send("JOIN #channel\r\n");
 	wait(0.1);
 	client.expectResponse(

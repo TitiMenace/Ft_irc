@@ -66,6 +66,22 @@ void Client::expectResponse(const std::string &expectedResponse) {
 	}
 }
 
+// Note: this is called register_ instead of register, because register is a C++ keyword and as such is not allowed as a function name
+void Client::register_(const std::string &password, const std::string &nickname) {
+	send(
+		"PASS " + password + "\r\n"
+		"NICK " + nickname + "\r\n"
+		"USER " + nickname + " * 0 " + nickname + "\r\n"
+	);
+	wait(0.1);
+	expectResponse(
+		"001 " + nickname + " :Welcome to the WiZ insane chat of distortion of reality between worlds, " + nickname + "!" + nickname + "@" + nickname + "\r\n"
+		"002 " + nickname + " :Your host is , running version v.1\r\n"
+		"003 " + nickname + " :This server was created le 01/01/01\r\n"
+		"004 " + nickname + " :v.1 no user mode support +tlkoiq\r\n"
+	);
+}
+
 Client::~Client() {
 	close(_socket);
 }
