@@ -130,6 +130,7 @@ void Server::mode(Message message, Client &client) {
 
     if (message.params.empty()){
         std::cout << "pas de arguments de mod" << std::endl;
+		ERR_NEEDMOREPARAMS(client, message);
         return;
     }
 
