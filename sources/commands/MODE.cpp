@@ -69,7 +69,7 @@ void	Server::channelflagsGestion(Message message, Client &client){
 					break;
 
 				default : 
-					ERR_UMODEUNKNOWNFLAG(client, '0');
+					ERR_UMODEUNKNOWNFLAG(client, flags[i]);
 				
 			}
 		}
@@ -116,7 +116,7 @@ void	Server::channelflagsGestion(Message message, Client &client){
 		}
 	}
 	else
-		ERR_UMODEUNKNOWNFLAG(client, '0');
+		ERR_UMODEUNKNOWNFLAG(client, message.params[1][0]);
 }
 
 
