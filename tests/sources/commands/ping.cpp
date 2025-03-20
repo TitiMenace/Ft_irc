@@ -1,14 +1,26 @@
 #include <criterion/criterion.h>
 #include "tests.hpp"
 
-Test(ping, pong) try {
-	std::string request = \
-		"PING :hello\r\n"
-	;
-	std::string expected_response = \
-		"PONG :hello\r\n";
+Test(ping, not_enough_params) try {
+	ServerProcess server("password");
+	Client client(server.getPort());
+	
+	client.register_("password", "client");
+	client.send("PING\r\n");
+	wait(0.1);
+	client.expectResponse("461 client PING :Not enough parameters\r\n");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
 
-	test_response(request, expected_response, "password");
+Test(ping, pong) try {
+	ServerProcess server("password");
+	Client client(server.getPort());
+	
+	client.register_("password", "client");
+	client.send("PING :hello\r\n");
+	wait(0.1);
+	client.expectResponse("PONG server :hello\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }

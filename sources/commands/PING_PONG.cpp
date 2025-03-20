@@ -3,12 +3,14 @@
 #include "Server.hpp"
 
 void Server::ping(Message message, Client &client){
-    std::string token = "";
-    if (message.params.size() >= 1)
-    	token = token + message.params[0];
-    std::string output = "PONG :" + token;
-    output += "\r\n";
-    client.outBuffer += output;
+	if (message.params.size() < 1) {
+		ERR_NEEDMOREPARAMS(client, message);
+		return;
+	}
+    std::stringstream output;
+	output << "PONG " << "server" << " :" << message.params[0];
+    output << "\r\n";
+    client.outBuffer += output.str();
     return;
 }
 
