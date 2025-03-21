@@ -5,7 +5,6 @@
 #include "parsingUtils.hpp"
 
 
-
 void	Server::channelflagsGestion(Message message, Client &client){
 
 	std::string	flags;
