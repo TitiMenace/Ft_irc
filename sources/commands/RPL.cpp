@@ -141,7 +141,7 @@ void    RPL_ENDOFINVEXLIST(Client &client, Channel &channel){
 	return;
 }
 
-void    RPL_JOIN(Client &client, std::string channel_name, Client &member){
+void    RPL_JOIN(Client &client, std::string channel_name){
     std::stringstream	output;
     std::string cname = channel_name;//.substr(1, channel_name.size());
     
@@ -150,7 +150,7 @@ void    RPL_JOIN(Client &client, std::string channel_name, Client &member){
     output << "@" << client.hostname; 
     output << " JOIN " << cname;
     output << "\r\n";
-    member.outBuffer += output.str();
+    client.outBuffer += output.str();
     return;
 }
 
