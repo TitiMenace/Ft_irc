@@ -161,3 +161,13 @@ void RPL_PRIVMSG(Client &client, std::string source, std::string target, std::st
 	output << "\r\n";
     client.outBuffer += output.str();
 }
+
+
+void RPL_ISSUPPORT(Client &client){
+    std::stringstream output;
+
+	output << "005 " << client.nickname << " CASEMAPPING=ascii";
+    output << " :are supported by this server";
+    output << "\r\n";
+    client.outBuffer += output.str();;
+}

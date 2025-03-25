@@ -35,6 +35,7 @@ void Server::user(Message message, Client &client){
 	if (!client.nickname.empty()){
 		client.state = REGISTERED;//send RPL_WELCOME and stuff
 		RPL_WELCOME(client);
+		RPL_ISSUPPORT(client);
 	}
 	return;
 }

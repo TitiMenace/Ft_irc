@@ -55,6 +55,7 @@ void Server::nick(Message message, Client &client){
     if (!client.username.empty() && client.state == ALLOWED){
         client.state = REGISTERED;//send RPL_WELCOME and stuff
 		RPL_WELCOME(client);
+        RPL_ISSUPPORT(client);
     }
     return;
 }
