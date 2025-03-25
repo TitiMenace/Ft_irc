@@ -2,8 +2,8 @@
 #include "Channel.hpp"
 #include "parsingUtils.hpp"
 #include <vector>
-
 #include "RPL.hpp"
+
 // chanstring =  %x01-07 / %x08-09 / %x0B-0C / %x0E-1F / %x21-2B
 // chanstring =/ %x2D-39 / %x3B-FF
 //                 ; any octet except NUL, BELL, CR, LF, " ", "," and ":"
@@ -60,7 +60,8 @@ void Server::join(Message message, Client &client){
             _channel_list[channel_name] = Channel(channel_name, "topic", "password", 1);
             _channel_list[channel_name].members.insert(client.socket_fd);
             _channel_list[channel_name].operators.insert(client.socket_fd);
-            RPL_JOIN(client, channel_name);
+            for (std::set<int>::iterator it = _channel_list[channel_name].members.begin(); it != _channel_list[channel_name].members.end(); it++)
+		        RPL_JOIN(client, channel_name, _users[*it]);
             RPL_NAMREPLY(client, _channel_list[channel_name], _users);
             RPL_ENDOFNAMES(client, _channel_list[channel_name]);
             continue;
@@ -85,7 +86,8 @@ void Server::join(Message message, Client &client){
             continue;
         }
         it->second.members.insert(client.socket_fd);
-		RPL_JOIN(client, channel_name);
+		for (std::set<int>::iterator it = _channel_list[channel_name].members.begin(); it != _channel_list[channel_name].members.end(); it++)
+		    RPL_JOIN(client, channel_name, _users[*it]);
 		RPL_NAMREPLY(client, _channel_list[channel_name], _users);
 		RPL_ENDOFNAMES(client, _channel_list[channel_name]);
     }

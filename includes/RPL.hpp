@@ -3,7 +3,7 @@
 #include "Server.hpp"
 
 void    RPL_WELCOME(Client &client);void RPL_WELCOME(Client &client);
-void    RPL_JOIN(Client &client, std::string channel_name);
+void    RPL_JOIN(Client &client, std::string channel_name, Client &member);
 void    RPL_TOPIC(Channel &channel, Client &client);
 void    RPL_NOTOPIC(Channel &channel, Client &client);
 void    RPL_CHANNELMODEIS(Channel &channel, Client &client);
