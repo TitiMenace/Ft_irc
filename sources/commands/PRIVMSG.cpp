@@ -54,13 +54,8 @@ void Server::privmsg(Message message, Client &client) {
 		return;
 	}
 	Client *target;
-	if ((target = findUser(target_name)) == NULL){
-		ERR_NOSUCHNICK(client, "");
-		return;
-	}
-	if (target->state != REGISTERED){
-		ERR_NOSUCHNICK(client, "");
-		// whatever error when you send a message to someone not registered
+	if ((target = findUser(target_name)) == NULL || target->state != REGISTERED){
+		ERR_NOSUCHNICK(client, target_name);
 		return;
 	}
 
