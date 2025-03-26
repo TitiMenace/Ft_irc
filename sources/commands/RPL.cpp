@@ -63,7 +63,6 @@ void    RPL_INVITE(Client &client, std::string channel, std::string nick){
     
     output << ":" << nick;
 	output << " " << "INVITE";
-    output << " " << nick;
 	output << " " << client.nickname;
 	output << " " << channel;
 	output << "\r\n";
@@ -77,7 +76,6 @@ void    RPL_INVITING(Client &client, std::string channel, std::string nick){
 	output << " " << client.nickname;
     output << " " << nick;
 	output << " " << channel;
-	output << " :" << "Inviting " << nick << " in channel " << channel;
 	output << "\r\n";
     client.outBuffer += output.str();
 	return;
