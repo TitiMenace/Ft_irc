@@ -1,6 +1,37 @@
 #include <criterion/criterion.h>
 #include "tests.hpp"
 
+Test(invite, no_password) try {
+	ServerProcess server("password");
+	Client first(server.getPort());
+	Client second(server.getPort());
+
+	first.register_("password", "first");
+	second.send("INVITE first #channel\r\n");
+	wait(0.1);
+	first.expectResponse("");
+	second.expectResponse("451 * :You have not registered\r\n");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+Test(invite, not_registered) try {
+	ServerProcess server("password");
+	Client first(server.getPort());
+	Client second(server.getPort());
+
+	first.register_("password", "first");
+	second.send(
+		"PASS password\r\n"
+		"INVITE first #channel\r\n"
+	);
+	wait(0.1);
+	first.expectResponse("");
+	second.expectResponse("451 * :You have not registered\r\n");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
 Test(invite, inviting) try {
 	ServerProcess server("password");
 	Client first(server.getPort());
