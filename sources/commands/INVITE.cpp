@@ -5,6 +5,11 @@
 #include "RPL.hpp"
 
 void Server::invite(Message message, Client &client) {
+	if (client.state != REGISTERED) {
+		ERR_NOTREGISTERED(client);
+		return;
+	}
+
 std::cout << "invite command starting"<< std::endl;
     if (message.params.size() < 2){ 
         std::cout << "not enough params"<< std::endl;
