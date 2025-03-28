@@ -4,7 +4,7 @@
 
 void Server::ping(Message message, Client &client){
 	if (message.params.size() < 1) {
-		ERR_NEEDMOREPARAMS(client, message);
+		ERR_NEEDMOREPARAMS(client, "PING");
 		return;
 	}
     std::stringstream output;

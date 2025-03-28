@@ -4,7 +4,8 @@
 void    ERR_CHANNELISFULL(Client &client, Channel &channel);
 void    ERR_INVITEONLYCHAN(Client &client, Channel &channel);
 void    ERR_BADCHANNELKEY(Client &client, Channel &channel);
-void    ERR_UMODEUNKNOWNFLAG(Client &client, char c);
+void    ERR_UMODEUNKNOWNFLAG(Client &client, std::string flag);
+void    ERR_UNKNOWNMODE(Client &client, std::string flag);
 
 void    ERR_NOSUCHCHANNEL(Client &client, std::string channel);
 void    ERR_CHANOPRIVSNEEDED(Client &client, std::string channel);
@@ -13,7 +14,7 @@ void    ERR_NOTONCHANNEL(Client &client, std::string channel);
 void    ERR_NOSUCHNICK(Client &client, std::string nickname);
 void    ERR_USERONCHANNEL(Client &client, std::string channel, std::string nick);
 
-void    ERR_NEEDMOREPARAMS(Client &client, Message &message);
+void    ERR_NEEDMOREPARAMS(Client &client, std::string command, std::string message = "Not enough parameters");
 void    ERR_USERSDONTMATCH(Client &client);
 void    ERR_ALREADYREGISTERED(Client &client);
 void    ERR_NORECIPIENT(Client &client, Message &message);

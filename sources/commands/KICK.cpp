@@ -9,7 +9,7 @@
 void Server::kick(Message message, Client &client){
     std::cout << "KICK command recieved" << std::endl;
     if (message.params.size() < 2){
-        ERR_NEEDMOREPARAMS(client, message);
+        ERR_NEEDMOREPARAMS(client, "KICK");
         return;
     }
 

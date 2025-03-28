@@ -13,7 +13,7 @@ void Server::invite(Message message, Client &client) {
 std::cout << "invite command starting"<< std::endl;
     if (message.params.size() < 2){ 
         std::cout << "not enough params"<< std::endl;
-        ERR_NEEDMOREPARAMS(client, message);
+        ERR_NEEDMOREPARAMS(client, "INVITE");
         return; // ERR_NEEDMOREPARAMS (461)
     }
     std::string nickname = message.params[0];

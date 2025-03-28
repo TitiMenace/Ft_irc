@@ -18,7 +18,7 @@ void Server::join(Message message, Client &client){
     
     if (message.params.empty()){
         std::cout << "---empty param issue ----- \n";
-        ERR_NEEDMOREPARAMS(client, message);
+        ERR_NEEDMOREPARAMS(client, "JOIN");
         return;//notenoughparams to send
 
     }

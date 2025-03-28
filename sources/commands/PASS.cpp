@@ -5,7 +5,7 @@
 void Server::pass(Message message, Client &client){
     std::cout << "PASS command recieved" << std::endl;
     if (message.params.size() < 1){
-        ERR_NEEDMOREPARAMS(client, message);
+        ERR_NEEDMOREPARAMS(client, "PASS");
         return;
     }
     if (client.state == REGISTERED){

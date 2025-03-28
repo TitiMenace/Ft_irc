@@ -53,16 +53,29 @@ void    ERR_BADCHANNELKEY(Client &client, Channel &channel){
 	return;
 }
 
-void    ERR_UMODEUNKNOWNFLAG(Client &client, char c){
+void    ERR_UMODEUNKNOWNFLAG(Client &client, std::string flag){
 	std::stringstream	output;
 
 	output << "501";
 	output << " " << client.nickname;
-	output << " :" << "Unknown MODE flag (" << c << ")";
+	output << " :" << "Unknown MODE flag (" << flag << ")";
 	output << "\r\n";
 	client.outBuffer += output.str();
 	return;
 }
+
+void    ERR_UNKNOWNMODE(Client &client, std::string flag){
+	std::stringstream	output;
+
+	output << "472";
+	output << " " << client.nickname;
+	output << " " << flag;
+	output << " :is unknown mode char to me";
+	output << "\r\n";
+	client.outBuffer += output.str();
+	return;
+}
+
 void    ERR_NOSUCHCHANNEL(Client &client, std::string channel){
 	std::stringstream	output;
 
@@ -124,13 +137,13 @@ void    ERR_USERONCHANNEL(Client &client, std::string channel, std::string nick)
 	return;
 }
 
-void    ERR_NEEDMOREPARAMS(Client &client, Message &message){
+void    ERR_NEEDMOREPARAMS(Client &client, std::string command, std::string message){
 	std::stringstream	output;
 
 	output << "461";
 	output << " " << (client.nickname.empty() ? "*" : client.nickname);
-	output << " " << message.command;
-	output << " :" << "Not enough parameters";
+	output << " " << command;
+	output << " :" << message;
 	output << "\r\n";
 	client.outBuffer += output.str();
 	return;

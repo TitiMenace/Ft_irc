@@ -14,7 +14,7 @@ void Server::user(Message message, Client &client){
 		return;
 	}
 	if (message.params.size() != 4) {
-		ERR_NEEDMOREPARAMS(client, message);
+		ERR_NEEDMOREPARAMS(client, "USER");
 		return;
 	}
 

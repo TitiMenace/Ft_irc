@@ -21,7 +21,7 @@ void Server::topic(Message message, Client &client){
     std::cout << "TOPIC command recieved" << std::endl;
     if (message.params.size() < 1){ 
         std::cout << "not enough params"<< std::endl;
-        ERR_NEEDMOREPARAMS(client, message);
+        ERR_NEEDMOREPARAMS(client, "TOPIC");
         return; // ERR_NEEDMOREPARAMS (461)
     }
     //checking channel part
