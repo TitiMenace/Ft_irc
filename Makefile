@@ -21,7 +21,9 @@ FILES		= main \
 			commands/INVITE \
 			commands/MODE/MODE \
 			commands/MODE/invites \
+			commands/MODE/topic \
 			commands/MODE/key \
+			commands/MODE/operator \
 			commands/KICK \
 			commands/TOPIC \
 

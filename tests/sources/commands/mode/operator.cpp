@@ -17,7 +17,7 @@ Test(mode, no_user_param) try {
 
 	client.send("MODE #channel +o\r\n");
 	wait(0.1);
-	client.expectResponse("");
+	client.expectResponse("461 client MODE :Missing <member> parameter\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }

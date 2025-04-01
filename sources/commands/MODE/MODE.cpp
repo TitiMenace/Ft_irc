@@ -12,41 +12,41 @@
 // o: Give/take channel operator privilege
 // l: Set/remove the user limit to channel
 
-bool	Mode::enableMode(Client &client, Channel &channel, char flag, std::string *param) {
+bool	Mode::enableMode(Client &client, Channel &channel, char flag, std::string *param, std::map<int, Client> &users) {
 	switch (flag) {
 		case 'i': return restrictInvites(channel);
-		// case 't': return protectTopic(client, channel);
+		case 't': return protectTopic(channel);
 		case 'k': return enableKey(client, channel, param);
-		// case 'o': return promoteMember(client, channel, param);
+		case 'o': return promoteMember(client, channel, param, users);
 		// case 'l': return enableMemberLimit(client, channel, param);
 	}
 	ERR_UNKNOWNMODE(client, std::string(&flag, 1));
 	return false;
 }
 
-bool	Mode::disableMode(Client &client, Channel &channel, char flag, std::string *param) {
+bool	Mode::disableMode(Client &client, Channel &channel, char flag, std::string *param, std::map<int, Client> &users) {
 	(void) param;
 	switch (flag) {
 		case 'i': return allowInvites(channel);
-		// case 't': return unprotectTopic(client, channel);
+		case 't': return unprotectTopic(channel);
 		case 'k': return disableKey(channel);
-		// case 'o': return demoteMember(client, channel, *param);
+		case 'o': return demoteMember(client, channel, param, users);
 		// case 'l': return disableMemberLimit(client, channel);
 	}
 	ERR_UNKNOWNMODE(client, std::string(&flag, 1));
 	return false;
 }
 
-bool	Mode::changeMode(Client &client, Channel &channel, std::string flag, std::string *param){
+bool	Mode::changeMode(Client &client, Channel &channel, std::string flag, std::string *param, std::map<int, Client> &users){
 	if (flag.size() != 2) {
 		ERR_UNKNOWNMODE(client, flag);
 		return false;
 	}
 	
 	if (flag[0] == '+')
-		return Mode::enableMode(client, channel, flag[1], param);
+		return Mode::enableMode(client, channel, flag[1], param, users);
 	if (flag[0] == '-')
-		return Mode::disableMode(client, channel, flag[1], param);
+		return Mode::disableMode(client, channel, flag[1], param, users);
 	
 	ERR_UNKNOWNMODE(client, flag);
 	return false;
@@ -90,12 +90,13 @@ void Server::mode(Message message, Client &client) {
 		return;
 	}
 
+	// TODO: NOTONCHANNEL
 	if (!channel->operators.count(client.socket_fd)) {
 		ERR_CHANOPRIVSNEEDED(client, channel_name);
 		return;
 	}
 
-	if (Mode::changeMode(client, *channel, message.params[1], (message.params.size() >= 3) ? &message.params[2] : NULL)) {
+	if (Mode::changeMode(client, *channel, message.params[1], (message.params.size() >= 3) ? &message.params[2] : NULL, _users)) {
 		// Send mode message to channel members
 		// TODO: maybe hide sensitive info (key in MODE +k?)
 		for (std::set<int>::iterator it = channel->members.begin(); it != channel->members.end(); it++) {
