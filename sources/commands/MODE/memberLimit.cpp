@@ -12,8 +12,6 @@ bool Mode::enableMemberLimit(Client &client, Channel &channel, std::string *limi
 		ERR_INVALIDMODEPARAM(client, channel.name, "l", *limit, ":Member limit should be an integer below 2^16");
 		return false;
 	}
-	if (channel.mode & USER_LIMIT)
-		return false;
 	channel.mode |= USER_LIMIT;
 	channel.size_limit = size_limit;
 	return true;
