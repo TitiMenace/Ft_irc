@@ -1,25 +1,24 @@
 #include <criterion/criterion.h>
-#include <stdexcept>
 #include "tests.hpp"
 
-Test(mode, no_password) try {
+Test(kick, no_password) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
-	client.send("MODE #channel +i\r\n");
+	client.send("KICK #channel invalid\r\n");
 	wait(0.1);
 	client.expectResponse("451 * :You have not registered\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
 
-Test(mode, not_registered) try {
+Test(kick, not_registered) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
 	client.send(
 		"PASS password\r\n"
-		"MODE #channel +i\r\n"
+		"KICK #channel invalid\r\n"
 	);
 	wait(0.1);
 	client.expectResponse("451 * :You have not registered\r\n");
@@ -27,31 +26,33 @@ Test(mode, not_registered) try {
 	cr_assert(false, "Error: %s", e.what());
 }
 
-Test(mode, not_enough_params) try {
+Test(kick, no_channel_param) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
 	client.register_("password", "client");
-	client.send("MODE\r\n");
+
+	client.send("KICK\r\n");
 	wait(0.1);
-	client.expectResponse("461 client MODE :Missing <target> parameter\r\n");
+	client.expectResponse("461 client KICK :Not enough parameters\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
 
-Test(mode, no_such_channel) try {
+Test(kick, no_such_channel) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
-	client.register_("password", "velimir");
-	client.send("MODE #dani\r\n");
+	client.register_("password", "client");
+
+	client.send("KICK #invalid client\r\n");
 	wait(0.1);
-	client.expectResponse("403 velimir #dani :No such channel\r\n");
+	client.expectResponse("403 client #invalid :No such channel\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
 
-Test(mode, not_in_channel) try {
+Test(kick, not_in_channel) try {
 	ServerProcess server("password");
 	Client first(server.getPort());
 	Client second(server.getPort());
@@ -67,18 +68,32 @@ Test(mode, not_in_channel) try {
 		"366 first #channel :End of /NAMES list\r\n"
 	);
 
-	second.send("MODE #channel +i\r\n");
+	second.send("KICK #channel second\r\n");
 	wait(0.1);
 	second.expectResponse("442 second #channel :You're not on that channel\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
 
-Test(mode, mode_list) try {
+Test(kick, no_user_param) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
 	client.register_("password", "client");
+
+	client.send("KICK #channel\r\n");
+	wait(0.1);
+	client.expectResponse("461 client KICK :Not enough parameters\r\n");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+Test(kick, invalid_user) try {
+	ServerProcess server("password");
+	Client client(server.getPort());
+
+	client.register_("password", "client");
+
 	client.send("JOIN #channel\r\n");
 	wait(0.1);
 	client.expectResponse(
@@ -86,35 +101,39 @@ Test(mode, mode_list) try {
 		"353 client = #channel :@client\r\n"
 		"366 client #channel :End of /NAMES list\r\n"
 	);
-	
-	client.send("MODE #channel\r\n");
+
+	client.send("KICK #channel invalid\r\n");
 	wait(0.1);
-	client.expectResponse("324 client #channel :o \r\n");
+	client.expectResponse("401 client invalid :No such nick/channel\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
 
-Test(mode, unknown_channel_mode) try {
+
+Test(kick, user_not_in_channel) try {
 	ServerProcess server("password");
-	Client client(server.getPort());
+	Client first(server.getPort());
+	Client second(server.getPort());
 
-	client.register_("password", "client");
-	client.send("JOIN #channel\r\n");
+	first.register_("password", "first");
+	second.register_("password", "second");
+
+	first.send("JOIN #channel\r\n");
 	wait(0.1);
-	client.expectResponse(
-		":client!client@ JOIN #channel\r\n"
-		"353 client = #channel :@client\r\n"
-		"366 client #channel :End of /NAMES list\r\n"
+	first.expectResponse(
+		":first!first@ JOIN #channel\r\n"
+		"353 first = #channel :@first\r\n"
+		"366 first #channel :End of /NAMES list\r\n"
 	);
-	
-	client.send("MODE #channel +g\r\n");
+
+	first.send("KICK #channel second\r\n");
 	wait(0.1);
-	client.expectResponse("472 client g :is unknown mode char to me\r\n");
+	first.expectResponse("441 first second #channel :They aren't on that channel\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
 
-Test(mode, not_operator) try {
+Test(kick, not_op) try {
 	ServerProcess server("password");
 	Client first(server.getPort());
 	Client second(server.getPort());
@@ -139,9 +158,41 @@ Test(mode, not_operator) try {
 		"366 second #channel :End of /NAMES list\r\n"
 	);
 
-	second.send("MODE #channel +i\r\n");
+	second.send("KICK #channel second\r\n");
 	wait(0.1);
 	second.expectResponse("482 second #channel :You're not channel operator\r\n");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+Test(kick, valid) try {
+	ServerProcess server("password");
+	Client first(server.getPort());
+	Client second(server.getPort());
+
+	first.register_("password", "first");
+	second.register_("password", "second");
+
+	first.send("JOIN #channel\r\n");
+	wait(0.1);
+	first.expectResponse(
+		":first!first@ JOIN #channel\r\n"
+		"353 first = #channel :@first\r\n"
+		"366 first #channel :End of /NAMES list\r\n"
+	);
+
+	second.send("JOIN #channel\r\n");
+	wait(0.1);
+	first.expectResponse(":second!second@ JOIN #channel\r\n");
+	second.expectResponse(
+		":second!second@ JOIN #channel\r\n"
+		"353 second = #channel :@first second\r\n"
+		"366 second #channel :End of /NAMES list\r\n"
+	);
+
+	first.send("KICK #channel second\r\n");
+	wait(0.1);
+	second.expectResponse(":first KICK #channel second :No particular reason.\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }

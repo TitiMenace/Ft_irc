@@ -7,6 +7,11 @@
 #include "RPL.hpp"
 
 void Server::kick(Message message, Client &client){
+	if (client.state != REGISTERED) {
+        ERR_NOTREGISTERED(client);
+        return;
+    }
+
     std::cout << "KICK command recieved" << std::endl;
     if (message.params.size() < 2){
         ERR_NEEDMOREPARAMS(client, "KICK");
@@ -47,8 +52,8 @@ void Server::kick(Message message, Client &client){
 
     if (!channel.members.count(kicked->socket_fd)){
         std::cout << "kicked person needs to be in channel" << std::endl;
-        ERR_NOTONCHANNEL(client, channel_name);
-        return; // ERR_NOTONCHANNEL (442)
+        ERR_USERNOTINCHANNEL(client, nickname, channel_name);
+        return; // ERR_USERNOTINCHANNEL (442)
     }
 
     if (message.params.size() > 2){
