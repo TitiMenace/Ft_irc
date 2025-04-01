@@ -45,6 +45,7 @@ Test(pass, already_registered) try {
 		"002 velimir :Your host is , running version v.1\r\n"
 		"003 velimir :This server was created le 01/01/01\r\n"
 		"004 velimir :v.1 no user mode support +tlkoiq\r\n"
+		"005 velimir CASEMAPPING=ascii :are supported by this server\r\n"
 		"462 velimir :You may not reregister\r\n"
 	;
 

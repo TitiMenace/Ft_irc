@@ -124,7 +124,10 @@ Test(privmsg, channel_message) try {
 
 	second.send("PRIVMSG #channel :Hello channel!\r\n");
 	wait(0.1);
-	first.expectResponse(":second PRIVMSG #channel :Hello channel!\r\n");
+	first.expectResponse(
+		":second!second@ JOIN #channel\r\n"
+		":second PRIVMSG #channel :Hello channel!\r\n"
+	);
 	second.expectResponse("");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());

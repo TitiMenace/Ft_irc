@@ -79,6 +79,7 @@ void Client::register_(const std::string &password, const std::string &nickname)
 		"002 " + nickname + " :Your host is , running version v.1\r\n"
 		"003 " + nickname + " :This server was created le 01/01/01\r\n"
 		"004 " + nickname + " :v.1 no user mode support +tlkoiq\r\n"
+		"005 " + nickname + " CASEMAPPING=ascii :are supported by this server\r\n"
 	);
 }
 

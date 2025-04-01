@@ -80,6 +80,7 @@ Test(nick, registration) try {
 		"002 velimir :Your host is , running version v.1\r\n"
 		"003 velimir :This server was created le 01/01/01\r\n"
 		"004 velimir :v.1 no user mode support +tlkoiq\r\n"
+		"005 velimir CASEMAPPING=ascii :are supported by this server\r\n"
 	);
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
