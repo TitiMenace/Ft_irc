@@ -78,6 +78,9 @@ void Server::mode(Message message, Client &client) {
 		return;
 	}
 
+	if (message.params[0][0] != '#')
+		return;
+
 	std::string channel_name = message.params[0];
 	Channel *channel = findInMap(_channel_list, channel_name);
 	if (!channel) {
@@ -90,7 +93,6 @@ void Server::mode(Message message, Client &client) {
 		return;
 	}
 
-	// TODO: NOTONCHANNEL
 	if (!channel->operators.count(client.socket_fd)) {
 		if (!channel->members.count(client.socket_fd))
 			ERR_NOTONCHANNEL(client, channel_name);
