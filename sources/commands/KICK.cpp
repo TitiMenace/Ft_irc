@@ -62,6 +62,7 @@ void Server::kick(Message message, Client &client){
 
     channel.members.erase(kicked->socket_fd);
     channel.operators.erase(kicked->socket_fd);
+    channel.invites.erase(kicked->socket_fd);
     if (channel.members.empty())
         _channel_list.erase(channel.name);
     //check if channel is empty; if it is remove it
