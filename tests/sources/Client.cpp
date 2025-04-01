@@ -76,9 +76,9 @@ void Client::register_(const std::string &password, const std::string &nickname)
 	wait(0.1);
 	expectResponse(
 		"001 " + nickname + " :Welcome to the WiZ insane chat of distortion of reality between worlds, " + nickname + "!" + nickname + "@" + nickname + "\r\n"
-		"002 " + nickname + " :Your host is , running version v.1\r\n"
-		"003 " + nickname + " :This server was created le 01/01/01\r\n"
-		"004 " + nickname + " :v.1 no user mode support +tlkoiq\r\n"
+		"002 " + nickname + " :Your host is Buleubleubeuh, running version v0.1\r\n"
+		"003 " + nickname + " :This server was created the 01/04/2025\r\n"
+		"004 " + nickname + " :v0.1 + +tlkoi\r\n"
 		"005 " + nickname + " CASEMAPPING=ascii :are supported by this server\r\n"
 	);
 }
