@@ -13,6 +13,10 @@ FILES		= \
 				commands/join \
 				commands/mode/mode \
 				commands/mode/operator \
+				commands/mode/invites \
+				commands/mode/memberLimit \
+				commands/mode/key \
+				commands/mode/topic \
 				commands/nick \
 				commands/pass \
 				commands/user \

@@ -15,8 +15,6 @@ bool Mode::enableKey(Client &client, Channel &channel, std::string *key) {
 		ERR_INVALIDKEY(client, channel.name);
 		return false;
 	}
-	if (channel.mode & KEY_PROTECTED)
-		return false;
 	channel.mode |= KEY_PROTECTED;
 	channel.key = *key;
 	return true;

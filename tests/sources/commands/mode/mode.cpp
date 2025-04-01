@@ -74,6 +74,7 @@ Test(mode, not_in_channel) try {
 	cr_assert(false, "Error: %s", e.what());
 }
 
+
 Test(mode, mode_list) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
