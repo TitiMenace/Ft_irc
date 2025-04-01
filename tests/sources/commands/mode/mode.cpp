@@ -39,18 +39,6 @@ Test(mode, not_enough_params) try {
 	cr_assert(false, "Error: %s", e.what());
 }
 
-Test(mode, invalid_channel) try {
-	ServerProcess server("password");
-	Client client(server.getPort());
-
-	client.register_("password", "velimir");
-	client.send("MODE dani\r\n");
-	wait(0.1);
-	client.expectResponse("403 velimir dani :No such channel\r\n");
-} catch (std::runtime_error e) {
-	cr_assert(false, "Error: %s", e.what());
-}
-
 Test(mode, no_such_channel) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
@@ -59,6 +47,29 @@ Test(mode, no_such_channel) try {
 	client.send("MODE #dani\r\n");
 	wait(0.1);
 	client.expectResponse("403 velimir #dani :No such channel\r\n");
+} catch (std::runtime_error e) {
+	cr_assert(false, "Error: %s", e.what());
+}
+
+Test(mode, not_in_channel) try {
+	ServerProcess server("password");
+	Client first(server.getPort());
+	Client second(server.getPort());
+
+	first.register_("password", "first");
+	second.register_("password", "second");
+
+	first.send("JOIN #channel\r\n");
+	wait(0.1);
+	first.expectResponse(
+		":first!first@ JOIN #channel\r\n"
+		"353 first = #channel :@first\r\n"
+		"366 first #channel :End of /NAMES list\r\n"
+	);
+
+	second.send("MODE #channel +i\r\n");
+	wait(0.1);
+	second.expectResponse("442 second #channel :You're not on that channel\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
@@ -83,7 +94,7 @@ Test(mode, mode_list) try {
 	cr_assert(false, "Error: %s", e.what());
 }
 
-Test(mode, unknown_mode) try {
+Test(mode, unknown_channel_mode) try {
 	ServerProcess server("password");
 	Client client(server.getPort());
 
@@ -98,7 +109,7 @@ Test(mode, unknown_mode) try {
 	
 	client.send("MODE #channel +g\r\n");
 	wait(0.1);
-	client.expectResponse("501 client :Unknown MODE flag (g)\r\n");
+	client.expectResponse("472 client g :is unknown mode char to me\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }
@@ -112,19 +123,21 @@ Test(mode, not_operator) try {
 	second.register_("password", "second");
 
 	first.send("JOIN #channel\r\n");
-	second.send("JOIN #channel\r\n");
 	wait(0.1);
 	first.expectResponse(
 		":first!first@ JOIN #channel\r\n"
 		"353 first = #channel :@first\r\n"
 		"366 first #channel :End of /NAMES list\r\n"
 	);
-	// TODO ^ first should also receive a JOIN message when second joins
+
+	second.send("JOIN #channel\r\n");
+	wait(0.1);
 	second.expectResponse(
 		":second!second@ JOIN #channel\r\n"
 		"353 second = #channel :@first second\r\n"
 		"366 second #channel :End of /NAMES list\r\n"
 	);
+	// TODO ^ first should also receive a JOIN message when second joins
 
 	second.send("MODE #channel +i\r\n");
 	wait(0.1);

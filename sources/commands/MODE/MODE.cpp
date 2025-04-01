@@ -92,7 +92,10 @@ void Server::mode(Message message, Client &client) {
 
 	// TODO: NOTONCHANNEL
 	if (!channel->operators.count(client.socket_fd)) {
-		ERR_CHANOPRIVSNEEDED(client, channel_name);
+		if (!channel->members.count(client.socket_fd))
+			ERR_NOTONCHANNEL(client, channel_name);
+		else
+			ERR_CHANOPRIVSNEEDED(client, channel_name);
 		return;
 	}
 
