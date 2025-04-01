@@ -111,6 +111,19 @@ void	ERR_INVALIDKEY(Client &client, std::string channel) {
 	client.outBuffer += output.str();
 }
 
+void	ERR_INVALIDMODEPARAM(Client &client, std::string channel, std::string flag, std::string param, std::string message) {
+	std::stringstream	output;
+
+	output << "696";
+	output << " " << client.nickname;
+	output << " " << channel;
+	output << " " << flag;
+	output << " " << param;
+	output << " :" << message;
+	output << "\r\n";
+	client.outBuffer += output.str();
+}
+
 void    ERR_NOTONCHANNEL(Client &client, std::string channel){
 	std::stringstream	output;
 

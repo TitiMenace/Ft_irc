@@ -18,7 +18,7 @@ bool	Mode::enableMode(Client &client, Channel &channel, char flag, std::string *
 		case 't': return protectTopic(channel);
 		case 'k': return enableKey(client, channel, param);
 		case 'o': return promoteMember(client, channel, param, users);
-		// case 'l': return enableMemberLimit(client, channel, param);
+		case 'l': return enableMemberLimit(client, channel, param);
 	}
 	ERR_UNKNOWNMODE(client, std::string(&flag, 1));
 	return false;
@@ -31,7 +31,7 @@ bool	Mode::disableMode(Client &client, Channel &channel, char flag, std::string 
 		case 't': return unprotectTopic(channel);
 		case 'k': return disableKey(channel);
 		case 'o': return demoteMember(client, channel, param, users);
-		// case 'l': return disableMemberLimit(client, channel);
+		case 'l': return disableMemberLimit(channel);
 	}
 	ERR_UNKNOWNMODE(client, std::string(&flag, 1));
 	return false;

@@ -28,5 +28,5 @@ namespace Mode {
 	bool	demoteMember(Client &client, Channel &channel, std::string *member, std::map<int, Client> &users);
 	// +/-l
 	bool	enableMemberLimit(Client &client, Channel &channel, std::string *limit);
-	bool	disableMemberLimit(Client &client, Channel &channel);
+	bool	disableMemberLimit(Channel &channel);
 };

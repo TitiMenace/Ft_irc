@@ -24,6 +24,7 @@ FILES		= main \
 			commands/MODE/topic \
 			commands/MODE/key \
 			commands/MODE/operator \
+			commands/MODE/memberLimit \
 			commands/KICK \
 			commands/TOPIC \
 

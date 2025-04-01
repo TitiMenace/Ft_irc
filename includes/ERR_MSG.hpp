@@ -10,6 +10,7 @@ void    ERR_UNKNOWNMODE(Client &client, std::string flag);
 void    ERR_NOSUCHCHANNEL(Client &client, std::string channel);
 void    ERR_CHANOPRIVSNEEDED(Client &client, std::string channel);
 void	ERR_INVALIDKEY(Client &client, std::string channel);
+void	ERR_INVALIDMODEPARAM(Client &client, std::string channel, std::string flag, std::string param, std::string message);
 
 void    ERR_NOTONCHANNEL(Client &client, std::string channel);
 void    ERR_NOSUCHNICK(Client &client, std::string nickname);

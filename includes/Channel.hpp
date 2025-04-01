@@ -4,7 +4,6 @@
 #include <set>
 #include "Client.hpp"
 #include "Message.hpp"
-#define SIZE_LIMIT 10
 
 enum ChannelMode {
 	NO_FLAG,
