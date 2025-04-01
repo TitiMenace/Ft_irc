@@ -85,6 +85,7 @@ void Server::join(Message message, Client &client){
             std::cerr << channel_name << " is an invite only channel" << client.nickname << " can't join it" << std::endl; 
             continue;
         }
+		_channel_list[channel_name].invites.erase(client.socket_fd);
         it->second.members.insert(client.socket_fd);
 		for (std::set<int>::iterator it = _channel_list[channel_name].members.begin(); it != _channel_list[channel_name].members.end(); it++)
 		    RPL_JOIN(client, channel_name, _users[*it]);
