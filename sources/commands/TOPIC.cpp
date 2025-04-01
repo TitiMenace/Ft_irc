@@ -18,6 +18,11 @@ void sendChannelTopic(Channel &channel, std::string topic, Client &client, std::
 
 
 void Server::topic(Message message, Client &client){
+	if (client.state != REGISTERED) {
+        ERR_NOTREGISTERED(client);
+        return;
+    }
+
     std::cout << "TOPIC command recieved" << std::endl;
     if (message.params.size() < 1){ 
         std::cout << "not enough params"<< std::endl;

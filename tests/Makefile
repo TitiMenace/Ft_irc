@@ -18,7 +18,8 @@ FILES		= \
 				commands/user \
 				commands/ping \
 				commands/privmsg \
-				commands/invite
+				commands/invite \
+				commands/topic
 
 SRCS_DIR	= sources
 SRCS		= $(addprefix $(SRCS_DIR)/, $(addsuffix .cpp, $(FILES)))
