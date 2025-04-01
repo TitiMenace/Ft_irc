@@ -34,7 +34,7 @@ Test(mode, not_enough_params) try {
 	client.register_("password", "client");
 	client.send("MODE\r\n");
 	wait(0.1);
-	client.expectResponse("461 client MODE :Not enough parameters\r\n");
+	client.expectResponse("461 client MODE :Missing <target> parameter\r\n");
 } catch (std::runtime_error e) {
 	cr_assert(false, "Error: %s", e.what());
 }

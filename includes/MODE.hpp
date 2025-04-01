@@ -5,6 +5,7 @@
 
 
 namespace Mode {
+	bool	changeMode(Client &client, Channel &channel, std::string flag, std::string *param);
 	bool	enableMode(Client &client, Channel &channel, char flag, std::string *param);
 	bool	disableMode(Client &client, Channel &channel, char flag, std::string *param);
 
@@ -18,10 +19,10 @@ namespace Mode {
 	bool	allowInvites(Channel &channel);
 	// +/-t
 	bool	protectTopic(Client &client, Channel &channel);
-	bool	unprotectTopic(Client &client, Channel &channel);
+	bool	unprotectTopic(Channel &channel);
 	// +/-k
 	bool	enableKey(Client &client, Channel &channel, std::string *key);
-	bool	disableKey(Client &client, Channel &channel);
+	bool	disableKey(Channel &channel);
 	// +/-o
 	bool	promoteMember(Client &client, Channel &channel, std::string *member);
 	bool	demoteMember(Client &client, Channel &channel, std::string *member);

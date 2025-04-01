@@ -100,6 +100,17 @@ void    ERR_CHANOPRIVSNEEDED(Client &client, std::string channel){
 	return;
 }
 
+void	ERR_INVALIDKEY(Client &client, std::string channel) {
+	std::stringstream	output;
+
+	output << "525";
+	output << " " << client.nickname;
+	output << " " << channel;
+	output << " :" << "Key is not well-formed";
+	output << "\r\n";
+	client.outBuffer += output.str();
+}
+
 void    ERR_NOTONCHANNEL(Client &client, std::string channel){
 	std::stringstream	output;
 

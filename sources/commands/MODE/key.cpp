@@ -3,7 +3,7 @@
 
 // This check is implementation defined, but a key with spaces or comas would be difficult to use in JOIN messages
 static bool checkKey(std::string key) {
-	return std::
+	return key.find(' ') == std::string::npos && key.find(',') == std::string::npos;
 }
 
 bool Mode::enableKey(Client &client, Channel &channel, std::string *key) {
@@ -11,12 +11,20 @@ bool Mode::enableKey(Client &client, Channel &channel, std::string *key) {
 		ERR_NEEDMOREPARAMS(client, "MODE", "Missing <key> parameter");
 		return false;
 	}
-	// TODO: check if the key is valid (doesn't contain spaces nor comas)
+	if (!checkKey(*key)) {
+		ERR_INVALIDKEY(client, channel.name);
+		return false;
+	}
+	if (channel.mode & KEY_PROTECTED)
+		return false;
 	channel.mode |= KEY_PROTECTED;
 	channel.key = *key;
+	return true;
 }
 
-case 'k':
-					std::cout << "le mot de passe est bien enleve" << std::endl;
-					_channel_list[channel].mode &= ~KEY_PROTECTED;
-					break;
+bool Mode::disableKey(Channel &channel) {
+	if (~channel.mode & KEY_PROTECTED)
+		return false;
+	channel.mode &= ~KEY_PROTECTED;
+	return true;
+}

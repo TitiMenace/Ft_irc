@@ -19,7 +19,9 @@ FILES		= main \
 			commands/JOIN \
 			commands/ERR_MSG \
 			commands/INVITE \
-			commands/MODE \
+			commands/MODE/MODE \
+			commands/MODE/invites \
+			commands/MODE/key \
 			commands/KICK \
 			commands/TOPIC \
 
